@@ -74,11 +74,7 @@ public class EngineImpl implements Engine {
             } else {
                 System.out.println("ERROR");
             }
-
-
         }
-
-
 
         Message indiaCountry=new Message("1","Curauma");
         Message chinaCountry=new Message("2", "Nuevo Pichidangui");
@@ -127,6 +123,20 @@ public class EngineImpl implements Engine {
         InJson in = mapper.readValue(json, InJson.class);
         return in;
 
+    }
+
+    private String convertToJSON(Object obj)  throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            if (obj == null) {
+                return null;
+            } else if (obj instanceof String) {
+                return (String) obj;
+            }
+            return mapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new Exception("Cannot serialize to JSON " + obj, e);
+        }
     }
 
 
