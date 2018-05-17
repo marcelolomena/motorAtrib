@@ -1,11 +1,8 @@
 package cl.motoratrib.rest.jsrules.loader.impl;
 
 
-import cl.motoratrib.rest.jsrules.Rule;
-import cl.motoratrib.rest.jsrules.Executor;
-import cl.motoratrib.rest.jsrules.JsRules;
-import cl.motoratrib.rest.jsrules.RuleExecutor;
-import cl.motoratrib.rest.jsrules.RulesetExecutor;
+import cl.motoratrib.rest.jsrules.*;
+import cl.motoratrib.rest.jsrules.JsRulesImpl;
 import cl.motoratrib.rest.jsrules.config.ResponseConfig;
 import cl.motoratrib.rest.jsrules.config.RulesetConfig;
 import cl.motoratrib.rest.jsrules.exception.ClassHandlerException;
@@ -25,10 +22,10 @@ import java.util.List;
  */
 public class RulesetLoaderImpl implements RulesetLoader {
     private final static Logger LOGGER = LoggerFactory.getLogger(RulesetLoaderImpl.class);
-    private JsRules jsRules;
+    private JsRulesImpl jsRulesImpl;
 
-    public RulesetLoaderImpl(JsRules jsRules) {
-        this.jsRules = jsRules;
+    public RulesetLoaderImpl(JsRulesImpl jsRulesImpl) {
+        this.jsRulesImpl = jsRulesImpl;
     }
 
     @Override
@@ -62,10 +59,10 @@ public class RulesetLoaderImpl implements RulesetLoader {
         List<String> components = config.getComponents();
         for (String component : components) {
             if (rulesetTypeHandler.isRulesetListExecutor()) {
-                RulesetExecutor rulesetExecutor = jsRules.loadRulesetByName(component);
+                RulesetExecutor rulesetExecutor = jsRulesImpl.loadRulesetByName(component);
                 ruleSet.add(rulesetExecutor);
             } else {
-                Rule rule = jsRules.loadRuleByName(component);
+                Rule rule = jsRulesImpl.loadRuleByName(component);
                 RuleExecutor ruleExecutor = new RuleExecutorImpl(rule);
                 ruleSet.add(ruleExecutor);
             }

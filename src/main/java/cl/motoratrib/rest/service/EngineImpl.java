@@ -4,12 +4,14 @@ import cl.motoratrib.rest.domain.ClaseGenerica;
 import cl.motoratrib.rest.domain.InJson;
 import cl.motoratrib.rest.domain.Message;
 import cl.motoratrib.rest.jsrules.JsRules;
+import cl.motoratrib.rest.jsrules.JsRulesImpl;
 import cl.motoratrib.rest.domain.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.*;
@@ -18,14 +20,15 @@ import java.util.*;
 public class EngineImpl implements Engine {
     private static final Logger LOGGER = LoggerFactory.getLogger(EngineImpl.class);
 
+    @Autowired
+    JsRules jsrules;
+
     @Override
     public List evaluator(String json) throws Exception {
         LOGGER.debug("OK TUTTI");
 
         ClaseGenerica response = null;
         Parameter p5_fechaPep, p5_fechaVencMac = null;
-
-        JsRules jsRules = JsRules.getInstance();
 
         InJson in = readJsonFullFromString(json);
 
@@ -60,7 +63,7 @@ public class EngineImpl implements Engine {
 
         System.out.println(parameters);
 
-        Object o = jsRules.executeRuleset(in.getRulesetName(), parameters);
+        Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
 
         if (o != null)
             response = new ClaseGenerica(o);

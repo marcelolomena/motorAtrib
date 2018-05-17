@@ -11,6 +11,7 @@ import cl.motoratrib.rest.jsrules.exception.JsRulesException;
  *
  * @author Marcelo
  */
+@SuppressWarnings("serial")
 public class InvalidParameterException extends JsRulesException {
 
     public InvalidParameterException() {
