@@ -2,9 +2,7 @@ package cl.motoratrib.rest.service;
 
 import cl.motoratrib.rest.domain.ClaseGenerica;
 import cl.motoratrib.rest.domain.InJson;
-import cl.motoratrib.rest.domain.Message;
 import cl.motoratrib.rest.jsrules.JsRules;
-import cl.motoratrib.rest.jsrules.JsRulesImpl;
 import cl.motoratrib.rest.domain.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.DateTime;
@@ -24,8 +22,9 @@ public class EngineImpl implements Engine {
     JsRules jsrules;
 
     @Override
-    public List evaluator(String json) throws Exception {
+    public String evaluatorRule(String json) throws Exception {
         LOGGER.debug("OK TUTTI");
+        String responseRule = null;
 
         ClaseGenerica response = null;
         Parameter p5_fechaPep, p5_fechaVencMac = null;
@@ -70,27 +69,14 @@ public class EngineImpl implements Engine {
 
         if (response != null) {
             if (response.classType().equals("java.lang.String")) {
-                System.out.println("Respuesta : " + response.obj.toString());
+                responseRule = response.obj.toString();
             } else {
                 System.out.println("ERROR");
+                responseRule = "ERROR";
             }
         }
 
-        Message indiaCountry=new Message("1","Curauma");
-        Message chinaCountry=new Message("2", "Nuevo Pichidangui");
-        Message nepalCountry=new Message("3", "Santiago");
-        Message bhutanCountry=new Message("4", "Puente Alto");
-        Message chileCountry=new Message("5", "La Florida");
-
-        List listOfCountries = new ArrayList();
-        listOfCountries.add(indiaCountry);
-        listOfCountries.add(chinaCountry);
-        listOfCountries.add(nepalCountry);
-        listOfCountries.add(bhutanCountry);
-        listOfCountries.add(chileCountry);
-        return listOfCountries;
-
-
+        return responseRule;
     }
 
     private Parameter containsParameter(Collection<Parameter> c, String name) {
