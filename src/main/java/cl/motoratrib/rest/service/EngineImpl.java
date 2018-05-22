@@ -23,7 +23,7 @@ public class EngineImpl implements Engine {
 
     @Override
     public String evaluatorRule(String json) throws Exception {
-        LOGGER.debug("OK TUTTI");
+
         String responseRule = null;
 
         ClaseGenerica response = null;
@@ -60,7 +60,7 @@ public class EngineImpl implements Engine {
             }
         }
 
-        System.out.println(parameters);
+        //System.out.println(parameters);
 
         Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
 
