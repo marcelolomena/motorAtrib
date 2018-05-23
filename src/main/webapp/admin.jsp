@@ -45,15 +45,13 @@
            //$.jgrid.styleUI.Bootstrap.base.rowTable = "table table-bordered table-striped";
 
            $("#jqGrid").jqGrid({
-                url: 'data.json',
+                url: '/miplataforma/Motor/rules/0',
                 datatype: "json",
                 colModel: [
-                    { label: 'Category Name', name: 'CategoryName', width: 75, editable: true },
-                    { label: 'Product Name', name: 'ProductName', width: 90, editable: true },
-                    { label: 'Country', name: 'Country', width: 100, sortable: false, editable: true },
-                    { label: 'Price', name: 'Price', width: 80, sorttype: 'integer', editable: true },
-                    // sorttype is used only if the data is loaded locally or loadonce is set to true
-                    { label: 'Quantity', name: 'Quantity', width: 80, sorttype: 'number', editable: true }
+                    { label: 'id', name: 'id', hidden: true, editable: false, key: true },
+                    { label: 'idPadre', name: 'id_padre', hidden: true, editable: false },
+                    { label: 'Nombre', name: 'nombre', width: 100, sortable: true, editable: true },
+                    { label: 'Json', name: 'json', width: 100, editable: true }
                 ],
                 loadonce: true,
 				altRows : true,
@@ -69,14 +67,6 @@
 				caption : 'Test',
 				sortable: true,
                 grouping: true,
-                groupingView: {
-                    groupField: ["CategoryName"],
-                    groupColumnShow: [true],
-                    groupText: ["<b>{0}</b>"],
-                    groupOrder: ["asc"],
-                    groupSummary: [false],
-                    groupCollapse: false
-                },
                 //altRows: true, This does not work in boostrarap
                 // altclass: '....'
                 pager: "#jqGridPager"

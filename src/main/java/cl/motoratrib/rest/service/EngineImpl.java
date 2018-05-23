@@ -1,5 +1,12 @@
 package cl.motoratrib.rest.service;
 
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaOUT;
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglasIN;
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglasOUT;
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglasPcReglaRS;
+import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpListReglasDAO;
+import cl.bancochile.centronegocios.controldelimites.persistencia.repository.sp.SpListReglasSP;
+import cl.bancochile.plataformabase.error.BusinessException;
 import cl.motoratrib.rest.domain.ClaseGenerica;
 import cl.motoratrib.rest.domain.InJson;
 import cl.motoratrib.rest.jsrules.JsRules;
@@ -20,6 +27,8 @@ public class EngineImpl implements Engine {
 
     @Autowired
     JsRules jsrules;
+    @Autowired
+    SpListReglasDAO spListReglasDAO;
 
     @Override
     public String evaluatorRule(String json) throws Exception {
@@ -77,6 +86,23 @@ public class EngineImpl implements Engine {
         }
 
         return responseRule;
+    }
+
+    @Override
+    public List<SpListReglasPcReglaRS> getRule(int id) throws Exception {
+        SpListReglasOUT spListReglasOUT = null;
+        try {
+            //System.out.println("el id : " + id);
+            SpListReglasIN params  = new SpListReglasIN();
+            params.setPIdPadre(id);
+            spListReglasOUT = this.spListReglasDAO.execute(params);
+            //System.out.println("el resultado : " + spListReglasOUT);
+            //System.out.println("el super resultado : " + spListReglasOUT.getPcRegla());
+
+        }catch(BusinessException e){
+            throw new Exception(e.getMessage());
+        }
+        return spListReglasOUT.getPcRegla();
     }
 
     private Parameter containsParameter(Collection<Parameter> c, String name) {

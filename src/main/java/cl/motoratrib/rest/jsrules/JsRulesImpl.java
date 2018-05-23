@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.sql.SQLException;
+import java.sql.Clob;
 import java.util.Map;
 
 
@@ -190,7 +191,7 @@ public class JsRulesImpl implements JsRules {
     }
 
 
-    private String convertToString(java.sql.Clob data)
+    public String clobToString(Clob data)
     {
         final StringBuilder builder= new StringBuilder();
 

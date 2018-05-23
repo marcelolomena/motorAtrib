@@ -1,19 +1,24 @@
 package cl.motoratrib.rest.controller;
 
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglasPcReglaRS;
 import cl.motoratrib.rest.service.Engine;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import java.net.URLDecoder;
+import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
 public class RuleController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuleController.class);
     @Autowired
     Engine engine;
 
@@ -27,6 +32,22 @@ public class RuleController {
     public ModelAndView admin()  {
         ModelAndView modelAndview=new ModelAndView("admin.jsp");;
         return modelAndview;
+    }
+
+    @RequestMapping(value = "/rules/{id}", method = RequestMethod.GET,
+            produces = { "application/json;**charset=UTF-8**" })//application/json;charset=UTF-8
+    public ResponseEntity<List<SpListReglasPcReglaRS>> getRules(@PathVariable int id)
+            throws Exception {
+
+        List<SpListReglasPcReglaRS> lst=this.engine.getRule(id);
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println("---------------------------------");
+        String json = mapper.writeValueAsString(lst);
+        System.out.println("---------------------------------");
+        System.out.println("-------------->" + json);
+
+        return new ResponseEntity<>(this.engine.getRule(id),HttpStatus.OK);
+
     }
 
 
