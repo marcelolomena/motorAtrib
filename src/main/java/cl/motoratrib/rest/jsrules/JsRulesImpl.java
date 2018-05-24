@@ -17,13 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
-import java.sql.SQLException;
-import java.sql.Clob;
 import java.util.Map;
 
 
@@ -190,41 +185,4 @@ public class JsRulesImpl implements JsRules {
         return is;
     }
 
-
-    public String clobToString(Clob data)
-    {
-        final StringBuilder builder= new StringBuilder();
-
-        try
-        {
-            if(data == null)  throw new Exception("data is null");
-            final Reader reader = data.getCharacterStream();
-            final BufferedReader br     = new BufferedReader(reader);
-            if(br == null)  throw new Exception("buffer is null");
-            int b;
-            while(-1 != (b = br.read()))
-            {
-                builder.append((char)b);
-            }
-
-            br.close();
-        }
-        catch (SQLException e)
-        {
-            LOGGER.error("Within SQLException, Could not convert CLOB to string",e);
-            return e.toString();
-        }
-        catch (IOException e)
-        {
-            LOGGER.error("Within IOException, Could not convert CLOB to string",e);
-            return e.toString();
-        }
-        catch (Exception e)
-        {
-            LOGGER.error("Within Exception, Could not convert CLOB to string",e);
-            return e.toString();
-        }
-
-        return builder.toString();
-    }
 }

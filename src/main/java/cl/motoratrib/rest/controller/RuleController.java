@@ -1,8 +1,8 @@
 package cl.motoratrib.rest.controller;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglasPcReglaRS;
+import cl.motoratrib.rest.domain.RecordRule;
 import cl.motoratrib.rest.service.Engine;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +36,16 @@ public class RuleController {
 
     @RequestMapping(value = "/rules/{id}", method = RequestMethod.GET,
             produces = { "application/json;**charset=UTF-8**" })//application/json;charset=UTF-8
-    public ResponseEntity<List<SpListReglasPcReglaRS>> getRules(@PathVariable int id)
+    public ResponseEntity<List<RecordRule>> getRules(@PathVariable int id)
             throws Exception {
-
+/*
         List<SpListReglasPcReglaRS> lst=this.engine.getRule(id);
         ObjectMapper mapper = new ObjectMapper();
         System.out.println("---------------------------------");
         String json = mapper.writeValueAsString(lst);
         System.out.println("---------------------------------");
         System.out.println("-------------->" + json);
-
+*/
         return new ResponseEntity<>(this.engine.getRule(id),HttpStatus.OK);
 
     }

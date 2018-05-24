@@ -88,13 +88,34 @@
             <version>1.2.0</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>cl.bancochile.portal.lib.shared</groupId>
+            <artifactId>shared-lib-jackson-jar</artifactId>
+            <version>1.0.0</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
         </dependency>
+        <!-- INI Testing depues de Libs compartidas -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.4.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.4.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- FIN Testing depues de Libs compartidas -->
+<!--
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -105,7 +126,7 @@
             <artifactId>jackson-dataformat-xml</artifactId>
             <version>${jackson.library}</version>
         </dependency>
-
+-->
         <dependency>
             <groupId>cl.bancochile.plataforma.shared.lib.common</groupId>
             <artifactId>taurus-shared-lib-common-jar</artifactId>

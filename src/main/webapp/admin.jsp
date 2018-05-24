@@ -49,8 +49,8 @@
                 datatype: "json",
                 colModel: [
                     { label: 'id', name: 'id', hidden: true, editable: false, key: true },
-                    { label: 'idPadre', name: 'id_padre', hidden: true, editable: false },
-                    { label: 'Nombre', name: 'nombre', width: 100, sortable: true, editable: true },
+                    { label: 'idPadre', name: 'idParent', hidden: true, editable: false },
+                    { label: 'Nombre', name: 'name', width: 100, sortable: true, editable: true },
                     { label: 'Json', name: 'json', width: 100, editable: true }
                 ],
                 loadonce: true,

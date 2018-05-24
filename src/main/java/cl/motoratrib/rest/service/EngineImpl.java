@@ -9,6 +9,7 @@ import cl.bancochile.centronegocios.controldelimites.persistencia.repository.sp.
 import cl.bancochile.plataformabase.error.BusinessException;
 import cl.motoratrib.rest.domain.ClaseGenerica;
 import cl.motoratrib.rest.domain.InJson;
+import cl.motoratrib.rest.domain.RecordRule;
 import cl.motoratrib.rest.jsrules.JsRules;
 import cl.motoratrib.rest.domain.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.*;
 
 @Service
@@ -89,15 +95,43 @@ public class EngineImpl implements Engine {
     }
 
     @Override
-    public List<SpListReglasPcReglaRS> getRule(int id) throws Exception {
+    public List<RecordRule> getRule(int id) throws Exception {
         SpListReglasOUT spListReglasOUT = null;
+        List<RecordRule> lstRecRule = new ArrayList<>();
         try {
             //System.out.println("el id : " + id);
             SpListReglasIN params  = new SpListReglasIN();
             params.setPIdPadre(id);
             spListReglasOUT = this.spListReglasDAO.execute(params);
+
+            for (SpListReglasPcReglaRS rule : spListReglasOUT.getPcRegla()){
+                RecordRule recRule = new RecordRule();
+                recRule.setId(rule.getId().intValue());
+                recRule.setIdParent(rule.getIdPadre().intValue());
+                recRule.setName(rule.getNombre());
+                String sClob = clobToString(rule.getJson());
+                System.out.println("el sClob : " + sClob);
+                recRule.setJson(sClob);
+                lstRecRule.add(recRule);
+            }
             //System.out.println("el resultado : " + spListReglasOUT);
             //System.out.println("el super resultado : " + spListReglasOUT.getPcRegla());
+
+        }catch(BusinessException e){
+            throw new Exception(e.getMessage());
+        }
+        return lstRecRule;
+    }
+
+    @Override
+    public List<SpListReglasPcReglaRS> getRule2(int id) throws Exception {
+        SpListReglasOUT spListReglasOUT = null;
+
+        try {
+            //System.out.println("el id : " + id);
+            SpListReglasIN params  = new SpListReglasIN();
+            params.setPIdPadre(id);
+            spListReglasOUT = this.spListReglasDAO.execute(params);
 
         }catch(BusinessException e){
             throw new Exception(e.getMessage());
@@ -151,5 +185,41 @@ public class EngineImpl implements Engine {
         }
     }
 
+    private String clobToString(Clob data)
+    {
+        final StringBuilder builder= new StringBuilder();
+
+        try
+        {
+            if(data == null)  throw new Exception("data is null");
+            final Reader reader = data.getCharacterStream();
+            final BufferedReader br     = new BufferedReader(reader);
+            if(br == null)  throw new Exception("buffer is null");
+            int b;
+            while(-1 != (b = br.read()))
+            {
+                builder.append((char)b);
+            }
+
+            br.close();
+        }
+        catch (SQLException e)
+        {
+            LOGGER.error("Within SQLException, Could not convert CLOB to string",e);
+            return e.toString();
+        }
+        catch (IOException e)
+        {
+            LOGGER.error("Within IOException, Could not convert CLOB to string",e);
+            return e.toString();
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Within Exception, Could not convert CLOB to string",e);
+            return e.toString();
+        }
+
+        return builder.toString();
+    }
 
 }
