@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.*;
@@ -109,9 +110,13 @@ public class EngineImpl implements Engine {
                 recRule.setId(rule.getId().intValue());
                 recRule.setIdParent(rule.getIdPadre().intValue());
                 recRule.setName(rule.getNombre());
-                String sClob = clobToString(rule.getJson());
-                System.out.println("el sClob : " + sClob);
-                recRule.setJson(sClob);
+                //String sClob = clobToString(rule.getJson());
+                String sClob = getstringfromclob(rule.getJson());
+
+                System.out.println("the clean sClob : " + sClob.replaceAll("[\\s\u0000]+","") );
+                //String myString = sClob.replaceAll("\\s+", "");
+                //recRule.setJson(sClob.replaceAll("\\s+", ""));
+                recRule.setJson(sClob.replaceAll("[\\s\u0000]+",""));
                 lstRecRule.add(recRule);
             }
             //System.out.println("el resultado : " + spListReglasOUT);
@@ -183,6 +188,25 @@ public class EngineImpl implements Engine {
         } catch (Exception e) {
             throw new Exception("Cannot serialize to JSON " + obj, e);
         }
+    }
+
+    private String getstringfromclob(Clob cl)
+    {
+        StringWriter write = new StringWriter();
+        try{
+            Reader read  = cl.getCharacterStream();
+            int c = -1;
+            while ((c = read.read()) != -1)
+            {
+                write.write(c);
+            }
+            write.flush();
+        }catch(Exception ec)
+        {
+            ec.printStackTrace();
+        }
+        return write.toString();
+
     }
 
     private String clobToString(Clob data)

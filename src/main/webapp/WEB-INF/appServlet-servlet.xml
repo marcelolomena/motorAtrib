@@ -11,7 +11,7 @@
         <!--Configuraciones para persistencia-->
         <import resource="classpath*:spring/database/reglas-persistencia.xml"/>
 
-        <mvc:resources mapping="/resources/**" location="/resources/jqgrid/"/>
+        <mvc:resources mapping="/resources/**" location="/resources/"/>
 
 </beans>
 
