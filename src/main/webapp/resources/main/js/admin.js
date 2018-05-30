@@ -11,9 +11,10 @@
                     {
                       label: 'Nombre', name: 'rulesetName', width: 100,editable: true,
                         formatter: function (cellvalue, options, rowObject) {
-
-                            var jsonObj = JSON.parse(rowObject.json);
-                            console.dir(jsonObj);
+                            //console.dir(rowObject.json);
+                            var jsonObj;
+                            if(rowObject.json)
+                                jsonObj = JSON.parse(rowObject.json);
                             return "<span>" + jsonObj.rulesetName + "</span>";
                         }
                     },
@@ -22,34 +23,55 @@
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
-                            console.dir(jsonObj);
+                            //console.dir(jsonObj);
                             return "<span>" + jsonObj.rulesetType + "</span>";
+                        }
+                    },
+                    {
+                      label: 'Respuesta', name: 'responseConfig.response', width: 100,editable: true,
+                        formatter: function (cellvalue, options, rowObject) {
+
+                            var jsonObj = JSON.parse(rowObject.json);
+                            //console.dir(jsonObj);
+                            return "<span>" + jsonObj.responseConfig.response + "</span>";
+                        }
+                    },
+                    {
+                      label: 'Clase', name: 'responseConfig.responseClass', width: 100,editable: true,
+                        formatter: function (cellvalue, options, rowObject) {
+
+                            var jsonObj = JSON.parse(rowObject.json);
+                            //console.dir(jsonObj);
+                            return "<span>" + jsonObj.responseConfig.responseClass + "</span>";
                         }
                     }
                 ],
                 loadonce: true,
 				altRows : true,
-				//rownumbers : true,
-				//multiselect : true,
-				subGrid: true,
-                subGridRowExpanded: showGridRuleSet,
-                //width: 780,
 				colMenu : true,
 				menubar: true,
-				//viewrecords : true,
 				hoverrows : true,
-                //height: 200,
-                //rowNum: 20,
                 rowList: [],
                 pgbuttons: false,
                 pgtext: null,
                 viewrecords: false,
-				caption : 'Rule',
+				caption : 'flujos',
 				sortable: true,
-                //grouping: true,
-                pager: "#jqGridPager"
-                // set table stripped class in table style in bootsrap
+                pager: "#jqGridPager",
+   				subGrid: true,
+                subGridRowExpanded: showGridRuleSet,
+                height: "auto",
+                autowidth: true,  // set 'true' here
+                shrinkToFit: true // well, it's 'true' by default
             });
+
+       	    $('#jqGrid').jqGrid('setGroupHeaders', {
+                useColSpanStyle: false,
+                    groupHeaders:[
+                       	{startColumnName: 'responseConfig.response', numberOfColumns: 2, titleText: '<em>Configuraci\u00F3n</em>'}
+                    ]
+            });
+
             $('#jqGrid').navGrid('#jqGridPager',
                 // the buttons to appear on the toolbar of the grid
                 { edit: true, add: true, del: true, search: true, refresh: true, view: true, position: "left", cloneToTop: false },
@@ -78,16 +100,16 @@
                         return 'Error: ' + data.responseText
                     }
                 },
-				{ multipleSearch: true,
+				{ multipleSearch: false,
 				showQuery: true} // search options - define multiple search
 				);
 			$("#jqGrid").jqGrid('menubarAdd',  [
 				{
 					id : 'das',
 					//cloasoncall : true,
-					title : 'Sort by Category',
+					title : 'Ordenar por Nombre',
 					click : function ( event) {
-						$("#jqGrid").jqGrid('sortGrid','CategoryName');
+						$("#jqGrid").jqGrid('sortGrid','rulesetName');
 					}
 				},
 				{
@@ -96,13 +118,24 @@
 				{
 					id : 'was',
 					//cloasoncall : true,
-					title : 'Toggle Visibility',
+					title : 'Alternar visibilidad',
 					click : function ( event) {
 						var state = (this.p.gridstate === 'visible') ? 'hidden' : 'visible';
 						$("#jqGrid").jqGrid('setGridState',state);
 					}
 				}
 			]);
+
+            $(window).resize(function () {
+                        var outerwidth = $('#grid').width();
+                        $('#jqGrid').setGridWidth(outerwidth); // setGridWidth method sets a new width to the grid dynamically
+            });
+
+            $(window).unbind('resize.myEvents').bind('resize.myEvents', function () {
+                    var outerwidth = $('#grid').width();
+                    $('#jqGrid').setGridWidth(outerwidth);
+            });
+
 
         });
 
@@ -124,11 +157,11 @@
                     { label: 'id', name: 'id', hidden: true, editable: false, key: true },
                     { label: 'idPadre', name: 'idParent', hidden: true, editable: false },
                     {
-                      label: 'Nombre', name: 'ruleName', width: 100,editable: true,
+                      label: 'Nombre', name: 'rulesetName', width: 100,editable: true,
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
-                            console.dir(jsonObj);
+                            //console.dir(jsonObj);
                             return "<span>" + jsonObj.rulesetName + "</span>";
                         }
                     },
@@ -137,20 +170,47 @@
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
-                            console.dir(jsonObj);
+                            //console.dir(jsonObj);
                             return "<span>" + jsonObj.rulesetType + "</span>";
+                        }
+                    },
+                    {
+                      label: 'Respuesta', name: 'responseConfig.response', width: 100,editable: true,
+                        formatter: function (cellvalue, options, rowObject) {
+
+                            var jsonObj = JSON.parse(rowObject.json);
+                            //console.dir(jsonObj);
+                            return "<span>" + jsonObj.responseConfig.response + "</span>";
+                        }
+                    },
+                    {
+                      label: 'Clase', name: 'responseConfig.responseClass', width: 100,editable: true,
+                        formatter: function (cellvalue, options, rowObject) {
+
+                            var jsonObj = JSON.parse(rowObject.json);
+                            //console.dir(jsonObj);
+                            return "<span>" + jsonObj.responseConfig.responseClass + "</span>";
                         }
                     }
 	        ],
-			//height: 'auto',
+	        height: "auto",
+            autowidth: true,  // set 'true' here
+            shrinkToFit: true, // well, it's 'true' by default
             rowList: [],
             pgbuttons: false,
             pgtext: null,
             viewrecords: false,
+            caption : 'Condiciones',
 	        pager: "#" + childGridPagerID
 	    });
 
-	    $("#" + childGridID).jqGrid('navGrid',"#" + childGridPagerID,{add:false,edit:false,del:false,search: false,refresh:false});
+   	    $("#" + childGridID).jqGrid('setGroupHeaders', {
+                  useColSpanStyle: false,
+                  groupHeaders:[
+                	{startColumnName: 'responseConfig.response', numberOfColumns: 2, titleText: '<em>Configuraci\u00F3n</em>'}
+                  ]
+        });
+
 	}
 
 
@@ -173,7 +233,7 @@
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
-                            console.dir(jsonObj);
+                            //console.dir(jsonObj);
                             return "<span>" + jsonObj.ruleName + "</span>";
                         }
                     },
@@ -182,18 +242,93 @@
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
-                            console.dir(jsonObj);
+                            //console.dir(jsonObj);
                             return "<span>" + jsonObj.operator + "</span>";
+                        }
+                    },
+                    {
+                      label: 'Variable', name: 'leftParamConfig.parameterName', width: 100,editable: true,
+                        formatter: function (cellvalue, options, rowObject) {
+
+                            var jsonObj = JSON.parse(rowObject.json);
+                            //console.dir(jsonObj);
+                            return "<span>" + jsonObj.leftParamConfig.parameterName + "</span>";
+                        }
+                    },
+                    {
+                      label: 'Clase', name: 'leftParamConfig.parameterClass', width: 100,editable: true,
+                        formatter: function (cellvalue, options, rowObject) {
+
+                            var jsonObj = JSON.parse(rowObject.json);
+                            //console.dir(jsonObj);
+                            return "<span>" + jsonObj.leftParamConfig.parameterClass + "</span>";
+                        }
+                    },
+                    {
+                      label: 'Nombre', name: 'rightParamConfig.parameterName', width: 100,editable: true,
+                        formatter: function (cellvalue, options, rowObject) {
+
+                            var jsonObj = JSON.parse(rowObject.json);
+                            //console.dir(jsonObj);
+                            return "<span>" + jsonObj.rightParamConfig.parameterName + "</span>";
+                        }
+                    },
+                    {
+                      label: 'Clase', name: 'rightParamConfig.parameterClass', width: 100,editable: true,
+                        formatter: function (cellvalue, options, rowObject) {
+
+                            var jsonObj = JSON.parse(rowObject.json);
+                            //console.dir(jsonObj);
+                            return "<span>" + jsonObj.rightParamConfig.parameterClass + "</span>";
+                        }
+                    },
+                    {
+                      label: 'Estática', name: 'rightParamConfig.parameterStaticValue', width: 100,editable: true,
+                        formatter: function (cellvalue, options, rowObject) {
+
+                            var jsonObj = JSON.parse(rowObject.json);
+                            //console.dir(jsonObj);
+                            return "<span>" + jsonObj.rightParamConfig.parameterStaticValue + "</span>";
+                        }
+                    },
+                    {
+                      label: 'Respuesta', name: 'responseConfig.response', width: 100,editable: true,
+                        formatter: function (cellvalue, options, rowObject) {
+
+                            var jsonObj = JSON.parse(rowObject.json);
+                            //console.dir(jsonObj);
+                            return "<span>" + jsonObj.responseConfig.response + "</span>";
+                        }
+                    },
+                    {
+                      label: 'Clase', name: 'responseConfig.responseClass', width: 100,editable: true,
+                        formatter: function (cellvalue, options, rowObject) {
+
+                            var jsonObj = JSON.parse(rowObject.json);
+                            //console.dir(jsonObj);
+                            return "<span>" + jsonObj.responseConfig.responseClass + "</span>";
                         }
                     }
 	        ],
-			//height: 'auto',
+	        height: "auto",
+            autowidth: true,  // set 'true' here
+            shrinkToFit: true, // well, it's 'true' by default
             rowList: [],
             pgbuttons: false,
             pgtext: null,
+            caption : 'Reglas',
             viewrecords: false,
 	        pager: "#" + childGridPagerID
 	    });
+
+	    $("#" + childGridID).jqGrid('setGroupHeaders', {
+          useColSpanStyle: false,
+          groupHeaders:[
+        	{startColumnName: 'leftParamConfig.parameterName', numberOfColumns: 2, titleText: '<em>Izquierda</em>'},
+        	{startColumnName: 'rightParamConfig.parameterName', numberOfColumns: 3, titleText: '<em>Derecha</em>'},
+        	{startColumnName: 'responseConfig.response', numberOfColumns: 2, titleText: '<em>Configuraci\u00F3n</em>'}
+          ]
+        });
 
 	    $("#" + childGridID).jqGrid('navGrid',"#" + childGridPagerID,{add:false,edit:false,del:false,search: false,refresh:false});
 	}

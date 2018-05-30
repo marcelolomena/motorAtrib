@@ -1,8 +1,9 @@
+<%@page contentType="text/html; charset=iso-8859-1" pageEncoding="iso-8859-1"%>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="utf-8" />
-    <title>jqGrid Loading Data - Alternate Row Background</title>
+    <title>Rule Engine</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="/miplataforma/Motor/resources/jquery/jquery.min.js" type="text/javascript"></script>
     <script type="text/ecmascript" src="/miplataforma/Motor/resources/jqgrid/js/i18n/grid.locale-es.js"></script>
     <script type="text/ecmascript" src="/miplataforma/Motor/resources/jqgrid/js/jquery.jqGrid.min.js"></script>
@@ -18,16 +19,9 @@
     <script src="/miplataforma/Motor/resources/popper/js/popper.min.js" type="text/javascript"></script>
     <script src="/miplataforma/Motor/resources/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="/miplataforma/Motor/resources/main/js/admin.js" type="text/javascript"></script>
-    <style>
-    .ui-jqgrid
-    {
-        font-size:0.8rem
-    }
-    </style>
 </head>
 <body>
-<div class="container">
-<div style="margin-left:20px;margin-top:20px">
+<div id="grid" class="jqGrid">
     <table id="jqGrid"></table>
     <div id="jqGridPager"></div>
 </div>
