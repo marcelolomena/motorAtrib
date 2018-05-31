@@ -1,3 +1,11 @@
+           			var template = "<form>";
+           			template += "<div class='form-group'>";
+           			template += "<label for='ruleName'>Nombre</label>";
+           			template += "{ruleName}";
+           			template += "</div>";
+           			template += "<hr style='width:100%;'/>";
+           			template += "<div> {sData} {cData}  </div></form>";
+
         $(document).ready(function () {
            // altrows are set with table striped class for Boostrap
            //$.jgrid.styleUI.Bootstrap.base.rowTable = "table table-bordered table-striped";
@@ -74,10 +82,10 @@
 
             $('#jqGrid').navGrid('#jqGridPager',
                 // the buttons to appear on the toolbar of the grid
-                { edit: true, add: true, del: true, search: true, refresh: true, view: true, position: "left", cloneToTop: false },
+                { edit: false, add: false, del: false, search: false, refresh: true, view: true, position: "left", cloneToTop: false },
                 // options for the Edit Dialog
                 {
-                    editCaption: "The Edit Dialog",
+                    editCaption: "Modificar",
                     recreateForm: true,
 					checkOnUpdate : true,
 					checkOnSubmit : true,
@@ -234,7 +242,7 @@
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
-                            return "<span>" + jsonObj.ruleName + "</span>";
+                            return jsonObj.ruleName;
                         }
                     },
                     {
@@ -243,8 +251,10 @@
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
-                            return "<span>" + jsonObj.operator + "</span>";
-                        }
+                            return jsonObj.operator;
+                        },
+                        edittype: "select",
+                        editoptions:{ value: "GT:GT;LT:LT;GTE:GTE;LTE:LTE;EQ:EQ;NEQ:NEQ;IN:IN" }
                     },
                     {
                       label: 'Variable', name: 'leftParamConfig.parameterName', width: 100,editable: true,
@@ -252,7 +262,7 @@
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
-                            return "<span>" + jsonObj.leftParamConfig.parameterName + "</span>";
+                            return jsonObj.leftParamConfig.parameterName;
                         }
                     },
                     {
@@ -261,8 +271,10 @@
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
-                            return "<span>" + jsonObj.leftParamConfig.parameterClass + "</span>";
-                        }
+                            return jsonObj.leftParamConfig.parameterClass;
+                        },
+                        edittype: "select",
+                        editoptions:{ value: "Boolean:Boolean;Double:Double;Long:Long;String:String;NumberSet:NumberSet;DateTime:DateTime" }
                     },
                     {
                       label: 'Nombre', name: 'rightParamConfig.parameterName', width: 100,editable: true,
@@ -270,7 +282,7 @@
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
-                            return "<span>" + jsonObj.rightParamConfig.parameterName + "</span>";
+                            return jsonObj.rightParamConfig.parameterName;
                         }
                     },
                     {
@@ -279,16 +291,16 @@
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
-                            return "<span>" + jsonObj.rightParamConfig.parameterClass + "</span>";
+                            return jsonObj.rightParamConfig.parameterClass;
                         }
                     },
                     {
-                      label: 'Estática', name: 'rightParamConfig.parameterStaticValue', width: 100,editable: true,
+                      label: 'Est\u00E1tica', name: 'rightParamConfig.parameterStaticValue', width: 100,editable: true,
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
-                            return "<span>" + jsonObj.rightParamConfig.parameterStaticValue + "</span>";
+                            return jsonObj.rightParamConfig.parameterStaticValue;
                         }
                     },
                     {
@@ -297,7 +309,7 @@
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
-                            return "<span>" + jsonObj.responseConfig.response + "</span>";
+                            return jsonObj.responseConfig.response;
                         }
                     },
                     {
@@ -306,7 +318,7 @@
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
-                            return "<span>" + jsonObj.responseConfig.responseClass + "</span>";
+                            return jsonObj.responseConfig.responseClass;
                         }
                     }
 	        ],
@@ -317,7 +329,7 @@
             pgbuttons: false,
             pgtext: null,
             caption : 'Reglas',
-            viewrecords: false,
+            viewrecords: true,
 	        pager: "#" + childGridPagerID
 	    });
 
@@ -330,5 +342,38 @@
           ]
         });
 
-	    $("#" + childGridID).jqGrid('navGrid',"#" + childGridPagerID,{add:false,edit:false,del:false,search: false,refresh:false});
+            $("#" + childGridID).navGrid("#" + childGridPagerID,
+                // the buttons to appear on the toolbar of the grid
+                { edit: true, add: true, del: true, search: false, refresh: true, view: true, position: "left", cloneToTop: false },
+                // options for the Edit Dialog
+                {
+                    editCaption: "Modificar Regla",
+                   	//template: template,
+                    recreateForm: true,
+					checkOnUpdate : true,
+					checkOnSubmit : true,
+                    closeAfterEdit: true,
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    }
+                },
+                // options for the Add Dialog
+                {
+                    addCaption: "Agregar Regla",
+                    closeAfterAdd: true,
+                    recreateForm: true,
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    }
+                },
+                // options for the Delete Dailog
+                {
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    }
+                },
+				{ multipleSearch: false,
+				showQuery: true} // search options - define multiple search
+				);
+
 	}
