@@ -1,17 +1,12 @@
 package cl.motoratrib.rest.service;
 
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaOUT;
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglasIN;
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglasOUT;
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglasPcReglaRS;
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpListReglasDAO;
-import cl.bancochile.centronegocios.controldelimites.persistencia.repository.sp.SpListReglasSP;
+import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpListVariablesDAO;
+import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpUpdateReglaDAO;
 import cl.bancochile.plataformabase.error.BusinessException;
-import cl.motoratrib.rest.domain.ClaseGenerica;
-import cl.motoratrib.rest.domain.InJson;
-import cl.motoratrib.rest.domain.RecordRule;
+import cl.motoratrib.rest.domain.*;
 import cl.motoratrib.rest.jsrules.JsRules;
-import cl.motoratrib.rest.domain.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -36,6 +31,10 @@ public class EngineImpl implements Engine {
     JsRules jsrules;
     @Autowired
     SpListReglasDAO spListReglasDAO;
+    @Autowired
+    SpListVariablesDAO spListVariablesDAO;
+    @Autowired
+    SpUpdateReglaDAO spUpdateReglaDAO;
 
     @Override
     public String evaluatorRule(String json) throws Exception {
@@ -97,7 +96,7 @@ public class EngineImpl implements Engine {
 
     @Override
     public List<RecordRule> getRule(int id) throws Exception {
-        SpListReglasOUT spListReglasOUT = null;
+        SpListReglasOUT spListReglasOUT;
         List<RecordRule> lstRecRule = new ArrayList<>();
         try {
             //System.out.println("el id : " + id);
@@ -113,7 +112,7 @@ public class EngineImpl implements Engine {
                 //String sClob = clobToString(rule.getJson());
                 String sClob = getstringfromclob(rule.getJson());
 
-                System.out.println("the clean sClob : " + sClob.replaceAll("[\\s\u0000]+","") );
+                //System.out.println("the clean sClob : " + sClob.replaceAll("[\\s\u0000]+","") );
                 //String myString = sClob.replaceAll("\\s+", "");
                 //recRule.setJson(sClob.replaceAll("\\s+", ""));
                 recRule.setJson(sClob.replaceAll("[\\s\u0000]+",""));
@@ -129,19 +128,36 @@ public class EngineImpl implements Engine {
     }
 
     @Override
-    public List<SpListReglasPcReglaRS> getRule2(int id) throws Exception {
-        SpListReglasOUT spListReglasOUT = null;
+    public List<SpListVariablesPcVariableRS> getVariables() throws Exception {
+        SpListVariablesOUT spListVariablesOUT;
 
         try {
-            //System.out.println("el id : " + id);
-            SpListReglasIN params  = new SpListReglasIN();
-            params.setPIdPadre(id);
-            spListReglasOUT = this.spListReglasDAO.execute(params);
+
+            spListVariablesOUT = this.spListVariablesDAO.execute();
 
         }catch(BusinessException e){
             throw new Exception(e.getMessage());
         }
-        return spListReglasOUT.getPcRegla();
+        return spListVariablesOUT.getPcVariable();
+    }
+
+    @Override
+    public SpUpdateReglaOUT updateRule(GridRule grule) throws Exception {
+        SpUpdateReglaOUT out;
+        try {
+            SpUpdateReglaIN params = new SpUpdateReglaIN();
+            params.setPId(Integer.parseInt(grule.getId()));
+            params.setPOper(grule.getOper());
+            params.setPOper(grule.getOper());
+            out =  this.spUpdateReglaDAO.execute(params);
+            System.out.println("trullul");
+            System.out.println(out);
+        }catch (BusinessException e){
+            throw new Exception(e.getMessage());
+        }
+
+        return out;
+
     }
 
     private Parameter containsParameter(Collection<Parameter> c, String name) {

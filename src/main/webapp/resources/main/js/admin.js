@@ -235,7 +235,7 @@
 	        datatype: "json",
 	        colModel: [
                     { label: 'id', name: 'id', hidden: true, editable: false, key: true },
-                    { label: 'idPadre', name: 'idParent', hidden: true, editable: false },
+                    { label: 'idParent', name: 'idParent', hidden: true, editable: false, },
                     {
                       label: 'Nombre', name: 'ruleName', width: 100,editable: true,
                         formatter: function (cellvalue, options, rowObject) {
@@ -257,16 +257,29 @@
                         editoptions:{ value: "GT:GT;LT:LT;GTE:GTE;LTE:LTE;EQ:EQ;NEQ:NEQ;IN:IN" }
                     },
                     {
-                      label: 'Variable', name: 'leftParamConfig.parameterName', width: 100,editable: true,
+                      label: 'Variable', name: 'leftParamConfig[parameterName]', width: 100,editable: true,
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
                             return jsonObj.leftParamConfig.parameterName;
+                        },
+                        edittype: "select",
+                        editoptions: {
+                            dataUrl: '/miplataforma/Motor/variables',
+                                buildSelect: function (response) {
+                                    var data = JSON.parse(response);
+                                    var s = "<select>";//el default
+                                    s += '<option value="0">--Escoger La Variable--</option>';
+                                    $.each(data, function(i, item) {
+                                            s += '<option value="' + data[i].id + '">' + data[i].nombre + '</option>';
+                                    });
+                                    return s + "</select>";
+                                }
                         }
                     },
                     {
-                      label: 'Clase', name: 'leftParamConfig.parameterClass', width: 100,editable: true,
+                      label: 'Clase', name: 'leftParamConfig[parameterClass]', width: 100,editable: true,
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
@@ -277,7 +290,7 @@
                         editoptions:{ value: "Boolean:Boolean;Double:Double;Long:Long;String:String;NumberSet:NumberSet;DateTime:DateTime" }
                     },
                     {
-                      label: 'Nombre', name: 'rightParamConfig.parameterName', width: 100,editable: true,
+                      label: 'Nombre', name: 'rightParamConfig[parameterName]', width: 100,editable: true,
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
@@ -286,16 +299,18 @@
                         }
                     },
                     {
-                      label: 'Clase', name: 'rightParamConfig.parameterClass', width: 100,editable: true,
+                      label: 'Clase', name: 'rightParamConfig[parameterClass]', width: 100,editable: true,
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
                             return jsonObj.rightParamConfig.parameterClass;
-                        }
+                        },
+                        edittype: "select",
+                        editoptions:{ value: "Boolean:Boolean;Double:Double;Long:Long;String:String;NumberSet:NumberSet;DateTime:DateTime" }
                     },
                     {
-                      label: 'Est\u00E1tica', name: 'rightParamConfig.parameterStaticValue', width: 100,editable: true,
+                      label: 'Est\u00E1tica', name: 'rightParamConfig[parameterStaticValue]', width: 100,editable: true,
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
@@ -304,7 +319,7 @@
                         }
                     },
                     {
-                      label: 'Respuesta', name: 'responseConfig.response', width: 100,editable: true,
+                      label: 'Respuesta', name: 'responseConfig[response]', width: 100,editable: true,
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
@@ -313,13 +328,15 @@
                         }
                     },
                     {
-                      label: 'Clase', name: 'responseConfig.responseClass', width: 100,editable: true,
+                      label: 'Clase', name: 'responseConfig[responseClass]', width: 100,editable: true,
                         formatter: function (cellvalue, options, rowObject) {
 
                             var jsonObj = JSON.parse(rowObject.json);
                             //console.dir(jsonObj);
                             return jsonObj.responseConfig.responseClass;
-                        }
+                        },
+                        edittype: "select",
+                        editoptions:{ value: "Boolean:Boolean;String:String" }
                     }
 	        ],
 	        height: "auto",
@@ -330,15 +347,16 @@
             pgtext: null,
             caption : 'Reglas',
             viewrecords: true,
-	        pager: "#" + childGridPagerID
+	        pager: "#" + childGridPagerID,
+	        editurl:'/miplataforma/Motor/uRule'
 	    });
 
 	    $("#" + childGridID).jqGrid('setGroupHeaders', {
           useColSpanStyle: false,
           groupHeaders:[
-        	{startColumnName: 'leftParamConfig.parameterName', numberOfColumns: 2, titleText: '<em>Izquierda</em>'},
-        	{startColumnName: 'rightParamConfig.parameterName', numberOfColumns: 3, titleText: '<em>Derecha</em>'},
-        	{startColumnName: 'responseConfig.response', numberOfColumns: 2, titleText: '<em>Configuraci\u00F3n</em>'}
+        	{startColumnName: 'leftParamConfig[parameterName]', numberOfColumns: 2, titleText: '<em>Izquierda</em>'},
+        	{startColumnName: 'rightParamConfig[parameterName]', numberOfColumns: 3, titleText: '<em>Derecha</em>'},
+        	{startColumnName: 'responseConfig[response]', numberOfColumns: 2, titleText: '<em>Configuraci\u00F3n</em>'}
           ]
         });
 
@@ -348,6 +366,8 @@
                 // options for the Edit Dialog
                 {
                     editCaption: "Modificar Regla",
+                    ajaxEditOptions: jqlib.jsonOptions,
+                    serializeEditData: jqlib.createJSON,
                    	//template: template,
                     recreateForm: true,
 					checkOnUpdate : true,
@@ -355,6 +375,28 @@
                     closeAfterEdit: true,
                     errorTextFormat: function (data) {
                         return 'Error: ' + data.responseText
+                    },
+                    beforeSubmit : function( postdata, formid ) {
+                        var pd1 = new jqlib.dirtyRule(postdata);
+                        postdata=pd1.clean("operator");
+                        var pd2 = new jqlib.dirtyRule(postdata);
+                        postdata=pd2.clean("ruleName");
+                        var pd3 = new jqlib.dirtyRule(postdata);
+                        postdata=pd3.clean("leftParamConfig");
+                        var pd4 = new jqlib.dirtyRule(postdata);
+                        postdata=pd4.clean("responseConfig");
+                        var pd5 = new jqlib.dirtyRule(postdata);
+                        postdata=pd5.clean("rightParamConfig");
+
+                        var json = $('form').serializeJSON();
+
+                        var dr = new jqlib.dirtyRule(json);
+                        var jsonp=dr.clean("jqGrid_");
+
+                        console.log(jsonp);
+                        postdata.json=JSON.stringify(jsonp);
+                        return [true,''];
+                        //return [false,'Error submiting data'];
                     }
                 },
                 // options for the Add Dialog
@@ -362,6 +404,8 @@
                     addCaption: "Agregar Regla",
                     closeAfterAdd: true,
                     recreateForm: true,
+                    ajaxEditOptions: jqlib.jsonOptions,
+                    serializeEditData: jqlib.createJSON,
                     errorTextFormat: function (data) {
                         return 'Error: ' + data.responseText
                     }

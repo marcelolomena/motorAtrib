@@ -1,6 +1,8 @@
 package cl.motoratrib.rest.controller;
 
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglasPcReglaRS;
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListVariablesPcVariableRS;
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpUpdateReglaOUT;
+import cl.motoratrib.rest.domain.GridRule;
 import cl.motoratrib.rest.domain.RecordRule;
 import cl.motoratrib.rest.service.Engine;
 import org.slf4j.Logger;
@@ -38,18 +40,32 @@ public class RuleController {
             produces = { "application/json;**charset=UTF-8**" })//application/json;charset=UTF-8
     public ResponseEntity<List<RecordRule>> getRules(@PathVariable int id)
             throws Exception {
-/*
-        List<SpListReglasPcReglaRS> lst=this.engine.getRule(id);
-        ObjectMapper mapper = new ObjectMapper();
-        System.out.println("---------------------------------");
-        String json = mapper.writeValueAsString(lst);
-        System.out.println("---------------------------------");
-        System.out.println("-------------->" + json);
-*/
+
         return new ResponseEntity<>(this.engine.getRule(id),HttpStatus.OK);
 
     }
 
+    @RequestMapping(value = "/variables", method = RequestMethod.GET,
+            produces = { "application/json;**charset=UTF-8**" })//application/json;charset=UTF-8
+    public ResponseEntity<List<SpListVariablesPcVariableRS>> getVariables()
+            throws Exception {
+
+        return new ResponseEntity<>(this.engine.getVariables(),HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/uRule", method = RequestMethod.POST,
+            produces = { "application/json;**charset=UTF-8**" })
+    public ResponseEntity<SpUpdateReglaOUT> upadaterule(@RequestBody GridRule grule)
+            throws Exception {
+
+        System.out.println("ID -----------> " + grule.getId());
+        System.out.println("OPER -----------> " + grule.getOper());
+        System.out.println("JSON -----------> " +grule.getJson());
+
+        return new ResponseEntity<>(this.engine.updateRule(grule),HttpStatus.OK);
+
+    }
 
     @RequestMapping(value = "/testing", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody

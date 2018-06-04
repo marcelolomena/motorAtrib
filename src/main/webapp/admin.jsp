@@ -18,6 +18,8 @@
 	</script>
     <script src="/miplataforma/Motor/resources/popper/js/popper.min.js" type="text/javascript"></script>
     <script src="/miplataforma/Motor/resources/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/miplataforma/Motor/resources/main/js/jquery.serializejson.js" type="text/javascript"></script>
+    <script src="/miplataforma/Motor/resources/main/js/jqgrid.custom.lib.js" type="text/javascript"></script>
     <script src="/miplataforma/Motor/resources/main/js/admin.js" type="text/javascript"></script>
 </head>
 <body>
