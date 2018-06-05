@@ -272,7 +272,7 @@
                                     var s = "<select>";//el default
                                     s += '<option value="0">--Escoger La Variable--</option>';
                                     $.each(data, function(i, item) {
-                                            s += '<option value="' + data[i].id + '">' + data[i].nombre + '</option>';
+                                            s += '<option value="' + data[i].nombre + '">' + data[i].nombre + '</option>';
                                     });
                                     return s + "</select>";
                                 }
