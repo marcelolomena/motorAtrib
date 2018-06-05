@@ -393,10 +393,18 @@
                         var dr = new jqlib.dirtyRule(json);
                         var jsonp=dr.clean("jqGrid_");
 
-                        console.log(jsonp);
+                        //console.log(jsonp);
                         postdata.json=JSON.stringify(jsonp);
                         return [true,''];
                         //return [false,'Error submiting data'];
+                    },
+                    afterSubmit: function (response, postdata) {
+                        var res = $.parseJSON(response.responseText);
+                        if (res.pestado != -1) {
+                            return [true,"",""]
+                        } else {
+                            return [false, res.pglosa, ""]
+                        }
                     }
                 },
                 // options for the Add Dialog

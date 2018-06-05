@@ -13,12 +13,9 @@ import org.joda.time.Days;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.stereotype.Service;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
+import java.io.*;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.*;
@@ -145,13 +142,21 @@ public class EngineImpl implements Engine {
     public SpUpdateReglaOUT updateRule(GridRule grule) throws Exception {
         SpUpdateReglaOUT out;
         try {
+            //System.out.println("ID -----------> " + grule.getId());
+            //System.out.println("OPER -----------> " + grule.getOper());
+            //System.out.println("JSON -----------> " +grule.getJson());
+            //LobHandler lobHandler = new DefaultLobHandler();
+            //byte[] bytes = grule.getJson().getBytes();
             SpUpdateReglaIN params = new SpUpdateReglaIN();
             params.setPId(Integer.parseInt(grule.getId()));
             params.setPOper(grule.getOper());
-            params.setPOper(grule.getOper());
+            //InputStream stream = new ByteArrayInputStream(grule.getJson().getBytes(StandardCharsets.UTF_8));
+            //SqlLobValue slv=new SqlLobValue(bytes);
+            SqlLobValue slv=new SqlLobValue(grule.getJson());
+            params.setPJson(slv);
             out =  this.spUpdateReglaDAO.execute(params);
-            System.out.println("trullul");
-            System.out.println(out);
+            //System.out.println("trullul");
+            //System.out.println(out);
         }catch (BusinessException e){
             throw new Exception(e.getMessage());
         }

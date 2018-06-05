@@ -59,10 +59,6 @@ public class RuleController {
     public ResponseEntity<SpUpdateReglaOUT> upadaterule(@RequestBody GridRule grule)
             throws Exception {
 
-        System.out.println("ID -----------> " + grule.getId());
-        System.out.println("OPER -----------> " + grule.getOper());
-        System.out.println("JSON -----------> " +grule.getJson());
-
         return new ResponseEntity<>(this.engine.updateRule(grule),HttpStatus.OK);
 
     }

@@ -17,7 +17,7 @@ var jqlib = {
             var obj = this.json;
             for (key in obj){
                 if (re.test(key)){
-                    console.log("borrando [" + key + "]");
+                    //console.log("borrando [" + key + "]");
                     delete obj[key];
                 }
             }
