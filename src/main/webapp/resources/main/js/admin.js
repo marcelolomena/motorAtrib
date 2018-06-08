@@ -416,12 +416,58 @@
                     serializeEditData: jqlib.createJSON,
                     errorTextFormat: function (data) {
                         return 'Error: ' + data.responseText
+                    },
+                    beforeSubmit : function( postdata, formid ) {
+                    /*
+                        var grid = $("#" + childGridID);
+                        var rowKey = grid.getGridParam("selrow");
+                        var rowData = grid.getRowData(rowKey);
+                        console.log("tuleine 1 : " + parentRowKey)
+                        console.log("tuleine 2 : " + parentRowID)
+                    */
+                        var pd1 = new jqlib.dirtyRule(postdata);
+                        postdata=pd1.clean("operator");
+                        var pd2 = new jqlib.dirtyRule(postdata);
+                        postdata=pd2.clean("ruleName");
+                        var pd3 = new jqlib.dirtyRule(postdata);
+                        postdata=pd3.clean("leftParamConfig");
+                        var pd4 = new jqlib.dirtyRule(postdata);
+                        postdata=pd4.clean("responseConfig");
+                        var pd5 = new jqlib.dirtyRule(postdata);
+                        postdata=pd5.clean("rightParamConfig");
+
+                        var json = $('form').serializeJSON();
+
+                        var dr = new jqlib.dirtyRule(json);
+                        var jsonp=dr.clean("jqGrid_");
+
+                        //console.log(jsonp);
+                        postdata.id=parentRowKey;
+                        postdata.json=JSON.stringify(jsonp);
+                        //console.dir(postdata);
+                        return [true,''];
+                        //return [false,'Error submiting data'];
+                    },
+                    afterSubmit: function (response, postdata) {
+                        var res = $.parseJSON(response.responseText);
+                        if (res.pestado != -1) {
+                            return [true,"",""]
+                        } else {
+                            return [false, res.pglosa, ""]
+                        }
                     }
                 },
                 // options for the Delete Dailog
                 {
+                    reloadAfterSubmit:true,
+                    ajaxEditOptions: jqlib.jsonOptions,
+                    serializeEditData: jqlib.createJSON,
                     errorTextFormat: function (data) {
                         return 'Error: ' + data.responseText
+                    },
+                    serializeDelData: function (postdata) {
+                        console.log("tuleine");
+                        console.dir(postdata);
                     }
                 },
 				{ multipleSearch: false,

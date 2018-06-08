@@ -118,6 +118,26 @@ $(document).ready(function(){
         $('.hover_bkgr_fricc').hide();
     });
 
+    function showErrorMessage(xhr, status, error) {
+            if (xhr.responseText != "") {
+
+                var jsonResponseText = $.parseJSON(xhr.responseText);
+                var jsonResponseStatus = '';
+                var message = '';
+                $.each(jsonResponseText, function(name, val) {
+                    if (name == "ResponseStatus") {
+                        jsonResponseStatus = $.parseJSON(JSON.stringify(val));
+                         $.each(jsonResponseStatus, function(name2, val2) {
+                             if (name2 == "Message") {
+                                 message = val2;
+                             }
+                         });
+                    }
+                });
+
+                alert(message);
+            }
+    }
 
 	var datum = {
                     "info": {
@@ -137,8 +157,12 @@ $(document).ready(function(){
             data : $("#input").val(),
             contentType: "application/json; charset=utf-8",
             success: function(response) {
-                $("#output").val(response);
-            }
+                jsonResponse = $.parseJSON(JSON.stringify(response));
+                if($.isArray(jsonResponse))
+                    $("#output").val(jsonResponse[0]);
+                else
+                    $("#output").val(jsonResponse.alerta);
+            },error: showErrorMessage
         });
     });
 

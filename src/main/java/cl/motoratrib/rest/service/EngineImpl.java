@@ -4,6 +4,7 @@ import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpListReglasDAO;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpListVariablesDAO;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpUpdateReglaDAO;
+import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpListReglaVariableDAO;
 import cl.bancochile.plataformabase.error.BusinessException;
 import cl.motoratrib.rest.domain.*;
 import cl.motoratrib.rest.jsrules.JsRules;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.stereotype.Service;
+
 import java.io.*;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -32,6 +34,8 @@ public class EngineImpl implements Engine {
     SpListVariablesDAO spListVariablesDAO;
     @Autowired
     SpUpdateReglaDAO spUpdateReglaDAO;
+    @Autowired
+    SpListReglaVariableDAO spListReglaVariableDAO;
 
     @Override
     public String evaluatorRule(String json) throws Exception {
@@ -43,9 +47,18 @@ public class EngineImpl implements Engine {
 
         InJson in = readJsonFullFromString(json);
 
+        List<SpListReglaVariablePcVarRS> vars = getRuleVariable(in.getRulesetName());
+
         Map<String, Object> parameters = new HashMap<>();
 
         List<Parameter> listParam = in.getParameterList();
+
+        ///El super validador
+        Map<String, String> tmplMap = new HashMap<String, String>();
+        Map<String, String> reqMap = new HashMap<String, String>();
+        for (SpListReglaVariablePcVarRS o : vars) {
+            tmplMap.put( o.getParametername(), o.getParameterclass());
+        }
 
         List<Parameter> lParam = containsParameters(listParam, "p5_fechaPep", "p5_fechaVencMac");
         p5_fechaPep = containsParameter(lParam, "p5_fechaPep");
@@ -70,21 +83,27 @@ public class EngineImpl implements Engine {
             } else if (p.getParameterClass().equals("DateTime")) {
                 parameters.put(p.getParameterName(), DateTime.parse(p.getParameterValue()));
             }
+            reqMap.put(p.getParameterName(),p.getParameterClass());
         }
 
-        //System.out.println(parameters);
+        if(!reqMap.equals(tmplMap)) {
+            //System.out.println("son diferentes");
+            responseRule = "{\"ref\":\"SF00\", \"alerta\":\"Las variables no corresponden al flujo que se esta invocando\"}";
+            throw new Exception(responseRule);
+        } else {
+            //System.out.println("son iguales");
+            Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
 
-        Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
+            if (o != null)
+                response = new ClaseGenerica(o);
 
-        if (o != null)
-            response = new ClaseGenerica(o);
-
-        if (response != null) {
-            if (response.classType().equals("java.lang.String")) {
-                responseRule = response.obj.toString();
-            } else {
-                System.out.println("ERROR");
-                responseRule = "ERROR";
+            if (response != null) {
+                if (response.classType().equals("java.lang.String")) {
+                    responseRule = response.obj.toString();
+                } else {
+                    //System.out.println("ERROR");
+                    responseRule = "ERROR";
+                }
             }
         }
 
@@ -142,27 +161,36 @@ public class EngineImpl implements Engine {
     public SpUpdateReglaOUT updateRule(GridRule grule) throws Exception {
         SpUpdateReglaOUT out;
         try {
-            //System.out.println("ID -----------> " + grule.getId());
-            //System.out.println("OPER -----------> " + grule.getOper());
-            //System.out.println("JSON -----------> " +grule.getJson());
-            //LobHandler lobHandler = new DefaultLobHandler();
-            //byte[] bytes = grule.getJson().getBytes();
             SpUpdateReglaIN params = new SpUpdateReglaIN();
-            params.setPId(Integer.parseInt(grule.getId()));
+            if(grule.getId() != null)
+                params.setPId(Integer.parseInt(grule.getId()));
+            else
+                params.setPId(0);
             params.setPOper(grule.getOper());
-            //InputStream stream = new ByteArrayInputStream(grule.getJson().getBytes(StandardCharsets.UTF_8));
-            //SqlLobValue slv=new SqlLobValue(bytes);
             SqlLobValue slv=new SqlLobValue(grule.getJson());
             params.setPJson(slv);
             out =  this.spUpdateReglaDAO.execute(params);
-            //System.out.println("trullul");
-            //System.out.println(out);
         }catch (BusinessException e){
             throw new Exception(e.getMessage());
         }
 
         return out;
 
+    }
+
+    @Override
+    public List<SpListReglaVariablePcVarRS> getRuleVariable(String nombre) throws Exception {
+        SpListReglaVariableOUT out;
+        try{
+            SpListReglaVariableIN param = new SpListReglaVariableIN();
+            param.setPNombre(nombre);
+
+            out = this.spListReglaVariableDAO.execute(param);
+
+        }catch (BusinessException e){
+            throw new Exception(e.getMessage());
+        }
+        return out.getPcVar();
     }
 
     private Parameter containsParameter(Collection<Parameter> c, String name) {
@@ -229,6 +257,7 @@ public class EngineImpl implements Engine {
         return write.toString();
 
     }
+
 
     private String clobToString(Clob data)
     {

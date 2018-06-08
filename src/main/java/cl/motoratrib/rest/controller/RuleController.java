@@ -76,6 +76,7 @@ public class RuleController {
             System.out.println("Total Time " + (endTime - startTime) + " milliseconds");
         }catch(Exception e){
             System.out.println("FAIL!!!");
+            _eval=e.getMessage();
         }
         return _eval;
     }
