@@ -392,11 +392,8 @@
 
                         var dr = new jqlib.dirtyRule(json);
                         var jsonp=dr.clean("jqGrid_");
-
-                        //console.log(jsonp);
                         postdata.json=JSON.stringify(jsonp);
                         return [true,''];
-                        //return [false,'Error submiting data'];
                     },
                     afterSubmit: function (response, postdata) {
                         var res = $.parseJSON(response.responseText);
@@ -418,13 +415,6 @@
                         return 'Error: ' + data.responseText
                     },
                     beforeSubmit : function( postdata, formid ) {
-                    /*
-                        var grid = $("#" + childGridID);
-                        var rowKey = grid.getGridParam("selrow");
-                        var rowData = grid.getRowData(rowKey);
-                        console.log("tuleine 1 : " + parentRowKey)
-                        console.log("tuleine 2 : " + parentRowID)
-                    */
                         var pd1 = new jqlib.dirtyRule(postdata);
                         postdata=pd1.clean("operator");
                         var pd2 = new jqlib.dirtyRule(postdata);
@@ -441,12 +431,9 @@
                         var dr = new jqlib.dirtyRule(json);
                         var jsonp=dr.clean("jqGrid_");
 
-                        //console.log(jsonp);
                         postdata.id=parentRowKey;
                         postdata.json=JSON.stringify(jsonp);
-                        //console.dir(postdata);
                         return [true,''];
-                        //return [false,'Error submiting data'];
                     },
                     afterSubmit: function (response, postdata) {
                         var res = $.parseJSON(response.responseText);
@@ -457,17 +444,18 @@
                         }
                     }
                 },
-                // options for the Delete Dailog
                 {
                     reloadAfterSubmit:true,
-                    ajaxEditOptions: jqlib.jsonOptions,
-                    serializeEditData: jqlib.createJSON,
                     errorTextFormat: function (data) {
                         return 'Error: ' + data.responseText
                     },
-                    serializeDelData: function (postdata) {
-                        console.log("tuleine");
-                        console.dir(postdata);
+                    ajaxDelOptions:jqlib.jsonOptions,
+                    serializeDelData:jqlib.createJSON,
+                    onclickSubmit: function(params, postdata){
+                        var ruledata = {
+                            "json":""
+                        }
+                        return ruledata;
                     }
                 },
 				{ multipleSearch: false,

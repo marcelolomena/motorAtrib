@@ -58,7 +58,6 @@ public class RuleController {
             produces = { "application/json;**charset=UTF-8**" })
     public ResponseEntity<SpUpdateReglaOUT> upadaterule(@RequestBody GridRule grule)
             throws Exception {
-
         return new ResponseEntity<>(this.engine.updateRule(grule),HttpStatus.OK);
 
     }

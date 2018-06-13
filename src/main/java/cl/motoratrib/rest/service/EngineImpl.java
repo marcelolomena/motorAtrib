@@ -59,7 +59,7 @@ public class EngineImpl implements Engine {
         for (SpListReglaVariablePcVarRS o : vars) {
             tmplMap.put( o.getParametername(), o.getParameterclass());
         }
-
+        //sf1_rating si es "SR" no tiene rating (-1), 0 a 10 si tiene (sf1_rating_2)
         List<Parameter> lParam = containsParameters(listParam, "p5_fechaPep", "p5_fechaVencMac");
         p5_fechaPep = containsParameter(lParam, "p5_fechaPep");
         p5_fechaVencMac = containsParameter(listParam, "p5_fechaVencMac");
@@ -170,6 +170,7 @@ public class EngineImpl implements Engine {
             SqlLobValue slv=new SqlLobValue(grule.getJson());
             params.setPJson(slv);
             out =  this.spUpdateReglaDAO.execute(params);
+            System.out.println(out);
         }catch (BusinessException e){
             throw new Exception(e.getMessage());
         }
