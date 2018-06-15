@@ -1,6 +1,7 @@
 package cl.motoratrib.rest.controller;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListVariablesPcVariableRS;
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpUpdateConjuntoReglaOUT;
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpUpdateReglaOUT;
 import cl.motoratrib.rest.domain.GridRule;
 import cl.motoratrib.rest.domain.RecordRule;
@@ -56,9 +57,17 @@ public class RuleController {
 
     @RequestMapping(value = "/uRule", method = RequestMethod.POST,
             produces = { "application/json;**charset=UTF-8**" })
-    public ResponseEntity<SpUpdateReglaOUT> upadaterule(@RequestBody GridRule grule)
+    public ResponseEntity<SpUpdateReglaOUT> updateRule(@RequestBody GridRule grule)
             throws Exception {
         return new ResponseEntity<>(this.engine.updateRule(grule),HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/uRuleSet", method = RequestMethod.POST,
+            produces = { "application/json;**charset=UTF-8**" })
+    public ResponseEntity<SpUpdateConjuntoReglaOUT> updateRuleSet(@RequestBody GridRule grule)
+            throws Exception {
+        return new ResponseEntity<>(this.engine.updateRuleSet(grule),HttpStatus.OK);
 
     }
 

@@ -1,10 +1,7 @@
 package cl.motoratrib.rest.service;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
-import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpListReglasDAO;
-import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpListVariablesDAO;
-import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpUpdateReglaDAO;
-import cl.bancochile.centronegocios.controldelimites.persistencia.repository.SpListReglaVariableDAO;
+import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
 import cl.bancochile.plataformabase.error.BusinessException;
 import cl.motoratrib.rest.domain.*;
 import cl.motoratrib.rest.jsrules.JsRules;
@@ -36,6 +33,8 @@ public class EngineImpl implements Engine {
     SpUpdateReglaDAO spUpdateReglaDAO;
     @Autowired
     SpListReglaVariableDAO spListReglaVariableDAO;
+    @Autowired
+    SpUpdateConjuntoReglaDAO spUpdateConjuntoReglaDAO;
 
     @Override
     public String evaluatorRule(String json) throws Exception {
@@ -115,7 +114,6 @@ public class EngineImpl implements Engine {
         SpListReglasOUT spListReglasOUT;
         List<RecordRule> lstRecRule = new ArrayList<>();
         try {
-            //System.out.println("el id : " + id);
             SpListReglasIN params  = new SpListReglasIN();
             params.setPIdPadre(id);
             spListReglasOUT = this.spListReglasDAO.execute(params);
@@ -125,17 +123,11 @@ public class EngineImpl implements Engine {
                 recRule.setId(rule.getId().intValue());
                 recRule.setIdParent(rule.getIdPadre().intValue());
                 recRule.setName(rule.getNombre());
-                //String sClob = clobToString(rule.getJson());
                 String sClob = getstringfromclob(rule.getJson());
 
-                //System.out.println("the clean sClob : " + sClob.replaceAll("[\\s\u0000]+","") );
-                //String myString = sClob.replaceAll("\\s+", "");
-                //recRule.setJson(sClob.replaceAll("\\s+", ""));
                 recRule.setJson(sClob.replaceAll("[\\s\u0000]+",""));
                 lstRecRule.add(recRule);
             }
-            //System.out.println("el resultado : " + spListReglasOUT);
-            //System.out.println("el super resultado : " + spListReglasOUT.getPcRegla());
 
         }catch(BusinessException e){
             throw new Exception(e.getMessage());
@@ -177,6 +169,27 @@ public class EngineImpl implements Engine {
 
         return out;
 
+    }
+
+    @Override
+    public SpUpdateConjuntoReglaOUT updateRuleSet(GridRule grule) throws Exception {
+        SpUpdateConjuntoReglaOUT out;
+        try {
+            SpUpdateConjuntoReglaIN params = new SpUpdateConjuntoReglaIN();
+            if(grule.getId() != null)
+                params.setPId(Integer.parseInt(grule.getId()));
+            else
+                params.setPId(0);
+            params.setPOper(grule.getOper());
+            SqlLobValue slv=new SqlLobValue(grule.getJson());
+            params.setPJson(slv);
+            out =  this.spUpdateConjuntoReglaDAO.execute(params);
+            System.out.println(out);
+        }catch (BusinessException e){
+            throw new Exception(e.getMessage());
+        }
+
+        return out;
     }
 
     @Override
