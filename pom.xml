@@ -83,6 +83,11 @@
         </dependency>
 -->
         <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>3.2</version>
+        </dependency>
+        <dependency>
             <groupId>cl.bancochile.plataforma.shared.lib</groupId>
             <artifactId>taurus-shared-lib-spring-jar</artifactId>
             <version>1.2.0</version>
@@ -115,6 +120,32 @@
             <scope>provided</scope>
         </dependency>
         <!-- FIN Testing depues de Libs compartidas -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.test.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>${spring-security-test.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
 <!--
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -127,6 +158,19 @@
             <version>${jackson.library}</version>
         </dependency>
 -->
+
+        <dependency>
+            <groupId>cl.bancochile.plataformabase</groupId>
+            <artifactId>rest-error-handler</artifactId>
+            <version>1.14.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>cl.bancochile.plataforma.shared.lib.common</groupId>
             <artifactId>taurus-shared-lib-common-jar</artifactId>
@@ -142,7 +186,20 @@
         </dependency>
 
     </dependencies>
- 
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Optional URL to server. Default value is http://localhost:9000 -->
+                <sonar.host.url>
+                    http://localhost:9000
+                </sonar.host.url>
+            </properties>
+        </profile>
+    </profiles>
  
     <build>
         <pluginManagement>

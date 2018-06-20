@@ -27,12 +27,10 @@ import java.util.Map;
  */
 @Component
 public class JsRulesImpl implements JsRules {
-    private final static Logger LOGGER = LoggerFactory.getLogger(JsRulesImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsRulesImpl.class);
 
     @Autowired
     RuleService ruleService;
-
-    //private static final JsRulesImpl INSTANCE = new JsRulesImpl();
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final RuleLoader ruleLoader = new RuleLoaderImpl();
@@ -40,21 +38,12 @@ public class JsRulesImpl implements JsRules {
 
     // default cache values
     private static final int CACHE_SIZE = 25;
-    private static final long TIME_TO_LIVE = 15 * 60 * 1000; // 15 minutes
+    private static final long TIME_TO_LIVE = (long)15 * 60 * 1000;
 
     // these maps provide rudimentary caching
     private final Map<String, Rule> ruleMap = new CacheMap<>(CACHE_SIZE, TIME_TO_LIVE);
     private final Map<String, RulesetExecutor> rulesetExecutorMap = new CacheMap<>(CACHE_SIZE, TIME_TO_LIVE);
 
-    /*
-    public static JsRulesImpl getInstance() {
-        return INSTANCE;
-    }
-    */
-/*
-    private static ApplicationContext context =
-            new ClassPathXmlApplicationContext("my-beans.xml");
-*/
     public Rule loadRuleByJson(String json) throws InvalidConfigException {
         try {
             RuleConfig ruleConfig = objectMapper.readValue(json, RuleConfig.class);
@@ -117,7 +106,6 @@ public class JsRulesImpl implements JsRules {
         return ruleset;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T executeRuleset(String rulesetName, Map<String, Object> parameters) throws JsRulesException {
         RulesetExecutor<T> executor = loadRulesetByName(rulesetName);
 
@@ -154,29 +142,19 @@ public class JsRulesImpl implements JsRules {
         try {
             if(ruleService == null) throw new Exception("service is null");
             LOGGER.debug("OK ruleService");
-/*
-            if(context == null) throw new Exception("context is null");
-            //LOGGER.debug("OK context");
 
-            JsRulesImpl beanRule = context.getBean(JsRulesImpl.class);
-
-            if(beanRule == null) throw new Exception("beanRule is null");
-            //LOGGER.debug("OK beanRule");
-*/
             SpGetReglaOUT spOut = this.ruleService.getRuleByName(name);
 
             if(spOut == null) throw new Exception("spOut is null");
-            //LOGGER.debug("OK spOut");
 
             OracleClob oc = spOut.getPJson();
 
             if(oc == null) throw new Exception("oc is null");
-            //LOGGER.debug("OK oc");
+            LOGGER.debug("OK oc");
 
-            //LOGGER.debug("EL JSON DE ORACLE ------------> [" + convertToString(oc) + "]");
             is=oc.getAsciiStream();
             if(is == null) throw new Exception("is is null");
-            //LOGGER.debug("OK is");
+
 
         }catch(Exception e){
             LOGGER.error("#=========================================== " + e.getMessage() + " ===========================================#");

@@ -2,7 +2,6 @@ package cl.motoratrib.rest.service;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
-import cl.bancochile.plataformabase.error.BusinessException;
 import cl.motoratrib.rest.domain.*;
 import cl.motoratrib.rest.jsrules.JsRules;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,9 +18,15 @@ import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.*;
 
+import cl.bancochile.plataformabase.error.PlataformaBaseException;
+
 @Service
-public class EngineImpl implements Engine {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EngineImpl.class);
+public class EngineServiceImpl implements EngineService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EngineServiceImpl.class);
+
+    private static final String CODIGO_ERROR_GENERICO = "100000";
+    private static final String GLOSA_ERROR_GENERICO = "Error al invocar motor de reglas ";
+    private static final String GLOSA_DEBUG_1 = "Ejecuta procedimiento : ";
 
     @Autowired
     JsRules jsrules;
@@ -37,80 +42,79 @@ public class EngineImpl implements Engine {
     SpUpdateConjuntoReglaDAO spUpdateConjuntoReglaDAO;
 
     @Override
-    public String evaluatorRule(String json) throws Exception {
+    public String evaluatorRule(String json) throws PlataformaBaseException {
 
         String responseRule = null;
 
         ClaseGenerica response = null;
         Parameter p5_fechaPep, p5_fechaVencMac = null;
 
-        InJson in = readJsonFullFromString(json);
+        try{
 
-        List<SpListReglaVariablePcVarRS> vars = getRuleVariable(in.getRulesetName());
+            InJson in = readJsonFullFromString(json);
 
-        Map<String, Object> parameters = new HashMap<>();
+            List<SpListReglaVariablePcVarRS> vars = getRuleVariable(in.getRulesetName());
 
-        List<Parameter> listParam = in.getParameterList();
+            Map<String, Object> parameters = new HashMap<>();
 
-        ///El super validador
-        Map<String, String> tmplMap = new HashMap<String, String>();
-        Map<String, String> reqMap = new HashMap<String, String>();
-        for (SpListReglaVariablePcVarRS o : vars) {
-            tmplMap.put( o.getParametername(), o.getParameterclass());
-        }
-        //sf1_rating si es "SR" no tiene rating (-1), 0 a 10 si tiene (sf1_rating_2)
-        List<Parameter> lParam = containsParameters(listParam, "p5_fechaPep", "p5_fechaVencMac");
-        p5_fechaPep = containsParameter(lParam, "p5_fechaPep");
-        p5_fechaVencMac = containsParameter(listParam, "p5_fechaVencMac");
+            List<Parameter> listParam = in.getParameterList();
 
-        if (p5_fechaPep != null && p5_fechaVencMac != null) {
-            DateTime end = DateTime.parse(p5_fechaVencMac.getParameterValue());
-            DateTime start = DateTime.parse(p5_fechaPep.getParameterValue());
-            int days = Days.daysBetween(start, end).getDays();
-            parameters.put("p5_diffMacPep", Long.valueOf(days));
-            //LOGGER.debug("agregando la variable p5_diffMacPep con valor : " + days);
-            listParam.remove(p5_fechaPep);
-            listParam.remove(p5_fechaVencMac);
-        }
-
-
-        for (Parameter p : listParam) {
-            if (p.getParameterClass().equals("Long")) {
-                parameters.put(p.getParameterName(), Long.valueOf(p.getParameterValue()));
-            } else if (p.getParameterClass().equals("String")) {
-                parameters.put(p.getParameterName(), p.getParameterValue());
-            } else if (p.getParameterClass().equals("DateTime")) {
-                parameters.put(p.getParameterName(), DateTime.parse(p.getParameterValue()));
+            Map<String, String> tmplMap = new HashMap<String, String>();
+            Map<String, String> reqMap = new HashMap<String, String>();
+            for (SpListReglaVariablePcVarRS o : vars) {
+                tmplMap.put( o.getParametername(), o.getParameterclass());
             }
-            reqMap.put(p.getParameterName(),p.getParameterClass());
-        }
+            List<Parameter> lParam = containsParameters(listParam, "p5_fechaPep", "p5_fechaVencMac");
+            p5_fechaPep = containsParameter(lParam, "p5_fechaPep");
+            p5_fechaVencMac = containsParameter(listParam, "p5_fechaVencMac");
 
-        if(!reqMap.equals(tmplMap)) {
-            //System.out.println("son diferentes");
-            responseRule = "{\"ref\":\"SF00\", \"alerta\":\"Las variables no corresponden al flujo que se esta invocando\"}";
-            throw new Exception(responseRule);
-        } else {
-            //System.out.println("son iguales");
-            Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
+            if (p5_fechaPep != null && p5_fechaVencMac != null) {
+                DateTime end = DateTime.parse(p5_fechaVencMac.getParameterValue());
+                DateTime start = DateTime.parse(p5_fechaPep.getParameterValue());
+                int days = Days.daysBetween(start, end).getDays();
+                parameters.put("p5_diffMacPep", Long.valueOf(days));
+                listParam.remove(p5_fechaPep);
+                listParam.remove(p5_fechaVencMac);
+            }
 
-            if (o != null)
-                response = new ClaseGenerica(o);
 
-            if (response != null) {
-                if (response.classType().equals("java.lang.String")) {
-                    responseRule = response.obj.toString();
-                } else {
-                    //System.out.println("ERROR");
-                    responseRule = "ERROR";
+            for (Parameter p : listParam) {
+                if (p.getParameterClass().equals("Long")) {
+                    parameters.put(p.getParameterName(), Long.valueOf(p.getParameterValue()));
+                } else if (p.getParameterClass().equals("String")) {
+                    parameters.put(p.getParameterName(), p.getParameterValue());
+                } else if (p.getParameterClass().equals("DateTime")) {
+                    parameters.put(p.getParameterName(), DateTime.parse(p.getParameterValue()));
+                }
+                reqMap.put(p.getParameterName(),p.getParameterClass());
+            }
+
+            if(!reqMap.equals(tmplMap)) {
+                responseRule = "{\"ref\":\"SF00\", \"alerta\":\"Las variables no corresponden al flujo que se esta invocando\"}";
+                throw new Exception(responseRule);
+            } else {
+                Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
+
+                if (o != null)
+                    response = new ClaseGenerica(o);
+
+                if (response != null) {
+                    if (response.classType().equals("java.lang.String")) {
+                        responseRule = response.obj.toString();
+                    } else {
+                        responseRule = "ERROR";
+                    }
                 }
             }
+        } catch (Exception ex) {
+            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
 
         return responseRule;
     }
 
     @Override
-    public List<RecordRule> getRule(int id) throws Exception {
+    public List<RecordRule> getRule(int id) throws PlataformaBaseException {
         SpListReglasOUT spListReglasOUT;
         List<RecordRule> lstRecRule = new ArrayList<>();
         try {
@@ -129,28 +133,28 @@ public class EngineImpl implements Engine {
                 lstRecRule.add(recRule);
             }
 
-        }catch(BusinessException e){
-            throw new Exception(e.getMessage());
+        } catch (Exception ex) {
+            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
         return lstRecRule;
     }
 
     @Override
-    public List<SpListVariablesPcVariableRS> getVariables() throws Exception {
+    public List<SpListVariablesPcVariableRS> getVariables() throws PlataformaBaseException {
         SpListVariablesOUT spListVariablesOUT;
 
         try {
 
             spListVariablesOUT = this.spListVariablesDAO.execute();
 
-        }catch(BusinessException e){
-            throw new Exception(e.getMessage());
+        } catch (Exception ex) {
+            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
         return spListVariablesOUT.getPcVariable();
     }
 
     @Override
-    public SpUpdateReglaOUT updateRule(GridRule grule) throws Exception {
+    public SpUpdateReglaOUT updateRule(GridRule grule) throws PlataformaBaseException {
         SpUpdateReglaOUT out;
         try {
             SpUpdateReglaIN params = new SpUpdateReglaIN();
@@ -163,8 +167,8 @@ public class EngineImpl implements Engine {
             params.setPJson(slv);
             out =  this.spUpdateReglaDAO.execute(params);
             System.out.println(out);
-        }catch (BusinessException e){
-            throw new Exception(e.getMessage());
+        } catch (Exception ex) {
+            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
 
         return out;
@@ -172,7 +176,7 @@ public class EngineImpl implements Engine {
     }
 
     @Override
-    public SpUpdateConjuntoReglaOUT updateRuleSet(GridRule grule) throws Exception {
+    public SpUpdateConjuntoReglaOUT updateRuleSet(GridRule grule) throws PlataformaBaseException {
         SpUpdateConjuntoReglaOUT out;
         try {
             SpUpdateConjuntoReglaIN params = new SpUpdateConjuntoReglaIN();
@@ -185,15 +189,15 @@ public class EngineImpl implements Engine {
             params.setPJson(slv);
             out =  this.spUpdateConjuntoReglaDAO.execute(params);
             System.out.println(out);
-        }catch (BusinessException e){
-            throw new Exception(e.getMessage());
+        } catch (Exception ex) {
+            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
 
         return out;
     }
 
     @Override
-    public List<SpListReglaVariablePcVarRS> getRuleVariable(String nombre) throws Exception {
+    public List<SpListReglaVariablePcVarRS> getRuleVariable(String nombre) throws PlataformaBaseException {
         SpListReglaVariableOUT out;
         try{
             SpListReglaVariableIN param = new SpListReglaVariableIN();
@@ -201,8 +205,8 @@ public class EngineImpl implements Engine {
 
             out = this.spListReglaVariableDAO.execute(param);
 
-        }catch (BusinessException e){
-            throw new Exception(e.getMessage());
+        } catch (Exception ex) {
+            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
         return out.getPcVar();
     }

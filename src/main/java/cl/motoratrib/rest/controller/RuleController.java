@@ -5,7 +5,7 @@ import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpUpdat
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpUpdateReglaOUT;
 import cl.motoratrib.rest.domain.GridRule;
 import cl.motoratrib.rest.domain.RecordRule;
-import cl.motoratrib.rest.service.Engine;
+import cl.motoratrib.rest.service.EngineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
+
+import cl.bancochile.plataformabase.error.PlataformaBaseException;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
@@ -23,70 +27,70 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class RuleController {
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleController.class);
     @Autowired
-    Engine engine;
+    EngineService engineService;
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public ModelAndView test()  {
-        ModelAndView modelAndview=new ModelAndView("test.jsp");;
-        return modelAndview;
+    public ModelAndView test() throws PlataformaBaseException {
+        return new ModelAndView("test.jsp");
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public ModelAndView admin()  {
-        ModelAndView modelAndview=new ModelAndView("admin.jsp");;
-        return modelAndview;
+    public ModelAndView admin() throws PlataformaBaseException {
+        return new ModelAndView("admin.jsp");
     }
 
     @RequestMapping(value = "/rules/{id}", method = RequestMethod.GET,
-            produces = { "application/json;**charset=UTF-8**" })//application/json;charset=UTF-8
+            produces = { "application/json;**charset=UTF-8**" })
     public ResponseEntity<List<RecordRule>> getRules(@PathVariable int id)
-            throws Exception {
-
-        return new ResponseEntity<>(this.engine.getRule(id),HttpStatus.OK);
+            throws PlataformaBaseException {
+        return new ResponseEntity<>(this.engineService.getRule(id),HttpStatus.OK);
 
     }
 
     @RequestMapping(value = "/variables", method = RequestMethod.GET,
-            produces = { "application/json;**charset=UTF-8**" })//application/json;charset=UTF-8
+            produces = { "application/json;**charset=UTF-8**" })
     public ResponseEntity<List<SpListVariablesPcVariableRS>> getVariables()
-            throws Exception {
-
-        return new ResponseEntity<>(this.engine.getVariables(),HttpStatus.OK);
+            throws PlataformaBaseException {
+        return new ResponseEntity<>(this.engineService.getVariables(),HttpStatus.OK);
 
     }
 
     @RequestMapping(value = "/uRule", method = RequestMethod.POST,
             produces = { "application/json;**charset=UTF-8**" })
     public ResponseEntity<SpUpdateReglaOUT> updateRule(@RequestBody GridRule grule)
-            throws Exception {
-        return new ResponseEntity<>(this.engine.updateRule(grule),HttpStatus.OK);
+            throws PlataformaBaseException {
+        return new ResponseEntity<>(this.engineService.updateRule(grule),HttpStatus.OK);
 
     }
 
     @RequestMapping(value = "/uRuleSet", method = RequestMethod.POST,
             produces = { "application/json;**charset=UTF-8**" })
     public ResponseEntity<SpUpdateConjuntoReglaOUT> updateRuleSet(@RequestBody GridRule grule)
-            throws Exception {
-        return new ResponseEntity<>(this.engine.updateRuleSet(grule),HttpStatus.OK);
+            throws PlataformaBaseException {
+        return new ResponseEntity<>(this.engineService.updateRuleSet(grule),HttpStatus.OK);
 
     }
 
     @RequestMapping(value = "/testing", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String testing(HttpEntity<String> httpEntity) {
-        String _json = "";
-        String _eval = "";
+    public String testing(HttpEntity<String> httpEntity) throws PlataformaBaseException {
+        String json,eval;
         try {
-            _json = httpEntity.getBody();
+            json = httpEntity.getBody();
             long startTime = System.currentTimeMillis();
-            _eval = engine.evaluatorRule(URLDecoder.decode(_json, "UTF-8"));
+            eval = engineService.evaluatorRule(URLDecoder.decode(json, "UTF-8"));
             long endTime = System.currentTimeMillis();
-            System.out.println("Total Time " + (endTime - startTime) + " milliseconds");
-        }catch(Exception e){
-            System.out.println("FAIL!!!");
-            _eval=e.getMessage();
+            LOGGER.debug("Total Time " + (endTime - startTime) + " milliseconds");
+        }catch(PlataformaBaseException e){
+            LOGGER.error("FAIL!!!" + e.getMessage());
+            //eval=e.getMessage();
+            throw e;
+        }catch(UnsupportedEncodingException e){
+            LOGGER.error("FAIL!!!" + e.getMessage());
+            //eval=e.getMessage();
+            throw new PlataformaBaseException(e.getMessage(),e,HttpStatus.INTERNAL_SERVER_ERROR.toString());
         }
-        return _eval;
+        return eval;
     }
 
 }
