@@ -5,20 +5,21 @@ import org.apache.commons.lang3.time.StopWatch;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * HashMap implementation suitable for simple caching
  * <p>
  * Created by Marcelo 9/5/2018.
  */
-public class CacheMap<K, V> extends LinkedHashMap<K, V> {
+public class CacheMap<K, V> extends LinkedHashMap<K, V>  {
     private final int cacheSize;   // the maximum size of the cache
     private final long timeToLive; // the time, in milliseconds that entries can live on the cache
-    private final Map<K, StopWatch> stopWatchMap = new HashMap<>();
+    private final transient Map<K, StopWatch> stopWatchMap = new HashMap<>();
 
     private static final int DEFAULT_CACHE_SIZE = 0;        // cache is unlimited
     private static final long DEFAULT_TIME_TO_LIVE = 0;     // entries last until manually removed
-    private static final float DEFAULT_LOAD_FACTOR = 0.75f; // same as in HashMap
+    private static final float DEFAULT_THIS_LOAD_FACTOR = 0.75f; // same as in HashMap
     private static final boolean DEFAULT_LFU = true;        // cache is least frequently used by default
 
     public CacheMap() {
@@ -34,7 +35,7 @@ public class CacheMap<K, V> extends LinkedHashMap<K, V> {
     }
 
     public CacheMap(int cacheSize, long timeToLive, boolean lfu) {
-        super(cacheSize, DEFAULT_LOAD_FACTOR, lfu);
+        super(cacheSize, DEFAULT_THIS_LOAD_FACTOR, lfu);
         this.cacheSize = cacheSize;
         this.timeToLive = timeToLive;
     }
@@ -83,5 +84,17 @@ public class CacheMap<K, V> extends LinkedHashMap<K, V> {
      */
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
         return cacheSize > 0 && this.size() > cacheSize;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        return o.hashCode() == this.hashCode() &&
+                o.getClass() == this.getClass();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), stopWatchMap);
     }
 }

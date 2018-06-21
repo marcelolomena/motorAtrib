@@ -23,7 +23,6 @@
  */
 package cl.motoratrib.rest.jsrules.config;
 
-import cl.motoratrib.rest.jsrules.config.Config;
 import cl.motoratrib.rest.jsrules.util.JsonBean;
 
 /**
@@ -35,7 +34,7 @@ public class ResponseConfig extends JsonBean implements Config {
     private String responseClass;
 
     public ResponseConfig() {
-
+        super();
     }
 
     public ResponseConfig(String response, String responseClass) {
@@ -58,5 +57,14 @@ public class ResponseConfig extends JsonBean implements Config {
     public void setResponseClass(String responseClass) {
         this.responseClass = responseClass;
     }
-    
+
+    @Override
+    public boolean equals(Object that) {
+        return super.equals(that);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

@@ -45,7 +45,7 @@ import java.util.Map;
  * @author Marcelo
  */
 public class ChainTrueRulesetListExecutorImpl<T> extends RulesetListExecutor<T> {
-    private final static Logger LOGGER = LoggerFactory.getLogger(ChainTrueRulesetListExecutorImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChainTrueRulesetListExecutorImpl.class);
     private final List<RulesetExecutor<T>> rulesetList;
     private final String name;
     private final String type;
@@ -58,7 +58,7 @@ public class ChainTrueRulesetListExecutorImpl<T> extends RulesetListExecutor<T> 
 
     @Override
     public T execute(Map<String, Object> parameters) throws InvalidParameterException {
-        T result = null;
+        T result;
         /*
         Ejecutar todas las reglas hasta que se encuentre una respuesta; si todas son falsas, devolver nulo
         */
@@ -74,7 +74,7 @@ public class ChainTrueRulesetListExecutorImpl<T> extends RulesetListExecutor<T> 
             if(ruleResponse!=null)
                 LOGGER.debug("VECTOR OF TRUTH --------> " + ruleResponse.toString());
 
-            if(ruleSet.getType().equals("BOOLEANARRAY")) {
+            if("BOOLEANARRAY".equals(ruleSet.getType())) {
                 LOGGER.debug("SETUP VAR FILA --------> " + ruleResponse.toString());
                 parameters.put("fila", ruleResponse.toString());
             } else {
@@ -88,7 +88,7 @@ public class ChainTrueRulesetListExecutorImpl<T> extends RulesetListExecutor<T> 
         try {
             listResponse=mapper.writeValueAsString(textMessages);
         }catch(JsonProcessingException e){
-            throw new InvalidParameterException("impossible to generate the answer");
+            throw new InvalidParameterException(e);
         }
 
         result = (T)listResponse;

@@ -1,15 +1,4 @@
-           			var template = "<form>";
-           			template += "<div class='form-group'>";
-           			template += "<label for='ruleName'>Nombre</label>";
-           			template += "{ruleName}";
-           			template += "</div>";
-           			template += "<hr style='width:100%;'/>";
-           			template += "<div> {sData} {cData}  </div></form>";
-
         $(document).ready(function () {
-           // altrows are set with table striped class for Boostrap
-           //$.jgrid.styleUI.Bootstrap.base.rowTable = "table table-bordered table-striped";
-
            $("#jqGrid").jqGrid({
                 url: '/miplataforma/Motor/rules/0',
                 datatype: "json",
@@ -80,25 +69,16 @@
                     recreateForm: true,
 					checkOnUpdate : true,
 					checkOnSubmit : true,
-                    closeAfterEdit: true,
-                    errorTextFormat: function (data) {
-                        return 'Error: ' + data.responseText
-                    }
+                    closeAfterEdit: true
                 },
                 {
                     closeAfterAdd: true,
-                    recreateForm: true,
-                    errorTextFormat: function (data) {
-                        return 'Error: ' + data.responseText
-                    }
+                    recreateForm: true
                 },
                 {
-                    errorTextFormat: function (data) {
-                        return 'Error: ' + data.responseText
-                    }
                 },
 				{ multipleSearch: false,
-				showQuery: true} // search options - define multiple search
+				showQuery: true}
 				);
                 $("#jqGrid").jqGrid('menubarAdd',  [
                     {
@@ -123,7 +103,7 @@
 
                 $(window).resize(function () {
                             var outerwidth = $('#grid').width();
-                            $('#jqGrid').setGridWidth(outerwidth); // setGridWidth method sets a new width to the grid dynamically
+                            $('#jqGrid').setGridWidth(outerwidth);
                 });
 
                 $(window).unbind('resize.myEvents').bind('resize.myEvents', function () {
@@ -210,14 +190,10 @@
                 editCaption: "Modificar Conjunto de reglas",
                 ajaxEditOptions: jqlib.jsonOptions,
                 serializeEditData: jqlib.createJSON,
-               	//template: template,
                 recreateForm: true,
 				checkOnUpdate : true,
 				checkOnSubmit : true,
                 closeAfterEdit: true,
-                errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText
-                },
                 beforeSubmit : function( postdata, formid ) {
                     var pd1 = new jqlib.dirtyRule(postdata);
                     postdata=pd1.clean("rulesetName");
@@ -248,9 +224,6 @@
                 recreateForm: true,
                 ajaxEditOptions: jqlib.jsonOptions,
                 serializeEditData: jqlib.createJSON,
-                errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText
-                },
                 beforeSubmit : function( postdata, formid ) {
                     var pd1 = new jqlib.dirtyRule(postdata);
                     postdata=pd1.clean("rulesetName");
@@ -428,14 +401,10 @@
                 editCaption: "Modificar Regla",
                 ajaxEditOptions: jqlib.jsonOptions,
                 serializeEditData: jqlib.createJSON,
-               	//template: template,
                 recreateForm: true,
 				checkOnUpdate : true,
 				checkOnSubmit : true,
                 closeAfterEdit: true,
-                errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText
-                },
                 beforeSubmit : function( postdata, formid ) {
                     var pd1 = new jqlib.dirtyRule(postdata);
                     postdata=pd1.clean("operator");
@@ -505,9 +474,6 @@
             },
             {
                 reloadAfterSubmit:true,
-                errorTextFormat: function (data) {
-                    return 'Error: ' + data.responseText
-                },
                 ajaxDelOptions:jqlib.jsonOptions,
                 serializeDelData:jqlib.createJSON,
                 onclickSubmit: function(params, postdata){

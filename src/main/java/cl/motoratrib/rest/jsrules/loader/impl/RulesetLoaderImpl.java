@@ -21,7 +21,7 @@ import java.util.List;
  * Created by Marcelo Lomeña 2018/04/06
  */
 public class RulesetLoaderImpl implements RulesetLoader {
-    private final static Logger LOGGER = LoggerFactory.getLogger(RulesetLoaderImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RulesetLoaderImpl.class);
     private JsRulesImpl jsRulesImpl;
 
     public RulesetLoaderImpl(JsRulesImpl jsRulesImpl) {
@@ -37,21 +37,23 @@ public class RulesetLoaderImpl implements RulesetLoader {
         } else {
             throw new InvalidConfigException("Ruleset Type must be provided");
         }
-        //LOGGER.debug("tipo -------->" + type);
+
         RulesetTypeHandler rulesetTypeHandler = RulesetTypeHandler.valueOf(type);
 
         ResponseConfig responseConfig = config.getResponseConfig();
         ClassHandler classHandler;
         try {
             classHandler = ClassHandler.valueOf(responseConfig.getResponseClass().toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            throw new InvalidConfigException("Invalid response class: " + responseConfig.getResponseClass());
+        } catch (IllegalArgumentException e) {
+            LOGGER.error(e.getMessage());
+            throw new InvalidConfigException("Unable to parse response " + e.getMessage(), e);
         }
         Object response;
         String responseString = responseConfig.getResponse();
         try {
             response = classHandler.convertString(responseString);
         } catch (ClassHandlerException ex) {
+            LOGGER.error(ex.getMessage());
             throw new InvalidConfigException("Unable to parse response " + responseString, ex);
         }
 

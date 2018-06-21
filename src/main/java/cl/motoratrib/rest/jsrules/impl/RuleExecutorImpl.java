@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * @param <P>
  */
 public class RuleExecutorImpl<T, P> extends RuleExecutor<T> {
-    private static final Logger LOG = LoggerFactory.getLogger(RuleExecutorImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuleExecutorImpl.class);
             
     private final Rule<T, P> rule;
     
@@ -31,7 +31,7 @@ public class RuleExecutorImpl<T, P> extends RuleExecutor<T> {
     public T execute(Object leftParameter, Object rightParameter) throws InvalidParameterException {
         Object staticValue = rule.getRightParameter().getStaticValue();
         if (staticValue != null) {
-            LOG.error("Right parameter has a static value of {} and should not be specified", staticValue);
+            LOGGER.error("Right parameter has a static value of {} and should not be specified", staticValue);
             throw new InvalidParameterException();
         }
 
@@ -43,7 +43,7 @@ public class RuleExecutorImpl<T, P> extends RuleExecutor<T> {
         Object rightParameter = rule.getRightParameter().getStaticValue();
 
         if (rightParameter == null) {
-            LOG.error("Right parameter must be specified");
+            LOGGER.error("Right parameter must be specified");
             throw new InvalidParameterException();
         }
 

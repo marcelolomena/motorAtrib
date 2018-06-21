@@ -23,8 +23,9 @@
  */
 package cl.motoratrib.rest.jsrules.config;
 
-import cl.motoratrib.rest.jsrules.config.Config;
 import cl.motoratrib.rest.jsrules.util.JsonBean;
+
+import java.util.Objects;
 
 /**
  *
@@ -36,7 +37,7 @@ public class ParamConfig extends JsonBean implements Config {
     private String parameterStaticValue;
 
     public ParamConfig() {
-
+        super();
     }
 
     public ParamConfig(String parameterName, String parameterClass, 
@@ -69,5 +70,24 @@ public class ParamConfig extends JsonBean implements Config {
     public void setParameterStaticValue(String parameterStaticValue) {
         this.parameterStaticValue = parameterStaticValue;
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof ParamConfig))
+            return false;
+        if (!super.equals(o))
+            return false;
+        ParamConfig that = (ParamConfig) o;
+        return Objects.equals(getParameterName(), that.getParameterName()) &&
+                Objects.equals(getParameterClass(), that.getParameterClass()) &&
+                Objects.equals(getParameterStaticValue(), that.getParameterStaticValue());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), getParameterName(), getParameterClass(), getParameterStaticValue());
+    }
 }

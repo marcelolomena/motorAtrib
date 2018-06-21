@@ -11,7 +11,6 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * @author Marcelo
@@ -48,9 +47,9 @@ public enum Operator {
     EQ {
         @Override
         public Boolean compare(Object left, Object right) throws InvalidParameterException {
-            left = getDoubleValue(left);
-            right = getDoubleValue(right);
-            return left.equals(right);
+            Object oLeft = getDoubleValue(left);
+            Object oRight = getDoubleValue(right);
+            return oLeft.equals(oRight);
         }
     },
     EX {
@@ -127,9 +126,9 @@ public enum Operator {
             boolean between;
 
             if (doubleArray[0] < doubleArray[1]) {
-                between = (leftDouble >= doubleArray[0] && leftDouble <= doubleArray[1]);
+                between = leftDouble >= doubleArray[0] && leftDouble <= doubleArray[1];
             } else {
-                between = (leftDouble >= doubleArray[1] && leftDouble <= doubleArray[0]); // no code coverage
+                between = leftDouble >= doubleArray[1] && leftDouble <= doubleArray[0];
             }
 
             return between;
@@ -161,11 +160,12 @@ public enum Operator {
     }
 
     protected Object getDoubleValue(Object obj) {
+        Object tObj = obj;
         if (obj instanceof Number) {
             Number number = (Number) obj;
-            obj = number.doubleValue();
+            tObj = number.doubleValue();
         }
-        return obj;
+        return tObj;
     }
 
     protected Set getSet(Object param) throws InvalidParameterException {

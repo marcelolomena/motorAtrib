@@ -42,7 +42,7 @@ import java.util.Map;
  * @author Marcelo
  */
 public class FirstTrueRulesetListExecutorImpl<T> extends RulesetListExecutor<T> {
-    private final static Logger LOGGER = LoggerFactory.getLogger(FirstTrueRulesetListExecutorImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FirstTrueRulesetListExecutorImpl.class);
     private final List<RulesetExecutor<T>> rulesetList;
     private final String name;
     private final String type;
@@ -60,7 +60,7 @@ public class FirstTrueRulesetListExecutorImpl<T> extends RulesetListExecutor<T> 
         Ejecutar todas las reglas hasta que se encuentre una respuesta; si todas son falsas, devolver nulo
         */
         for (RulesetExecutor<T> ruleSet : rulesetList) {
-            //LOGGER.debug("RULE --------> " + ruleSet.getName());
+            LOGGER.debug("RULE --------> " + ruleSet.getName());
             T ruleResponse = ruleSet.execute(parameters);
             if (ruleResponse != null) {
                 result = ruleResponse;

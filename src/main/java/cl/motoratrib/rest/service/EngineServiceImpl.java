@@ -26,7 +26,6 @@ public class EngineServiceImpl implements EngineService {
 
     private static final String CODIGO_ERROR_GENERICO = "100000";
     private static final String GLOSA_ERROR_GENERICO = "Error al invocar motor de reglas ";
-    private static final String GLOSA_DEBUG_1 = "Ejecuta procedimiento : ";
 
     @Autowired
     JsRules jsrules;
@@ -47,7 +46,7 @@ public class EngineServiceImpl implements EngineService {
         String responseRule = null;
 
         ClaseGenerica response = null;
-        Parameter p5_fechaPep, p5_fechaVencMac = null;
+        Parameter p5fechaPep, p5fechaVencMac = null;
 
         try{
 
@@ -65,25 +64,25 @@ public class EngineServiceImpl implements EngineService {
                 tmplMap.put( o.getParametername(), o.getParameterclass());
             }
             List<Parameter> lParam = containsParameters(listParam, "p5_fechaPep", "p5_fechaVencMac");
-            p5_fechaPep = containsParameter(lParam, "p5_fechaPep");
-            p5_fechaVencMac = containsParameter(listParam, "p5_fechaVencMac");
+            p5fechaPep = containsParameter(lParam, "p5_fechaPep");
+            p5fechaVencMac = containsParameter(listParam, "p5_fechaVencMac");
 
-            if (p5_fechaPep != null && p5_fechaVencMac != null) {
-                DateTime end = DateTime.parse(p5_fechaVencMac.getParameterValue());
-                DateTime start = DateTime.parse(p5_fechaPep.getParameterValue());
+            if (p5fechaPep != null && p5fechaVencMac != null) {
+                DateTime end = DateTime.parse(p5fechaVencMac.getParameterValue());
+                DateTime start = DateTime.parse(p5fechaPep.getParameterValue());
                 int days = Days.daysBetween(start, end).getDays();
                 parameters.put("p5_diffMacPep", Long.valueOf(days));
-                listParam.remove(p5_fechaPep);
-                listParam.remove(p5_fechaVencMac);
+                listParam.remove(p5fechaPep);
+                listParam.remove(p5fechaVencMac);
             }
 
 
             for (Parameter p : listParam) {
-                if (p.getParameterClass().equals("Long")) {
+                if ("Long".equals(p.getParameterClass())) {
                     parameters.put(p.getParameterName(), Long.valueOf(p.getParameterValue()));
-                } else if (p.getParameterClass().equals("String")) {
+                } else if ("String".equals(p.getParameterClass())) {
                     parameters.put(p.getParameterName(), p.getParameterValue());
-                } else if (p.getParameterClass().equals("DateTime")) {
+                } else if ("DateTime".equals(p.getParameterClass())) {
                     parameters.put(p.getParameterName(), DateTime.parse(p.getParameterValue()));
                 }
                 reqMap.put(p.getParameterName(),p.getParameterClass());
@@ -91,20 +90,18 @@ public class EngineServiceImpl implements EngineService {
 
             if(!reqMap.equals(tmplMap)) {
                 responseRule = "{\"ref\":\"SF00\", \"alerta\":\"Las variables no corresponden al flujo que se esta invocando\"}";
-                throw new Exception(responseRule);
+                throw new PlataformaBaseException(responseRule, new Exception(responseRule), CODIGO_ERROR_GENERICO);
             } else {
                 Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
 
                 if (o != null)
                     response = new ClaseGenerica(o);
 
-                if (response != null) {
-                    if (response.classType().equals("java.lang.String")) {
-                        responseRule = response.obj.toString();
-                    } else {
-                        responseRule = "ERROR";
-                    }
-                }
+                if ("java.lang.String".equals(response.classType()))
+                    responseRule = response.getObj().toString();
+                else
+                    responseRule = "ERROR";
+
             }
         } catch (Exception ex) {
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
@@ -144,9 +141,7 @@ public class EngineServiceImpl implements EngineService {
         SpListVariablesOUT spListVariablesOUT;
 
         try {
-
             spListVariablesOUT = this.spListVariablesDAO.execute();
-
         } catch (Exception ex) {
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
@@ -166,7 +161,7 @@ public class EngineServiceImpl implements EngineService {
             SqlLobValue slv=new SqlLobValue(grule.getJson());
             params.setPJson(slv);
             out =  this.spUpdateReglaDAO.execute(params);
-            System.out.println(out);
+
         } catch (Exception ex) {
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
@@ -188,7 +183,7 @@ public class EngineServiceImpl implements EngineService {
             SqlLobValue slv=new SqlLobValue(grule.getJson());
             params.setPJson(slv);
             out =  this.spUpdateConjuntoReglaDAO.execute(params);
-            System.out.println(out);
+
         } catch (Exception ex) {
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
@@ -211,7 +206,7 @@ public class EngineServiceImpl implements EngineService {
         return out.getPcVar();
     }
 
-    private Parameter containsParameter(Collection<Parameter> c, String name) {
+    private static Parameter containsParameter(Collection<Parameter> c, String name) {
         for(Parameter o : c) {
             if(o != null && o.getParameterName().equals(name)) {
                 return o;
@@ -220,7 +215,7 @@ public class EngineServiceImpl implements EngineService {
         return null;
     }
 
-    private List<Parameter> containsParameters(Collection<Parameter> c, String leftOne, String leftTwo) {
+    private static List<Parameter> containsParameters(Collection<Parameter> c, String leftOne, String leftTwo) {
         int indexTrue = 0;
         List<Parameter> params = new ArrayList<Parameter>();
         for(Parameter o : c) {
@@ -230,7 +225,9 @@ public class EngineServiceImpl implements EngineService {
                     params.add(o);
                 }
             }
-            if(indexTrue>2) break;
+            if(indexTrue>2){
+                break;
+            }
         }
         return params;
     }
@@ -238,26 +235,10 @@ public class EngineServiceImpl implements EngineService {
 
     private InJson readJsonFullFromString(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        InJson in = mapper.readValue(json, InJson.class);
-        return in;
-
+        return mapper.readValue(json, InJson.class);
     }
 
-    private String convertToJSON(Object obj)  throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            if (obj == null) {
-                return null;
-            } else if (obj instanceof String) {
-                return (String) obj;
-            }
-            return mapper.writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new Exception("Cannot serialize to JSON " + obj, e);
-        }
-    }
-
-    private String getstringfromclob(Clob cl)
+    private String getstringfromclob(Clob cl) throws PlataformaBaseException
     {
         StringWriter write = new StringWriter();
         try{
@@ -268,14 +249,13 @@ public class EngineServiceImpl implements EngineService {
                 write.write(c);
             }
             write.flush();
-        }catch(Exception ec)
+        }catch(Exception e)
         {
-            ec.printStackTrace();
+            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, e, CODIGO_ERROR_GENERICO);
         }
         return write.toString();
 
     }
-
 
     private String clobToString(Clob data)
     {

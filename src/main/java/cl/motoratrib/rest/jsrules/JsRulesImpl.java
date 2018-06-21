@@ -1,6 +1,7 @@
 package cl.motoratrib.rest.jsrules;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaOUT;
+import cl.bancochile.plataformabase.error.PlataformaBaseException;
 import cl.motoratrib.rest.jsrules.service.RuleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cl.motoratrib.rest.jsrules.config.RuleConfig;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.Map;
 
 
@@ -58,16 +60,19 @@ public class JsRulesImpl implements JsRules {
 
             if (rule == null) {
 
-                InputStream stream = getRecordFromDatabase(ruleName);
-
-                if (stream == null) {
-                    throw new InvalidConfigException("Unable to find rule in table record : " + ruleName);
-                }
-
                 try {
+
+                    InputStream stream = getRecordFromDatabase(ruleName);
+
+                    if (stream == null) {
+                        throw new InvalidConfigException("Unable to find rule in table record : " + ruleName);
+                    }
+
                     RuleConfig ruleConfig = objectMapper.readValue(stream, RuleConfig.class);
                     rule = getRule(ruleConfig);
                 } catch (IOException ex) {
+                    throw new InvalidConfigException("Unable to parse rule record : " + ruleName, ex);
+                } catch (Exception ex) {
                     throw new InvalidConfigException("Unable to parse rule record : " + ruleName, ex);
                 }
             }
@@ -89,16 +94,19 @@ public class JsRulesImpl implements JsRules {
         RulesetExecutor ruleset = rulesetExecutorMap.get(rulesetName);
 
             if (ruleset == null) {
-                InputStream stream = getRecordFromDatabase(rulesetName);
-
-                if (stream == null) {
-                    throw new InvalidConfigException("Unable to find ruleset record : " + rulesetName);
-                }
 
                 try {
+                    InputStream stream = getRecordFromDatabase(rulesetName);
+
+                    if (stream == null) {
+                        throw new InvalidConfigException("Unable to find ruleset record : " + rulesetName);
+                    }
+
                     RulesetConfig rulesetConfig = objectMapper.readValue(stream, RulesetConfig.class);
                     ruleset = getRulesetExecutor(rulesetConfig);
                 } catch (IOException ex) {
+                    throw new InvalidConfigException("Unable to parse ruleset record: " + rulesetName, ex);
+                }  catch (Exception ex) {
                     throw new InvalidConfigException("Unable to parse ruleset record: " + rulesetName, ex);
                 }
             }
@@ -106,6 +114,7 @@ public class JsRulesImpl implements JsRules {
         return ruleset;
     }
 
+    @Override
     public <T> T executeRuleset(String rulesetName, Map<String, Object> parameters) throws JsRulesException {
         RulesetExecutor<T> executor = loadRulesetByName(rulesetName);
 
@@ -132,32 +141,18 @@ public class JsRulesImpl implements JsRules {
         return ruleset;
     }
 
-    private InputStream getFileFromClasspath(String fileName) {
-        return this.getClass().getResourceAsStream("/" + fileName);
-    }
-
-    private InputStream getRecordFromDatabase(String name) {
-        InputStream is = null;
-
+    private InputStream getRecordFromDatabase(String name) throws PlataformaBaseException,SQLException {
+        InputStream is;
         try {
-            if(ruleService == null) throw new Exception("service is null");
-            LOGGER.debug("OK ruleService");
-
             SpGetReglaOUT spOut = this.ruleService.getRuleByName(name);
-
-            if(spOut == null) throw new Exception("spOut is null");
-
             OracleClob oc = spOut.getPJson();
-
-            if(oc == null) throw new Exception("oc is null");
-            LOGGER.debug("OK oc");
-
-            is=oc.getAsciiStream();
-            if(is == null) throw new Exception("is is null");
-
-
-        }catch(Exception e){
-            LOGGER.error("#=========================================== " + e.getMessage() + " ===========================================#");
+            is = oc.getAsciiStream();
+        }catch (PlataformaBaseException e){
+            LOGGER.error(e.getMessage());
+            throw e;
+        }catch (SQLException e){
+            LOGGER.error(e.getMessage());
+            throw e;
         }
 
         return is;

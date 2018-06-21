@@ -5,8 +5,6 @@
  */
 package cl.motoratrib.rest.jsrules;
 
-import cl.motoratrib.rest.jsrules.Operator;
-import cl.motoratrib.rest.jsrules.Parameter;
 import cl.motoratrib.rest.jsrules.util.JsonBean;
 
 /**
@@ -53,5 +51,14 @@ public class Rule<T, P> extends JsonBean {
     public T getResponse() {
         return response;
     }
-   
+
+    @Override
+    public boolean equals(Object that) {
+        return super.equals(that);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

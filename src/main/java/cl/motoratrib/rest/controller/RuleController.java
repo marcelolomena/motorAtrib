@@ -83,11 +83,9 @@ public class RuleController {
             LOGGER.debug("Total Time " + (endTime - startTime) + " milliseconds");
         }catch(PlataformaBaseException e){
             LOGGER.error("FAIL!!!" + e.getMessage());
-            //eval=e.getMessage();
             throw e;
         }catch(UnsupportedEncodingException e){
             LOGGER.error("FAIL!!!" + e.getMessage());
-            //eval=e.getMessage();
             throw new PlataformaBaseException(e.getMessage(),e,HttpStatus.INTERNAL_SERVER_ERROR.toString());
         }
         return eval;

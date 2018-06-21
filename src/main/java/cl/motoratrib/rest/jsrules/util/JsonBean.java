@@ -44,18 +44,11 @@ public abstract class JsonBean {
         return toString().hashCode();
     }
     
-    @Override
-    public String toString() {
+    public String toJsonString() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         
-        String json;
-        
-        try {
-            json = mapper.writeValueAsString(this);
-        } catch (JsonProcessingException ex) {
-            json = "";
-        }
-        
+        String json = mapper.writeValueAsString(this);
+
         return json;
     }
 }

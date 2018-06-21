@@ -15,6 +15,7 @@ import cl.motoratrib.rest.jsrules.exception.JsRulesException;
 public class InvalidParameterException extends JsRulesException {
 
     public InvalidParameterException() {
+        super();
     }
 
     public InvalidParameterException(String message) {

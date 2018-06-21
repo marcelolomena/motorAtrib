@@ -40,7 +40,7 @@ public class RuleConfig implements Config {
     private ResponseConfig responseConfig;
 
     public RuleConfig() {
-
+        super();
     }
     
     public RuleConfig(String ruleName, ParamConfig leftParamConfig, String operator, ParamConfig rightParamConfig, ResponseConfig responseConfig) {

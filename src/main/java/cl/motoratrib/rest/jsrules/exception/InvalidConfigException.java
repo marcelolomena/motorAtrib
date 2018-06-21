@@ -32,6 +32,7 @@ import cl.motoratrib.rest.jsrules.exception.JsRulesException;
 public class InvalidConfigException extends JsRulesException {
 
     public InvalidConfigException() {
+        super();
     }
 
     public InvalidConfigException(String message) {

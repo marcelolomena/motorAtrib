@@ -32,6 +32,7 @@ import cl.motoratrib.rest.jsrules.exception.JsRulesException;
 public class ClassHandlerException extends JsRulesException {
 
     public ClassHandlerException() {
+        super();
     }
 
     public ClassHandlerException(String message) {

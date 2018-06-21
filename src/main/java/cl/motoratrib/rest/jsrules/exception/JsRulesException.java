@@ -27,9 +27,10 @@ package cl.motoratrib.rest.jsrules.exception;
  *
  * @author Marcelo
  */
-public abstract class JsRulesException extends Exception {
+public class JsRulesException extends Exception {
 
     public JsRulesException() {
+        super();
     }
 
     public JsRulesException(String message) {

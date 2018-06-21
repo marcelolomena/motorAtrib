@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cl.motoratrib.rest.jsrules;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cl.motoratrib.rest.jsrules.util.JsonBean;
+
+import java.util.Objects;
 
 /**
  *
@@ -15,6 +10,10 @@ import cl.motoratrib.rest.jsrules.util.JsonBean;
  * @param <T>
  */
 public class Parameter<T> extends JsonBean {
+    private final String name;
+    private final Class<T> klasse;
+    private final T staticValue;
+
     public Parameter(String name, Class<T> klasse) {
         this.name = name;
         this.klasse = klasse;
@@ -26,10 +25,6 @@ public class Parameter<T> extends JsonBean {
         this.klasse = klasse;
         this.staticValue = staticValue;
     }
-    
-    private final String name;
-    private final Class<T> klasse;
-    private final T staticValue;
 
     public String getName() {
         return name;
@@ -41,6 +36,26 @@ public class Parameter<T> extends JsonBean {
 
     public T getStaticValue() {
         return staticValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
+        Parameter<?> parameter = (Parameter<?>) o;
+        return Objects.equals(name, parameter.name) &&
+                Objects.equals(klasse, parameter.klasse) &&
+                Objects.equals(staticValue, parameter.staticValue);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), name, klasse, staticValue);
     }
    
 }

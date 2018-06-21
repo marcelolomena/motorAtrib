@@ -15,7 +15,7 @@ public class RulesetConfig implements Config {
     private List<String> components;
 
     public RulesetConfig() {
-
+        super();
     }
 
     public RulesetConfig(String rulesetName, String rulesetType, ResponseConfig responseConfig, List<String> components) {

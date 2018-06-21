@@ -7,6 +7,7 @@ import cl.motoratrib.rest.jsrules.exception.InvalidParameterException;
  */
 public class MissingParameterException extends InvalidParameterException {
     public MissingParameterException() {
+        super();
     }
 
     public MissingParameterException(String message) {
