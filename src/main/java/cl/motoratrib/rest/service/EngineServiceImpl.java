@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.sql.Clob;
-import java.sql.SQLException;
 import java.util.*;
 
 import cl.bancochile.plataformabase.error.PlataformaBaseException;
@@ -43,71 +42,102 @@ public class EngineServiceImpl implements EngineService {
     @Override
     public String evaluatorRule(String json) throws PlataformaBaseException {
 
-        String responseRule = null;
-
-        ClaseGenerica response = null;
-        Parameter p5fechaPep, p5fechaVencMac = null;
+        String responseRule;
 
         try{
-
             InJson in = readJsonFullFromString(json);
-
-            List<SpListReglaVariablePcVarRS> vars = getRuleVariable(in.getRulesetName());
-
-            Map<String, Object> parameters = new HashMap<>();
-
             List<Parameter> listParam = in.getParameterList();
 
-            Map<String, String> tmplMap = new HashMap<String, String>();
-            Map<String, String> reqMap = new HashMap<String, String>();
-            for (SpListReglaVariablePcVarRS o : vars) {
-                tmplMap.put( o.getParametername(), o.getParameterclass());
-            }
-            List<Parameter> lParam = containsParameters(listParam, "p5_fechaPep", "p5_fechaVencMac");
-            p5fechaPep = containsParameter(lParam, "p5_fechaPep");
-            p5fechaVencMac = containsParameter(listParam, "p5_fechaVencMac");
+            Map<String, Object> tmplMap = buildTemplateParameter(in.getRulesetName());
+            Map<String, Object> parameters  = buidParametersValues(listParam);
 
-            if (p5fechaPep != null && p5fechaVencMac != null) {
-                DateTime end = DateTime.parse(p5fechaVencMac.getParameterValue());
-                DateTime start = DateTime.parse(p5fechaPep.getParameterValue());
-                int days = Days.daysBetween(start, end).getDays();
-                parameters.put("p5_diffMacPep", Long.valueOf(days));
-                listParam.remove(p5fechaPep);
-                listParam.remove(p5fechaVencMac);
-            }
-
-
-            for (Parameter p : listParam) {
-                if ("Long".equals(p.getParameterClass())) {
-                    parameters.put(p.getParameterName(), Long.valueOf(p.getParameterValue()));
-                } else if ("String".equals(p.getParameterClass())) {
-                    parameters.put(p.getParameterName(), p.getParameterValue());
-                } else if ("DateTime".equals(p.getParameterClass())) {
-                    parameters.put(p.getParameterName(), DateTime.parse(p.getParameterValue()));
-                }
-                reqMap.put(p.getParameterName(),p.getParameterClass());
-            }
-
-            if(!reqMap.equals(tmplMap)) {
+            if( !checkVariables(tmplMap, buidParametersTypes(listParam) ) ) {
                 responseRule = "{\"ref\":\"SF00\", \"alerta\":\"Las variables no corresponden al flujo que se esta invocando\"}";
-                throw new PlataformaBaseException(responseRule, new Exception(responseRule), CODIGO_ERROR_GENERICO);
+                LOGGER.debug(responseRule);
             } else {
+
+                List<Parameter> lParam = containsParameters(listParam, "p5_fechaPep", "p5_fechaVencMac");
+                Parameter p5fechaPep = containsParameter(lParam, "p5_fechaPep");
+                Parameter p5fechaVencMac = containsParameter(lParam, "p5_fechaVencMac");
+
+                if (p5fechaPep != null && p5fechaVencMac != null) {
+                    parameters = createAditionalParameter(parameters, p5fechaPep, p5fechaVencMac, "p5_diffMacPep");
+                    parameters.remove(p5fechaPep);
+                    parameters.remove(p5fechaVencMac);
+                }
+
                 Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
 
-                if (o != null)
-                    response = new ClaseGenerica(o);
-
-                if ("java.lang.String".equals(response.classType()))
-                    responseRule = response.getObj().toString();
-                else
-                    responseRule = "ERROR";
+                responseRule =  createResponse(o);
 
             }
+
         } catch (Exception ex) {
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
 
         return responseRule;
+    }
+
+    private String createResponse(Object o){
+        ClaseGenerica response = null;
+        String responseRule;
+
+        if (o != null)
+            response = new ClaseGenerica(o);
+
+        if ("java.lang.String".equals(response.classType()))
+            responseRule = response.getObj().toString();
+        else
+            responseRule = "{\"error\": 1}";
+
+        return responseRule;
+    }
+
+    private boolean checkVariables(Map<String, Object> tmplMap, Map<String, Object> reqMap){
+        return tmplMap.equals(reqMap);
+    }
+
+    private Map<String, Object> buildTemplateParameter(String nombre) throws PlataformaBaseException{
+        Map<String, Object> tmplMap = new HashMap<>();
+        List<SpListReglaVariablePcVarRS> vars = getRuleVariable(nombre);
+        for (SpListReglaVariablePcVarRS o : vars) {
+            tmplMap.put( o.getParametername(), o.getParameterclass());
+        }
+        return tmplMap;
+    }
+
+    private Map<String, Object> createAditionalParameter(Map<String, Object> parameters, Parameter pOne,Parameter pTwo, String name){
+        DateTime end = DateTime.parse(pTwo.getParameterValue());
+        DateTime start = DateTime.parse(pOne.getParameterValue());
+        int days = Days.daysBetween(start, end).getDays();
+        parameters.put(name, Long.valueOf(days));
+        return parameters;
+    }
+
+    private Map<String, Object> buidParametersValues(List<Parameter> listParam){
+
+        Map<String, Object> parameters = new HashMap<>();
+
+        for (Parameter p : listParam) {
+            if ("Long".equals(p.getParameterClass())) {
+                parameters.put(p.getParameterName(), Long.valueOf(p.getParameterValue()));
+            } else if ("String".equals(p.getParameterClass())) {
+                parameters.put(p.getParameterName(), p.getParameterValue());
+            } else if ("DateTime".equals(p.getParameterClass())) {
+                parameters.put(p.getParameterName(), DateTime.parse(p.getParameterValue()));
+            }
+        }
+
+        return parameters;
+    }
+
+    private Map<String, Object> buidParametersTypes(List<Parameter> listParam){
+        Map<String, Object> parameters = new HashMap<>();
+        for (Parameter p : listParam) {
+            parameters.put(p.getParameterName(),p.getParameterClass());
+        }
+        return parameters;
     }
 
     @Override
@@ -124,7 +154,7 @@ public class EngineServiceImpl implements EngineService {
                 recRule.setId(rule.getId().intValue());
                 recRule.setIdParent(rule.getIdPadre().intValue());
                 recRule.setName(rule.getNombre());
-                String sClob = getstringfromclob(rule.getJson());
+                String sClob = getStringSromClob(rule.getJson());
 
                 recRule.setJson(sClob.replaceAll("[\\s\u0000]+",""));
                 lstRecRule.add(recRule);
@@ -219,12 +249,12 @@ public class EngineServiceImpl implements EngineService {
         int indexTrue = 0;
         List<Parameter> params = new ArrayList<Parameter>();
         for(Parameter o : c) {
-            if(o != null){
-                if(o.getParameterName().equals(leftOne) || o.getParameterName().equals(leftTwo)) {
-                    indexTrue++;
-                    params.add(o);
-                }
+
+            if(o != null && isEqual(o, leftOne, leftTwo)) {
+                indexTrue++;
+                params.add(o);
             }
+
             if(indexTrue>2){
                 break;
             }
@@ -232,13 +262,16 @@ public class EngineServiceImpl implements EngineService {
         return params;
     }
 
+    private static boolean isEqual(Parameter p, String leftOne, String leftTwo){
+        return p.getParameterName().equals(leftOne) || p.getParameterName().equals(leftTwo);
+    }
 
     private InJson readJsonFullFromString(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, InJson.class);
     }
 
-    private String getstringfromclob(Clob cl) throws PlataformaBaseException
+    private static String getStringSromClob(Clob cl) throws PlataformaBaseException
     {
         StringWriter write = new StringWriter();
         try{
@@ -255,43 +288,6 @@ public class EngineServiceImpl implements EngineService {
         }
         return write.toString();
 
-    }
-
-    private String clobToString(Clob data)
-    {
-        final StringBuilder builder= new StringBuilder();
-
-        try
-        {
-            if(data == null)  throw new Exception("data is null");
-            final Reader reader = data.getCharacterStream();
-            final BufferedReader br     = new BufferedReader(reader);
-            if(br == null)  throw new Exception("buffer is null");
-            int b;
-            while(-1 != (b = br.read()))
-            {
-                builder.append((char)b);
-            }
-
-            br.close();
-        }
-        catch (SQLException e)
-        {
-            LOGGER.error("Within SQLException, Could not convert CLOB to string",e);
-            return e.toString();
-        }
-        catch (IOException e)
-        {
-            LOGGER.error("Within IOException, Could not convert CLOB to string",e);
-            return e.toString();
-        }
-        catch (Exception e)
-        {
-            LOGGER.error("Within Exception, Could not convert CLOB to string",e);
-            return e.toString();
-        }
-
-        return builder.toString();
     }
 
 }
