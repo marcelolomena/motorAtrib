@@ -59,28 +59,37 @@ public class AllTrueRulesetExecutorImpl<T> extends RulesetExecutor<T> {
     @Override
     public T execute(Map<String, Object> parameters) throws InvalidParameterException {
         T result = response;
+        boolean aborted = false;
         for(RuleExecutor rule:ruleSet) {
-            Parameter ruleParamRight = rule.getRightParameter();
-            Object leftParameter = parameters.get(rule.getLeftParameter().getName());
-            Object rightParameter = parameters.get(ruleParamRight.getName());
-
-            if (ruleParamRight.getStaticValue() == null) {
-                // verifique ambos parámetros - las verificaciones de reglas fallidas devuelven nulo
-                if (rule.execute(leftParameter, rightParameter) == null) {
+            if(!aborted) {
+                aborted =worker(rule,parameters);
+                if(aborted)
                     result = null;
-                    break;
-                }
-            } else {
-                // verifique solo el parámetro izquierdo - las verificaciones de reglas fallidas devuelven nulo
-                if (rule.execute(leftParameter) == null) {
-                    result = null;
-                    break;
-                }
             }
         }
         LOGGER.debug("cool? : " + result);
 
         return result;
+    }
+
+    private static boolean worker (RuleExecutor rule, Map<String, Object> parameters) throws InvalidParameterException {
+        Parameter ruleParamRight = rule.getRightParameter();
+        Object leftParameter = parameters.get(rule.getLeftParameter().getName());
+        Object rightParameter = parameters.get(ruleParamRight.getName());
+        boolean ret = false;
+        if (ruleParamRight.getStaticValue() == null) {
+            // verifique ambos parámetros - las verificaciones de reglas fallidas devuelven nulo
+            if (rule.execute(leftParameter, rightParameter) == null) {
+                ret = true;
+            }
+        } else {
+            // verifique solo el parámetro izquierdo - las verificaciones de reglas fallidas devuelven nulo
+            if (rule.execute(leftParameter) == null) {
+                ret = true;
+            }
+        }
+        return ret;
+
     }
 
     @Override

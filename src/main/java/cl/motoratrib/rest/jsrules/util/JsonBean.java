@@ -46,9 +46,7 @@ public abstract class JsonBean {
     
     public String toJsonString() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        
-        String json = mapper.writeValueAsString(this);
 
-        return json;
+        return mapper.writeValueAsString(this);
     }
 }

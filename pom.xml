@@ -33,6 +33,8 @@
         <mockito.version>1.10.19</mockito.version>
         <slf4j.version>1.7.12</slf4j.version>
         <commons.version>3.4</commons.version>
+
+        <sonar.exclusions>src/main/webapp/resources/jquery/jquery.min.js</sonar.exclusions>
     </properties>
  
     <dependencies>

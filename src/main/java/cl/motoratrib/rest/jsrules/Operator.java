@@ -73,7 +73,7 @@ public enum Operator {
             boolean valueMatched = false;
             for (Object setValueObject : set) {
                 Number setValue = getNumber(setValueObject);
-                if (setValue.doubleValue() == leftNumber.doubleValue()) {
+                if( Double.doubleToRawLongBits(setValue.doubleValue()) == Double.doubleToRawLongBits(leftNumber.doubleValue()) ) {
                     valueMatched = true;
                     return valueMatched;
                 }

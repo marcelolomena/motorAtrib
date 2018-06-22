@@ -100,7 +100,7 @@ public enum ClassHandler {
             try {
                 stringSet = new HashSet<String>(Arrays.asList(string.split(",")));
             } catch (Exception ex) {
-                throw new ClassHandlerException("Unable to convert " + string + " into a Set of Strings", ex);
+                throw new ClassHandlerException(ACTION_1 + string + ACTION_3, ex);
             }
 
             return stringSet;
@@ -121,7 +121,7 @@ public enum ClassHandler {
             try {
                 numberSet = MAPPER.readValue(string, Set.class);
             } catch (IOException ex) {
-                throw new ClassHandlerException("Unable to convert " + string + " into a Set of Numbers", ex);
+                throw new ClassHandlerException(ACTION_1 + string + ACTION_2, ex);
             }
 
             return numberSet;
@@ -182,15 +182,19 @@ public enum ClassHandler {
             try {
                 dateSet = MAPPER.readValue(string, Set.class);
             } catch (IOException ex) {
-                throw new ClassHandlerException("Unable to convert " + string + " into a Set of Dates", ex);
+                throw new ClassHandlerException(ACTION_1 + string + ACTION_4, ex);
             }
 
             return dateSet;
         }
     };
-    
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final String ACTION_1 = "Unable to convert ";
+    private static final String ACTION_2 = " into a Set of Numbers";
+    private static final String ACTION_3 = " into a Set of Strings";
+    private static final String ACTION_4 = " into a Set of Dates";
     public abstract Class getMyClass();
     public abstract <T> T convertString(String string) throws ClassHandlerException;
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+
 }

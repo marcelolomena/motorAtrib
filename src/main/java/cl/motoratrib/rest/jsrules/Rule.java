@@ -54,11 +54,11 @@ public class Rule<T, P> extends JsonBean {
 
     @Override
     public boolean equals(Object that) {
-        return super.equals(that);
+        return super.equals(new Object(/* ... */));
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return super.hashCode(/* ... */);
     }
 }

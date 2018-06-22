@@ -94,7 +94,7 @@ public class EngineServiceImpl implements EngineService {
         return responseRule;
     }
 
-    private boolean checkVariables(Map<String, Object> tmplMap, Map<String, Object> reqMap){
+    private static boolean checkVariables(Map<String, Object> tmplMap, Map<String, Object> reqMap){
         return tmplMap.equals(reqMap);
     }
 
@@ -107,7 +107,7 @@ public class EngineServiceImpl implements EngineService {
         return tmplMap;
     }
 
-    private Map<String, Object> createAditionalParameter(Map<String, Object> parameters, Parameter pOne,Parameter pTwo, String name){
+    private static Map<String, Object> createAditionalParameter(Map<String, Object> parameters, Parameter pOne,Parameter pTwo, String name){
         DateTime end = DateTime.parse(pTwo.getParameterValue());
         DateTime start = DateTime.parse(pOne.getParameterValue());
         int days = Days.daysBetween(start, end).getDays();
@@ -115,7 +115,7 @@ public class EngineServiceImpl implements EngineService {
         return parameters;
     }
 
-    private Map<String, Object> buidParametersValues(List<Parameter> listParam){
+    private static Map<String, Object> buidParametersValues(List<Parameter> listParam){
 
         Map<String, Object> parameters = new HashMap<>();
 
@@ -132,7 +132,7 @@ public class EngineServiceImpl implements EngineService {
         return parameters;
     }
 
-    private Map<String, Object> buidParametersTypes(List<Parameter> listParam){
+    private static Map<String, Object> buidParametersTypes(List<Parameter> listParam){
         Map<String, Object> parameters = new HashMap<>();
         for (Parameter p : listParam) {
             parameters.put(p.getParameterName(),p.getParameterClass());
