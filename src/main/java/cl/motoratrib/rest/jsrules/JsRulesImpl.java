@@ -46,6 +46,7 @@ public class JsRulesImpl implements JsRules {
     private final Map<String, Rule> ruleMap = new CacheMap<>(CACHE_SIZE, TIME_TO_LIVE);
     private final Map<String, RulesetExecutor> rulesetExecutorMap = new CacheMap<>(CACHE_SIZE, TIME_TO_LIVE);
 
+    @Override
     public Rule loadRuleByJson(String json) throws InvalidConfigException {
         try {
             RuleConfig ruleConfig = objectMapper.readValue(json, RuleConfig.class);
@@ -54,7 +55,30 @@ public class JsRulesImpl implements JsRules {
             throw new InvalidConfigException("Unable to parse json: " + json, ex);
         }
     }
+    @Override
+    public Rule loadRuleByNameFromFile(String ruleName) throws InvalidConfigException {
+        Rule rule = ruleMap.get(ruleName);
 
+        if (rule == null) {
+            String fileName = ruleName + ".json";
+
+            InputStream stream = getFileFromClasspath(fileName);
+
+            if (stream == null) {
+                throw new InvalidConfigException("Unable to find rule file: " + fileName);
+            }
+
+            try {
+                RuleConfig ruleConfig = objectMapper.readValue(stream, RuleConfig.class);
+                rule = getRule(ruleConfig);
+            } catch (IOException ex) {
+                throw new InvalidConfigException("Unable to parse rule file: " + ruleName, ex);
+            }
+        }
+
+        return rule;
+    }
+    @Override
     public Rule loadRuleByName(String ruleName) throws InvalidConfigException {
         Rule rule = ruleMap.get(ruleName);
 
@@ -80,7 +104,7 @@ public class JsRulesImpl implements JsRules {
 
         return rule;
     }
-
+    @Override
     public RulesetExecutor loadRulesetByJson(String json) throws InvalidConfigException {
         try {
             RulesetConfig rulesetConfig = objectMapper.readValue(json, RulesetConfig.class);
@@ -89,7 +113,7 @@ public class JsRulesImpl implements JsRules {
             throw new InvalidConfigException("Unable to parse json: " + json, ex);
         }
     }
-
+    @Override
     public RulesetExecutor loadRulesetByName(String rulesetName) throws InvalidConfigException {
         RulesetExecutor ruleset = rulesetExecutorMap.get(rulesetName);
 
@@ -157,5 +181,9 @@ public class JsRulesImpl implements JsRules {
 
         return is;
     }
+    private InputStream getFileFromClasspath(String fileName) {
+        return this.getClass().getResourceAsStream("/" + fileName);
+    }
+
 
 }

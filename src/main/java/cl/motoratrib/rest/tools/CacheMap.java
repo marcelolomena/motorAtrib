@@ -5,7 +5,6 @@ import org.apache.commons.lang3.time.StopWatch;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * HashMap implementation suitable for simple caching
@@ -86,15 +85,12 @@ public class CacheMap<K, V> extends LinkedHashMap<K, V>  {
         return cacheSize > 0 && this.size() > cacheSize;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        return o.hashCode() == this.hashCode() &&
-                o.getClass() == this.getClass();
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), stopWatchMap);
+        return System.identityHashCode(this);
+    }
+    @Override
+    public boolean equals(Object object) {
+        return this==object;
     }
 }

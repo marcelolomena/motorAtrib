@@ -3,12 +3,14 @@ package cl.motoratrib.rest.controller;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglasIN;
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglasOUT;
+
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
 import cl.motoratrib.rest.context.TestContext;
 import cl.motoratrib.rest.context.WebAppContext;
+import cl.motoratrib.rest.domain.GridRule;
 import cl.motoratrib.rest.service.EngineService;
+import cl.motoratrib.rest.util.UnitTestHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -27,13 +29,10 @@ import org.mockito.Mock;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import cl.motoratrib.rest.context.TestUtil;
-
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
@@ -44,6 +43,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
         TransactionalTestExecutionListener.class, WithSecurityContextTestExecutionListener.class })
 @WebAppConfiguration
 public class RuleControllerTest {
+
     MockMvc mockMvc;
 
     @Mock
@@ -72,13 +72,37 @@ public class RuleControllerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-
-    public void testGetRuleOK() throws Exception {
+    public void testGetRulesOK() throws Exception {
         String id = "1";
         SpListReglasOUT salidaDaoListReglas = mock(SpListReglasOUT.class);
         when(spListReglasDAO.execute(any(SpListReglasIN.class))).thenReturn(salidaDaoListReglas);
 
         mockMvc.perform(get("/rules/{id}", id).contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY)).andExpect(status().isOk()).andDo(print());
+
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetVariablesOK() throws Exception {
+        SpListVariablesOUT salidaDaoListVariables = mock(SpListVariablesOUT.class);
+        when(spListVariablesDAO.execute()).thenReturn(salidaDaoListVariables);
+
+        mockMvc.perform(get("/variables").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY)).andExpect(status().isOk()).andDo(print());
+
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUpdateRuleOK() throws Exception {
+
+        GridRule testGridRule = UnitTestHelper.createGridRuleUpdate();
+
+        SpUpdateReglaOUT salidaDaoUpdateRule = mock(SpUpdateReglaOUT.class);
+        when(spUpdateReglaDAO.execute(any(SpUpdateReglaIN.class))).thenReturn(salidaDaoUpdateRule);
+
+        mockMvc.perform(post("/uRule").content(UnitTestHelper.asJsonString(testGridRule)).contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY)).andExpect(status().isOk()).andDo(print());
 
     }

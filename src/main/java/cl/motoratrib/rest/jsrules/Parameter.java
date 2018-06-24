@@ -38,24 +38,5 @@ public class Parameter<T> extends JsonBean {
         return staticValue;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        if (!super.equals(o))
-            return false;
-        Parameter<?> parameter = (Parameter<?>) o;
-        return Objects.equals(name, parameter.name) &&
-                Objects.equals(klasse, parameter.klasse) &&
-                Objects.equals(staticValue, parameter.staticValue);
-    }
 
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(super.hashCode(), name, klasse, staticValue);
-    }
-   
 }

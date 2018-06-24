@@ -33,17 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Marcelo
  */
 public abstract class JsonBean {
-    @Override
-    public boolean equals(Object that) {
-        return that.hashCode() == this.hashCode() && 
-                that.getClass() == this.getClass();
-    }
-    
-    @Override
-    public int hashCode() {
-        return toString().hashCode();
-    }
-    
+
     public String toJsonString() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
