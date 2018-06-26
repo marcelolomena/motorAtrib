@@ -30,10 +30,7 @@ import java.util.Map;
 @Component
 public class JsRulesImpl implements JsRules {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsRulesImpl.class);
-/*
-    @Autowired
-    RuleService ruleService;
-*/
+
     @Autowired
     EngineService engineService;
     private final ObjectMapper objectMapper = new ObjectMapper();

@@ -3,13 +3,11 @@ package cl.motoratrib.rest.service;
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
 import cl.motoratrib.rest.domain.*;
+import cl.motoratrib.rest.util.EngineHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.stereotype.Service;
-import java.io.*;
-import java.sql.Clob;
 import java.util.*;
 
 import cl.bancochile.plataformabase.error.PlataformaBaseException;
@@ -26,11 +24,7 @@ public class EngineServiceImpl implements EngineService {
     @Autowired
     SpListVariablesDAO spListVariablesDAO;
     @Autowired
-    SpUpdateReglaDAO spUpdateReglaDAO;
-    @Autowired
     SpListReglaVariableDAO spListReglaVariableDAO;
-    @Autowired
-    SpUpdateConjuntoReglaDAO spUpdateConjuntoReglaDAO;
     @Autowired
     SpGetReglaDAO spGetReglaDAO;
 
@@ -48,7 +42,7 @@ public class EngineServiceImpl implements EngineService {
                 recRule.setId(rule.getId().intValue());
                 recRule.setIdParent(rule.getIdPadre().intValue());
                 recRule.setName(rule.getNombre());
-                String sClob = getStringSromClob(rule.getJson());
+                String sClob = EngineHandler.getStringSromClob(rule.getJson());
 
                 recRule.setJson(sClob.replaceAll("[\\s\u0000]+",""));
                 lstRecRule.add(recRule);
@@ -72,51 +66,6 @@ public class EngineServiceImpl implements EngineService {
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
         return spListVariablesOUT.getPcVariable();
-    }
-
-    @Override
-    public SpUpdateReglaOUT updateRule(GridRule grule) throws PlataformaBaseException {
-        SpUpdateReglaOUT out;
-        try {
-            SpUpdateReglaIN params = new SpUpdateReglaIN();
-            if(grule.getId() != null)
-                params.setPId(Integer.parseInt(grule.getId()));
-            else
-                params.setPId(0);
-            params.setPOper(grule.getOper());
-            SqlLobValue slv=new SqlLobValue(grule.getJson());
-            params.setPJson(slv);
-            out =  this.spUpdateReglaDAO.execute(params);
-
-        } catch (Exception  ex) {
-            LOGGER.error(ex.getMessage());
-            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
-        }
-
-        return out;
-
-    }
-
-    @Override
-    public SpUpdateConjuntoReglaOUT updateRuleSet(GridRule grule) throws PlataformaBaseException {
-        SpUpdateConjuntoReglaOUT out;
-        try {
-            SpUpdateConjuntoReglaIN params = new SpUpdateConjuntoReglaIN();
-            if(grule.getId() != null)
-                params.setPId(Integer.parseInt(grule.getId()));
-            else
-                params.setPId(0);
-            params.setPOper(grule.getOper());
-            SqlLobValue slv=new SqlLobValue(grule.getJson());
-            params.setPJson(slv);
-            out =  this.spUpdateConjuntoReglaDAO.execute(params);
-
-        } catch (Exception  ex) {
-            LOGGER.error(ex.getMessage());
-            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
-        }
-
-        return out;
     }
 
     @Override
@@ -149,24 +98,5 @@ public class EngineServiceImpl implements EngineService {
         return ruleValue;
     }
 
-    private static String getStringSromClob(Clob cl) throws PlataformaBaseException
-    {
-        StringWriter write = new StringWriter();
-        try{
-            Reader read  = cl.getCharacterStream();
-            int c = -1;
-            while ((c = read.read()) != -1)
-            {
-                write.write(c);
-            }
-            write.flush();
-        }catch(Exception e)
-        {
-            LOGGER.error(e.getMessage());
-            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, e, CODIGO_ERROR_GENERICO);
-        }
-        return write.toString();
-
-    }
 
 }
