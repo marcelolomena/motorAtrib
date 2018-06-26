@@ -2,8 +2,6 @@ package cl.motoratrib.rest.service;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
-import cl.motoratrib.rest.domain.*;
-import cl.motoratrib.rest.util.EngineHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
