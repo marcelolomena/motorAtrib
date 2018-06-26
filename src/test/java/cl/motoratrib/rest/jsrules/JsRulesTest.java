@@ -1,5 +1,6 @@
 package cl.motoratrib.rest.jsrules;
 
+import cl.motoratrib.rest.jsrules.exception.JsRulesException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cl.motoratrib.rest.jsrules.config.ResponseConfig;
 import cl.motoratrib.rest.jsrules.config.RulesetConfig;
@@ -82,6 +83,17 @@ public class JsRulesTest {
     }
 
     @Test
+    public void testExecuteRulesetException() throws Exception {
+        exception.expect(JsRulesException.class);
+
+        Map<String, Object> parameters = new HashMap<>();
+
+        parameters.put("left", 15l);
+
+        jsrules.executeRuleset("MockRuleset", parameters);
+    }
+
+    @Test
     public void testLoadRuleByNameFileMissing() throws Exception {
         exception.expect(InvalidConfigException.class);
 
@@ -89,6 +101,16 @@ public class JsRulesTest {
 
         jsrules.loadRuleByName(ruleName);
     }
+
+    @Test
+    public void testLoadRuleByNameFromFileFileMissing() throws Exception {
+        exception.expect(InvalidConfigException.class);
+
+        String ruleName = "BogusRuleName";
+
+        jsrules.loadRuleByNameFromFile(ruleName);
+    }
+
 
     @Test
     public void testLoadRuleByNameIOError() throws Exception {

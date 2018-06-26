@@ -240,6 +240,7 @@ public class OperatorTest {
         assertTrue(operator.compare(left, longSet));
     }
 
+
     @Test
     public void betweenTrueReversedTest() throws Exception {
         Operator operator = Operator.BETWEEN;
@@ -314,5 +315,49 @@ public class OperatorTest {
         Operator operator = Operator.NOT_BETWEEN;
 
         operator.compare("string", "not a set");
+    }
+
+    @Test
+    public void regexTrueTest() throws Exception {
+        Operator operator = Operator.EX;
+        String left = "VVVVV";
+        String right = "VVV[VF][VF]";
+        assertTrue(operator.compare(left, right));
+
+    }
+
+    @Test
+    public void regexFalseTest() throws Exception {
+        Operator operator = Operator.EX;
+        String left = "FFFVV";
+        String right = "VVV[VF][VF]";
+        assertTrue(operator.compare(left, right));
+
+    }
+
+    @Test
+    public void regexSetTrueTest() throws Exception {
+        Operator operator = Operator.EX_IN;
+        String left = "VVVFV";
+        Set<String> right = new HashSet<String>() {{
+            add("VVV[VF][VF]");
+            add("VV[VF][VF][VF]");
+        }};
+
+
+        assertTrue(operator.compare(left, right));
+
+    }
+
+    @Test
+    public void regexSetFalseTest() throws Exception {
+        Operator operator = Operator.EX_IN;
+        String left = "FFFFF";
+        Set<String> right = new HashSet<String>() {{
+            add("VVV[VF][VF]");
+            add("VV[VF][VF][VF]");
+        }};
+        assertTrue(operator.compare(left, right));
+
     }
 }

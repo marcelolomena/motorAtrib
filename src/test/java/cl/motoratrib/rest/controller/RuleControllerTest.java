@@ -9,7 +9,6 @@ import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
 import cl.motoratrib.rest.context.TestContext;
 import cl.motoratrib.rest.context.WebAppContext;
 import cl.motoratrib.rest.domain.GridRule;
-import cl.motoratrib.rest.service.EngineService;
 import cl.motoratrib.rest.util.UnitTestHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -26,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import cl.motoratrib.rest.context.TestUtil;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -60,9 +58,6 @@ public class RuleControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    @InjectMocks
-    private EngineService engineService;
 
     @Before
     public void setUp() throws Exception {

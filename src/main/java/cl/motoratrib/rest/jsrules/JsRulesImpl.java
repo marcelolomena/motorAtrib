@@ -2,7 +2,7 @@ package cl.motoratrib.rest.jsrules;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaOUT;
 import cl.bancochile.plataformabase.error.PlataformaBaseException;
-import cl.motoratrib.rest.jsrules.service.RuleService;
+import cl.motoratrib.rest.service.EngineService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cl.motoratrib.rest.jsrules.config.RuleConfig;
 import cl.motoratrib.rest.jsrules.config.RulesetConfig;
@@ -30,10 +30,12 @@ import java.util.Map;
 @Component
 public class JsRulesImpl implements JsRules {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsRulesImpl.class);
-
+/*
     @Autowired
     RuleService ruleService;
-
+*/
+    @Autowired
+    EngineService engineService;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final RuleLoader ruleLoader = new RuleLoaderImpl();
     private final RulesetLoader rulesetLoader = new RulesetLoaderImpl(this);
@@ -168,7 +170,7 @@ public class JsRulesImpl implements JsRules {
     private InputStream getRecordFromDatabase(String name) throws PlataformaBaseException,SQLException {
         InputStream is;
         try {
-            SpGetReglaOUT spOut = this.ruleService.getRuleByName(name);
+            SpGetReglaOUT spOut = this.engineService.getRuleByName(name);
             OracleClob oc = spOut.getPJson();
             is = oc.getAsciiStream();
         }catch (PlataformaBaseException e){

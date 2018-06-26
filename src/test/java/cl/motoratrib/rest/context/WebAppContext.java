@@ -23,7 +23,8 @@ import java.util.logging.Logger;
 @EnableWebMvc
 @PropertySource("classpath:system.properties")
 @ComponentScan(basePackages = {
-        "cl.motoratrib.rest.controller"
+        "cl.motoratrib.rest.controller",
+        "cl.motoratrib.rest.jsrules"
 })
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebAppContext extends WebMvcConfigurerAdapter {

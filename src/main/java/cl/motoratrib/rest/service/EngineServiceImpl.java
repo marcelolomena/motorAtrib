@@ -3,16 +3,11 @@ package cl.motoratrib.rest.service;
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
 import cl.motoratrib.rest.domain.*;
-import cl.motoratrib.rest.jsrules.JsRules;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.stereotype.Service;
-
 import java.io.*;
 import java.sql.Clob;
 import java.util.*;
@@ -27,8 +22,6 @@ public class EngineServiceImpl implements EngineService {
     private static final String GLOSA_ERROR_GENERICO = "Error al invocar motor de reglas ";
 
     @Autowired
-    JsRules jsrules;
-    @Autowired
     SpListReglasDAO spListReglasDAO;
     @Autowired
     SpListVariablesDAO spListVariablesDAO;
@@ -38,107 +31,8 @@ public class EngineServiceImpl implements EngineService {
     SpListReglaVariableDAO spListReglaVariableDAO;
     @Autowired
     SpUpdateConjuntoReglaDAO spUpdateConjuntoReglaDAO;
-
-    @Override
-    public String evaluatorRule(String json) throws PlataformaBaseException {
-
-        String responseRule;
-
-        try{
-            InJson in = readJsonFullFromString(json);
-            List<Parameter> listParam = in.getParameterList();
-
-            Map<String, Object> tmplMap = buildTemplateParameter(in.getRulesetName());
-            Map<String, Object> parameters  = buidParametersValues(listParam);
-
-            if( !checkVariables(tmplMap, buidParametersTypes(listParam) ) ) {
-                responseRule = "{\"ref\":\"SF00\", \"alerta\":\"Las variables no corresponden al flujo que se esta invocando\"}";
-                LOGGER.debug(responseRule);
-            } else {
-
-                List<Parameter> lParam = containsParameters(listParam, "p5_fechaPep", "p5_fechaVencMac");
-                Parameter p5fechaPep = containsParameter(lParam, "p5_fechaPep");
-                Parameter p5fechaVencMac = containsParameter(lParam, "p5_fechaVencMac");
-
-                if (p5fechaPep != null && p5fechaVencMac != null) {
-                    parameters = createAditionalParameter(parameters, p5fechaPep, p5fechaVencMac, "p5_diffMacPep");
-                    parameters.remove(p5fechaPep);
-                    parameters.remove(p5fechaVencMac);
-                }
-
-                Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
-
-                responseRule =  createResponse(o);
-
-            }
-
-        } catch (Exception ex) {
-            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
-        }
-
-        return responseRule;
-    }
-
-    private String createResponse(Object o){
-        ClaseGenerica response = null;
-        String responseRule;
-
-        if (o != null)
-            response = new ClaseGenerica(o);
-
-        if ("java.lang.String".equals(response.classType()))
-            responseRule = response.getObj().toString();
-        else
-            responseRule = "{\"error\": 1}";
-
-        return responseRule;
-    }
-
-    private static boolean checkVariables(Map<String, Object> tmplMap, Map<String, Object> reqMap){
-        return tmplMap.equals(reqMap);
-    }
-
-    private Map<String, Object> buildTemplateParameter(String nombre) throws PlataformaBaseException{
-        Map<String, Object> tmplMap = new HashMap<>();
-        List<SpListReglaVariablePcVarRS> vars = getRuleVariable(nombre);
-        for (SpListReglaVariablePcVarRS o : vars) {
-            tmplMap.put( o.getParametername(), o.getParameterclass());
-        }
-        return tmplMap;
-    }
-
-    private static Map<String, Object> createAditionalParameter(Map<String, Object> parameters, Parameter pOne,Parameter pTwo, String name){
-        DateTime end = DateTime.parse(pTwo.getParameterValue());
-        DateTime start = DateTime.parse(pOne.getParameterValue());
-        int days = Days.daysBetween(start, end).getDays();
-        parameters.put(name, Long.valueOf(days));
-        return parameters;
-    }
-
-    private static Map<String, Object> buidParametersValues(List<Parameter> listParam){
-
-        Map<String, Object> parameters = new HashMap<>();
-
-        for (Parameter p : listParam) {
-            if ("Long".equals(p.getParameterClass())) {
-                parameters.put(p.getParameterName(), Long.valueOf(p.getParameterValue()));
-            } else if ("String".equals(p.getParameterClass())) {
-                parameters.put(p.getParameterName(), p.getParameterValue());
-            } else if ("DateTime".equals(p.getParameterClass())) {
-                parameters.put(p.getParameterName(), DateTime.parse(p.getParameterValue()));
-            }
-        }
-
-        return parameters;
-    }
-
-    private static Map<String, Object> buidParametersTypes(List<Parameter> listParam){
-        Map<String, Object> parameters = new HashMap<>();
-        for (Parameter p : listParam) {
-            parameters.put(p.getParameterName(),p.getParameterClass());
-        }
-        return parameters;
-    }
+    @Autowired
+    SpGetReglaDAO spGetReglaDAO;
 
     @Override
     public List<RecordRule> getRule(int id) throws PlataformaBaseException {
@@ -160,7 +54,8 @@ public class EngineServiceImpl implements EngineService {
                 lstRecRule.add(recRule);
             }
 
-        } catch (Exception ex) {
+        } catch (Exception  ex) {
+            LOGGER.error(ex.getMessage());
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
         return lstRecRule;
@@ -173,6 +68,7 @@ public class EngineServiceImpl implements EngineService {
         try {
             spListVariablesOUT = this.spListVariablesDAO.execute();
         } catch (Exception ex) {
+            LOGGER.error(ex.getMessage());
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
         return spListVariablesOUT.getPcVariable();
@@ -192,7 +88,8 @@ public class EngineServiceImpl implements EngineService {
             params.setPJson(slv);
             out =  this.spUpdateReglaDAO.execute(params);
 
-        } catch (Exception ex) {
+        } catch (Exception  ex) {
+            LOGGER.error(ex.getMessage());
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
 
@@ -214,7 +111,8 @@ public class EngineServiceImpl implements EngineService {
             params.setPJson(slv);
             out =  this.spUpdateConjuntoReglaDAO.execute(params);
 
-        } catch (Exception ex) {
+        } catch (Exception  ex) {
+            LOGGER.error(ex.getMessage());
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
 
@@ -230,45 +128,25 @@ public class EngineServiceImpl implements EngineService {
 
             out = this.spListReglaVariableDAO.execute(param);
 
-        } catch (Exception ex) {
+        } catch (Exception  ex) {
+            LOGGER.error(ex.getMessage());
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
         }
         return out.getPcVar();
     }
 
-    private static Parameter containsParameter(Collection<Parameter> c, String name) {
-        for(Parameter o : c) {
-            if(o != null && o.getParameterName().equals(name)) {
-                return o;
-            }
+    @Override
+    public SpGetReglaOUT getRuleByName(String name) throws PlataformaBaseException {
+        SpGetReglaOUT ruleValue;
+        try {
+            SpGetReglaIN params = new SpGetReglaIN();
+            params.setPNombre(name);
+            ruleValue=this.spGetReglaDAO.execute(params);
+            LOGGER.debug(ruleValue.toString());
+        }catch(Exception  e){
+            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, e, CODIGO_ERROR_GENERICO);
         }
-        return null;
-    }
-
-    private static List<Parameter> containsParameters(Collection<Parameter> c, String leftOne, String leftTwo) {
-        int indexTrue = 0;
-        List<Parameter> params = new ArrayList<Parameter>();
-        for(Parameter o : c) {
-
-            if(o != null && isEqual(o, leftOne, leftTwo)) {
-                indexTrue++;
-                params.add(o);
-            }
-
-            if(indexTrue>2){
-                break;
-            }
-        }
-        return params;
-    }
-
-    private static boolean isEqual(Parameter p, String leftOne, String leftTwo){
-        return p.getParameterName().equals(leftOne) || p.getParameterName().equals(leftTwo);
-    }
-
-    private InJson readJsonFullFromString(String json) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, InJson.class);
+        return ruleValue;
     }
 
     private static String getStringSromClob(Clob cl) throws PlataformaBaseException
@@ -284,6 +162,7 @@ public class EngineServiceImpl implements EngineService {
             write.flush();
         }catch(Exception e)
         {
+            LOGGER.error(e.getMessage());
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, e, CODIGO_ERROR_GENERICO);
         }
         return write.toString();
