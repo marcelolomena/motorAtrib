@@ -1,5 +1,6 @@
 package cl.motoratrib.rest.util;
 
+import cl.bancochile.plataformabase.error.PlataformaBaseException;
 import cl.motoratrib.rest.domain.ClaseGenerica;
 import cl.motoratrib.rest.domain.InJson;
 import cl.motoratrib.rest.domain.Parameter;
@@ -15,6 +16,8 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class EngineHandler {
+    private static final String CODIGO_ERROR_GENERICO = "100000";
+    private static final String GLOSA_ERROR_GENERICO = "Error al invocar motor de reglas ";
 
     private EngineHandler() {
     }
@@ -106,18 +109,22 @@ public class EngineHandler {
         return null;
     }
 
-    public static String getStringSromClob(Clob cl) throws SQLException,IOException
+    public static String getStringSromClob(Clob cl) throws PlataformaBaseException
     {
         StringWriter write = new StringWriter();
 
-        Reader read  = cl.getCharacterStream();
-        int c = -1;
-        while ((c = read.read()) != -1)
-        {
-            write.write(c);
+        try {
+            Reader read = cl.getCharacterStream();
+            int c = -1;
+            while ((c = read.read()) != -1) {
+                write.write(c);
+            }
+            write.flush();
+        } catch(SQLException e){
+            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, e, CODIGO_ERROR_GENERICO);
+        } catch(IOException e){
+            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, e, CODIGO_ERROR_GENERICO);
         }
-        write.flush();
-
         return write.toString();
 
     }

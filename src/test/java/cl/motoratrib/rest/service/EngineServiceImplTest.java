@@ -1,9 +1,12 @@
 package cl.motoratrib.rest.service;
 
-
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import java.util.List;
+
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaIN;
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaOUT;
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListVariablesPcVariableRS;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
 import cl.motoratrib.rest.fixture.EngineFixture;
@@ -67,15 +70,7 @@ public class EngineServiceImplTest {
             "}";
 
     @Mock
-    SpListReglasDAO spListReglasDAO;
-    @Mock
     SpListVariablesDAO spListVariablesDAO;
-    @Mock
-    SpUpdateReglaDAO spUpdateReglaDAO;
-    @Mock
-    SpListReglaVariableDAO spListReglaVariableDAO;
-    @Mock
-    SpUpdateConjuntoReglaDAO spUpdateConjuntoReglaDAO;
     @Mock
     SpGetReglaDAO spGetReglaDAO;
 
@@ -105,7 +100,10 @@ public class EngineServiceImplTest {
     }
     @Test
     public void testGetRuleByNameOK() throws Exception {
-
+        when(spGetReglaDAO.execute(any(SpGetReglaIN.class)))
+                .thenReturn(EngineFixture.reglas());
+        SpGetReglaOUT rule = engineService.getRuleByName(RULE_NAME);
+        assertNotNull(rule);
     }
 
 }

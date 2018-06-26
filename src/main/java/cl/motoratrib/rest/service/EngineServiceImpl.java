@@ -20,40 +20,11 @@ public class EngineServiceImpl implements EngineService {
     private static final String GLOSA_ERROR_GENERICO = "Error al invocar motor de reglas ";
 
     @Autowired
-    SpListReglasDAO spListReglasDAO;
-    @Autowired
     SpListVariablesDAO spListVariablesDAO;
     @Autowired
     SpListReglaVariableDAO spListReglaVariableDAO;
     @Autowired
     SpGetReglaDAO spGetReglaDAO;
-
-    @Override
-    public List<RecordRule> getRule(int id) throws PlataformaBaseException {
-        SpListReglasOUT spListReglasOUT;
-        List<RecordRule> lstRecRule = new ArrayList<>();
-        try {
-            SpListReglasIN params  = new SpListReglasIN();
-            params.setPIdPadre(id);
-            spListReglasOUT = this.spListReglasDAO.execute(params);
-
-            for (SpListReglasPcReglaRS rule : spListReglasOUT.getPcRegla()){
-                RecordRule recRule = new RecordRule();
-                recRule.setId(rule.getId().intValue());
-                recRule.setIdParent(rule.getIdPadre().intValue());
-                recRule.setName(rule.getNombre());
-                String sClob = EngineHandler.getStringSromClob(rule.getJson());
-
-                recRule.setJson(sClob.replaceAll("[\\s\u0000]+",""));
-                lstRecRule.add(recRule);
-            }
-
-        } catch (Exception  ex) {
-            LOGGER.error(ex.getMessage());
-            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, ex, CODIGO_ERROR_GENERICO);
-        }
-        return lstRecRule;
-    }
 
     @Override
     public List<SpListVariablesPcVariableRS> getVariables() throws PlataformaBaseException {
@@ -93,6 +64,7 @@ public class EngineServiceImpl implements EngineService {
             ruleValue=this.spGetReglaDAO.execute(params);
             LOGGER.debug(ruleValue.toString());
         }catch(Exception  e){
+            LOGGER.error(e.getMessage());
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, e, CODIGO_ERROR_GENERICO);
         }
         return ruleValue;

@@ -45,15 +45,7 @@ public class RuleControllerTest {
     MockMvc mockMvc;
 
     @Mock
-    SpListReglasDAO spListReglasDAO;
-    @Mock
     SpListVariablesDAO spListVariablesDAO;
-    @Mock
-    SpUpdateReglaDAO spUpdateReglaDAO;
-    @Mock
-    SpListReglaVariableDAO spListReglaVariableDAO;
-    @Mock
-    SpUpdateConjuntoReglaDAO spUpdateConjuntoReglaDAO;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -65,17 +57,6 @@ public class RuleControllerTest {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testGetRulesOK() throws Exception {
-        String id = "1";
-        SpListReglasOUT salidaDaoListReglas = mock(SpListReglasOUT.class);
-        when(spListReglasDAO.execute(any(SpListReglasIN.class))).thenReturn(salidaDaoListReglas);
-
-        mockMvc.perform(get("/rules/{id}", id).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY)).andExpect(status().isOk()).andDo(print());
-
-    }
 
     @Test
     @SuppressWarnings("unchecked")
@@ -88,17 +69,4 @@ public class RuleControllerTest {
 
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testUpdateRuleOK() throws Exception {
-
-        GridRule testGridRule = UnitTestHelper.createGridRuleUpdate();
-
-        SpUpdateReglaOUT salidaDaoUpdateRule = mock(SpUpdateReglaOUT.class);
-        when(spUpdateReglaDAO.execute(any(SpUpdateReglaIN.class))).thenReturn(salidaDaoUpdateRule);
-
-        mockMvc.perform(post("/uRule").content(UnitTestHelper.asJsonString(testGridRule)).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY)).andExpect(status().isOk()).andDo(print());
-
-    }
 }

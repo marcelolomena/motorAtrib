@@ -2,8 +2,6 @@ package cl.motoratrib.rest.jsrules;
 
 import cl.motoratrib.rest.jsrules.util.JsonBean;
 
-import java.util.Objects;
-
 /**
  *
  * @author Marcelo

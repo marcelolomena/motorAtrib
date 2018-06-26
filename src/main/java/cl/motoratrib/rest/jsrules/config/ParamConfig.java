@@ -25,8 +25,6 @@ package cl.motoratrib.rest.jsrules.config;
 
 import cl.motoratrib.rest.jsrules.util.JsonBean;
 
-import java.util.Objects;
-
 /**
  *
  * @author Marcelo

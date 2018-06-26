@@ -1,7 +1,9 @@
 package cl.motoratrib.rest.fixture;
 
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaOUT;
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListVariablesOUT;
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListVariablesPcVariableRS;
+import oracle.jdbc.OracleClob;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,5 +32,14 @@ public class EngineFixture {
 
         return variables;
 
+    }
+
+    public static SpGetReglaOUT reglas(){
+        SpGetReglaOUT reglas = new SpGetReglaOUT();
+        reglas.setPJson(null);
+        reglas.setPEstado(1);
+        reglas.setPGlosa("Glosa");
+
+        return reglas;
     }
 }

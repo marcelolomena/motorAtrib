@@ -35,22 +35,12 @@ public class RuleController {
         return new ModelAndView("test.jsp");
     }
 
-    @RequestMapping(value = "/rules/{id}", method = RequestMethod.GET,
-            produces = { "application/json;**charset=UTF-8**" })
-    public ResponseEntity<List<RecordRule>> getRules(@PathVariable int id)
-            throws PlataformaBaseException {
-        return new ResponseEntity<>(this.engineService.getRule(id),HttpStatus.OK);
-
-    }
-
     @RequestMapping(value = "/variables", method = RequestMethod.GET,
             produces = { "application/json;**charset=UTF-8**" })
     public ResponseEntity<List<SpListVariablesPcVariableRS>> getVariables()
             throws PlataformaBaseException {
         return new ResponseEntity<>(this.engineService.getVariables(),HttpStatus.OK);
-
     }
-
 
     @RequestMapping(value = "/testing", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
