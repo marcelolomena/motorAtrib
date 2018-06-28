@@ -64,6 +64,13 @@ public class RuleControllerTest {
     }
 
     @Test
+    public void testPageTest() throws Exception {
+
+        this.mockMvc.perform(get("/test")).andExpect(status().isOk());
+
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void testGetVariablesOK() throws Exception {
         SpListVariablesOUT salidaDaoListVariables = mock(SpListVariablesOUT.class);
