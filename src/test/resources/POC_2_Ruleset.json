@@ -1,0 +1,15 @@
+{
+  "rulesetName": "POC_2_Ruleset",
+  "rulesetType": "BooleanArray",
+  "responseConfig": {
+    "response": "Nada",
+    "responseClass": "String"
+  },
+  "components": [
+    "PymeNull",
+	"Rating",
+	"TipoRating1",
+	"TipoRating2",
+	"Privada"
+  ]
+}

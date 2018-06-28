@@ -24,7 +24,6 @@
 package cl.motoratrib.rest.jsrules.loader;
 
 import cl.motoratrib.rest.jsrules.JsRules;
-import cl.motoratrib.rest.jsrules.JsRulesImpl;
 import cl.motoratrib.rest.jsrules.RulesetExecutor;
 import cl.motoratrib.rest.jsrules.config.ResponseConfig;
 import cl.motoratrib.rest.jsrules.config.RulesetConfig;

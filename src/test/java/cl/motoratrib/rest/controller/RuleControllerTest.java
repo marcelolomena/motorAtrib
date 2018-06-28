@@ -1,15 +1,15 @@
 package cl.motoratrib.rest.controller;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
+import cl.bancochile.plataformabase.error.PlataformaBaseException;
 import cl.motoratrib.rest.context.TestContext;
 import cl.motoratrib.rest.context.WebAppContext;
-import cl.motoratrib.rest.domain.GridRule;
-import cl.motoratrib.rest.util.UnitTestHelper;
+import cl.motoratrib.rest.fixture.EngineFixture;
+import cl.motoratrib.rest.service.EngineServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -20,6 +20,10 @@ import org.springframework.test.context.web.ServletTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +32,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import cl.motoratrib.rest.context.TestUtil;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,13 +53,15 @@ public class RuleControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @Mock
+    EngineServiceImpl engineService;
+
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
     }
-
 
     @Test
     @SuppressWarnings("unchecked")
@@ -66,6 +71,41 @@ public class RuleControllerTest {
 
         mockMvc.perform(get("/variables").contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY)).andExpect(status().isOk()).andDo(print());
+
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTestingOK() throws Exception {
+
+        MockHttpServletRequestBuilder builder =
+                MockMvcRequestBuilders.post("/testing")
+                        .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY).contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(EngineFixture.JSON_TEST_1);
+
+        this.mockMvc.perform(builder)
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andDo(MockMvcResultHandlers.print());
+
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTestNOK() throws Exception {
+        Object name = mock(Object.class);
+        when(engineService.getRuleByName(name.toString())).thenThrow(PlataformaBaseException.class);
+
+        MockHttpServletRequestBuilder builder =
+                MockMvcRequestBuilders.post("/testing")
+                        .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY).contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content("{}");
+
+        this.mockMvc.perform(builder)
+                .andExpect(MockMvcResultMatchers.status()
+                        .is5xxServerError())
+                .andDo(MockMvcResultHandlers.print());
+
 
     }
 

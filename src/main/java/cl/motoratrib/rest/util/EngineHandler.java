@@ -1,7 +1,6 @@
 package cl.motoratrib.rest.util;
 
 import cl.bancochile.plataformabase.error.PlataformaBaseException;
-import cl.motoratrib.rest.domain.ClaseGenerica;
 import cl.motoratrib.rest.domain.InJson;
 import cl.motoratrib.rest.domain.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +11,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.sql.Clob;
-import java.sql.SQLException;
 import java.util.*;
 
 public class EngineHandler {
@@ -25,21 +23,6 @@ public class EngineHandler {
     public static InJson readJsonFullFromString(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, InJson.class);
-    }
-
-    public static String createResponse(Object o){
-        ClaseGenerica response = null;
-        String responseRule;
-
-        if (o != null)
-            response = new ClaseGenerica(o);
-
-        if ("java.lang.String".equals(response.classType()))
-            responseRule = response.getObj().toString();
-        else
-            responseRule = "{\"error\": 1}";
-
-        return responseRule;
     }
 
     public static boolean checkVariables(Map<String, Object> tmplMap, Map<String, Object> reqMap){
@@ -120,9 +103,7 @@ public class EngineHandler {
                 write.write(c);
             }
             write.flush();
-        } catch(SQLException e){
-            throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, e, CODIGO_ERROR_GENERICO);
-        } catch(IOException e){
+        } catch(Exception e){
             throw new PlataformaBaseException(GLOSA_ERROR_GENERICO, e, CODIGO_ERROR_GENERICO);
         }
         return write.toString();

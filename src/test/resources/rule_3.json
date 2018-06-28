@@ -1,0 +1,17 @@
+{
+  "ruleName": "rule_3",
+  "leftParamConfig": {
+    "parameterName": "fila",
+    "parameterClass": "String"
+  },
+  "operator": "EX",
+  "rightParamConfig": {
+    "parameterName": "string_to_compare",
+    "parameterClass": "String",
+    "parameterStaticValue": "VVFF[VF]"
+  },
+  "responseConfig": {
+    "response": "{ref:\"SF01\", alerta:\"Invocar FL02 Flujo Rating Pyme\"}",
+    "responseClass": "String"
+  }
+}

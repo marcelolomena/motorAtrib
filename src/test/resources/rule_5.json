@@ -1,0 +1,17 @@
+{
+  "ruleName": "rule_5",
+  "leftParamConfig": {
+    "parameterName": "fila",
+    "parameterClass": "String"
+  },
+  "operator": "EX",
+  "rightParamConfig": {
+    "parameterName": "string_to_compare",
+    "parameterClass": "String",
+    "parameterStaticValue": "F[VF][VF][VF]V"
+  },
+  "responseConfig": {
+    "response": "{ref:\"SF01\", alerta:\"Invocar FL06 Flujo Banca Privada\"}",
+    "responseClass": "String"
+  }
+}

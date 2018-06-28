@@ -1,0 +1,17 @@
+{
+  "ruleName": "rule_2",
+  "leftParamConfig": {
+    "parameterName": "fila",
+    "parameterClass": "String"
+  },
+  "operator": "EX",
+  "rightParamConfig": {
+    "parameterName": "string_to_compare",
+    "parameterClass": "String",
+    "parameterStaticValue": "VVFV[VF]"
+  },
+  "responseConfig": {
+    "response": "{ref:\"SF01\", alerta:\"Invocar FL01 Flujo Rating C+N\"}",
+    "responseClass": "String"
+  }
+}

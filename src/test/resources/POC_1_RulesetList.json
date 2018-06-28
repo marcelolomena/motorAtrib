@@ -1,0 +1,12 @@
+{
+  "rulesetName": "POC_1_RulesetList",
+  "rulesetType": "ChainTrueList",
+  "responseConfig": {
+    "response": "Funca",
+    "responseClass": "String"
+  },
+  "components": [
+    "POC_0_Ruleset",
+	"POC_1_Ruleset"
+  ]
+}

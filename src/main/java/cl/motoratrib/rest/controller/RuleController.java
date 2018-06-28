@@ -47,15 +47,19 @@ public class RuleController {
     public String testing(HttpEntity<String> httpEntity) throws PlataformaBaseException {
         String json,eval;
         try {
-            json = httpEntity.getBody();
             long startTime = System.currentTimeMillis();
 
-            json = URLDecoder.decode(json, "UTF-8");
+            json = URLDecoder.decode(httpEntity.getBody(), "UTF-8");
 
             InJson in = EngineHandler.readJsonFullFromString(json);
             List<Parameter> listParam = in.getParameterList();
 
-            Map<String, Object> tmplMap = buildTemplateParameter(in.getRulesetName());
+            Map<String, Object> tmplMap = new HashMap<>();
+            List<SpListReglaVariablePcVarRS> vars = engineService.getRuleVariable(in.getRulesetName());
+            for (SpListReglaVariablePcVarRS o : vars) {
+                tmplMap.put( o.getParametername(), o.getParameterclass());
+            }
+
             Map<String, Object> parameters  = EngineHandler.buidParametersValues(listParam);
 
             if( !EngineHandler.checkVariables(tmplMap, EngineHandler.buidParametersTypes(listParam) ) ) {
@@ -75,26 +79,17 @@ public class RuleController {
 
                 Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
 
-                eval =  EngineHandler.createResponse(o);
+                eval = o.toString();
 
             }
 
             long endTime = System.currentTimeMillis();
             LOGGER.debug("Total Time " + (endTime - startTime) + " milliseconds");
         }catch(Exception e){
-            LOGGER.error("FAIL!!!" + e.getMessage());
+            LOGGER.error("Engine fail!!! " + e.getMessage());
             throw new PlataformaBaseException(e.getMessage(),e,HttpStatus.INTERNAL_SERVER_ERROR.toString());
         }
         return eval;
-    }
-
-    private Map<String, Object> buildTemplateParameter(String nombre) throws PlataformaBaseException {
-        Map<String, Object> tmplMap = new HashMap<>();
-        List<SpListReglaVariablePcVarRS> vars = engineService.getRuleVariable(nombre);
-        for (SpListReglaVariablePcVarRS o : vars) {
-            tmplMap.put( o.getParametername(), o.getParameterclass());
-        }
-        return tmplMap;
     }
 
 }

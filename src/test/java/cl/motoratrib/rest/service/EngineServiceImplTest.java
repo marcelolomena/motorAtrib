@@ -44,31 +44,6 @@ public class EngineServiceImplTest {
 
     private static final String RULE_NAME = "sf1_pyme";
 
-    private static final String JSON_TEST_1 = "{\n" +
-            "\t\"rulesetName\": \"POC_1_RulesetList\",\n" +
-            "\t\"parameterList\": [{\n" +
-            "\t\t\t\"parameterName\": \"sf1_pyme\",\n" +
-            "\t\t\t\"parameterValue\": \"SI\",\n" +
-            "\t\t\t\"parameterClass\": \"String\"\n" +
-            "\t\t},\n" +
-            "\t\t{\n" +
-            "\t\t\t\"parameterName\": \"sf1_rating\",\n" +
-            "\t\t\t\"parameterValue\": \"SI\",\n" +
-            "\t\t\t\"parameterClass\": \"String\"\n" +
-            "\t\t},\n" +
-            "\t\t{\n" +
-            "\t\t\t\"parameterName\": \"sf1_tipoRating\",\n" +
-            "\t\t\t\"parameterValue\": \"AGRICOLA\",\n" +
-            "\t\t\t\"parameterClass\": \"String\"\n" +
-            "\t\t},\n" +
-            "\t\t{\n" +
-            "\t\t\t\"parameterName\": \"sf1_privada\",\n" +
-            "\t\t\t\"parameterValue\": \"SI\",\n" +
-            "\t\t\t\"parameterClass\": \"String\"\n" +
-            "\t\t}\n" +
-            "\t]\n" +
-            "}";
-
     @Mock
     SpListVariablesDAO spListVariablesDAO;
     @Mock

@@ -1,0 +1,17 @@
+{
+  "ruleName": "Privada",
+  "leftParamConfig": {
+    "parameterName": "sf1_privada",
+    "parameterClass": "String"
+  },
+  "operator": "EQ",
+  "rightParamConfig": {
+    "parameterName": "SI/NO",
+    "parameterClass": "String",
+    "parameterStaticValue": "SI"
+  },
+  "responseConfig": {
+    "response": "true",
+    "responseClass": "Boolean"
+  }
+}

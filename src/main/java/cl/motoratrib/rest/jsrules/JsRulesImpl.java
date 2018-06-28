@@ -1,7 +1,6 @@
 package cl.motoratrib.rest.jsrules;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaOUT;
-import cl.bancochile.plataformabase.error.PlataformaBaseException;
 import cl.motoratrib.rest.service.EngineService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cl.motoratrib.rest.jsrules.config.RuleConfig;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.Map;
 
 
@@ -30,7 +28,7 @@ import java.util.Map;
 @Component
 public class JsRulesImpl implements JsRules {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsRulesImpl.class);
-
+    private static final String JSONEXT = ".json";
     @Autowired
     EngineService engineService;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -59,7 +57,7 @@ public class JsRulesImpl implements JsRules {
         Rule rule = ruleMap.get(ruleName);
 
         if (rule == null) {
-            String fileName = ruleName + ".json";
+            String fileName = ruleName + JSONEXT;
 
             InputStream stream = getFileFromClasspath(fileName);
 
@@ -80,15 +78,18 @@ public class JsRulesImpl implements JsRules {
     @Override
     public Rule loadRuleByName(String ruleName) throws InvalidConfigException {
         Rule rule = ruleMap.get(ruleName);
-
+        LOGGER.debug("LOAD " + ruleName);
             if (rule == null) {
 
                 try {
 
                     InputStream stream = getRecordFromDatabase(ruleName);
-
                     if (stream == null) {
-                        throw new InvalidConfigException("Unable to find rule in table record : " + ruleName);
+                        String fileName = ruleName + JSONEXT;
+                        stream = getFileFromClasspath(fileName);
+                    }
+                    if (stream == null) {
+                        throw new InvalidConfigException("Unable to find ruleset record : " + ruleName);
                     }
 
                     RuleConfig ruleConfig = objectMapper.readValue(stream, RuleConfig.class);
@@ -120,7 +121,10 @@ public class JsRulesImpl implements JsRules {
 
                 try {
                     InputStream stream = getRecordFromDatabase(rulesetName);
-
+                    if (stream == null) {
+                        String fileName = rulesetName + JSONEXT;
+                        stream = getFileFromClasspath(fileName);
+                    }
                     if (stream == null) {
                         throw new InvalidConfigException("Unable to find ruleset record : " + rulesetName);
                     }
@@ -164,18 +168,15 @@ public class JsRulesImpl implements JsRules {
         return ruleset;
     }
 
-    private InputStream getRecordFromDatabase(String name) throws PlataformaBaseException,SQLException {
+    private InputStream getRecordFromDatabase(String name)  {
         InputStream is;
         try {
             SpGetReglaOUT spOut = this.engineService.getRuleByName(name);
             OracleClob oc = spOut.getPJson();
             is = oc.getAsciiStream();
-        }catch (PlataformaBaseException e){
-            LOGGER.error(e.getMessage());
-            throw e;
-        }catch (SQLException e){
-            LOGGER.error(e.getMessage());
-            throw e;
+        } catch (Exception e){
+            LOGGER.error("Mensaje de error descriptivo.", e);
+            return null;
         }
 
         return is;

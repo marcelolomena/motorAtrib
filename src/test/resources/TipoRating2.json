@@ -1,0 +1,17 @@
+{
+  "ruleName": "TipoRating2",
+  "leftParamConfig": {
+    "parameterName": "sf1_tipoRating",
+    "parameterClass": "String"
+  },
+  "operator": "EQ",
+  "rightParamConfig": {
+    "parameterName": "SI/NO",
+    "parameterClass": "String",
+    "parameterStaticValue": "C+N"
+  },
+  "responseConfig": {
+    "response": "true",
+    "responseClass": "Boolean"
+  }
+}

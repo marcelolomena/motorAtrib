@@ -1,0 +1,17 @@
+{
+  "ruleName": "rule_1",
+  "leftParamConfig": {
+    "parameterName": "fila",
+    "parameterClass": "String"
+  },
+  "operator": "EX",
+  "rightParamConfig": {
+    "parameterName": "string_to_compare",
+    "parameterClass": "String",
+    "parameterStaticValue": "VVV[VF][VF]"
+  },
+  "responseConfig": {
+    "response": "{ref:\"SF01\", alerta:\"Invocar FL03 Flujo Rating Agricola\"}",
+    "responseClass": "String"
+  }
+}
