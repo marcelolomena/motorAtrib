@@ -54,33 +54,14 @@ public class RuleController {
             InJson in = EngineHandler.readJsonFullFromString(json);
             List<Parameter> listParam = in.getParameterList();
 
-            Map<String, Object> tmplMap = new HashMap<>();
             List<SpListReglaVariablePcVarRS> vars = engineService.getRuleVariable(in.getRulesetName());
-            for (SpListReglaVariablePcVarRS o : vars) {
-                tmplMap.put( o.getParametername(), o.getParameterclass());
-            }
 
-            Map<String, Object> parameters  = EngineHandler.buidParametersValues(listParam);
-
-            if( !EngineHandler.checkVariables(tmplMap, EngineHandler.buidParametersTypes(listParam) ) ) {
+            if( !EngineHandler.checkAllVariables(vars, EngineHandler.buidParametersTypes(listParam) ) ) {
                 eval = "{\"ref\":\"SF00\", \"alerta\":\"Las variables no corresponden al flujo que se esta invocando\"}";
-                LOGGER.debug(eval);
             } else {
-
-                List<Parameter> lParam = EngineHandler.containsParameters(listParam, "p5_fechaPep", "p5_fechaVencMac");
-                Parameter p5fechaPep = EngineHandler.containsParameter(lParam, "p5_fechaPep");
-                Parameter p5fechaVencMac = EngineHandler.containsParameter(lParam, "p5_fechaVencMac");
-
-                if (p5fechaPep != null && p5fechaVencMac != null) {
-                    parameters = EngineHandler.createAditionalParameter(parameters, p5fechaPep, p5fechaVencMac, "p5_diffMacPep");
-                    parameters.remove(p5fechaPep);
-                    parameters.remove(p5fechaVencMac);
-                }
-
+                Map<String, Object> parameters = EngineHandler.createAditionalParameter(listParam,"p5_fechaPep", "p5_fechaVencMac", "p5_diffMacPep");
                 Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
-
                 eval = o.toString();
-
             }
 
             long endTime = System.currentTimeMillis();

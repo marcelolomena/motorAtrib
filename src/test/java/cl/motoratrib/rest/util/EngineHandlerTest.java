@@ -30,9 +30,9 @@ public class EngineHandlerTest {
 
     InJson jsonReponse;
 
-    Parameter parameter;
+    Parameter parameter,parameterD1,parameterD2;
 
-    List<Parameter> parameterList;
+    List<Parameter> parameterList,parameterAditionalList;
 
     Map<String, Object> parametersO;
 
@@ -48,9 +48,24 @@ public class EngineHandlerTest {
         parameter.setParameterClass("String");
         parameter.setParameterName("sf1_pyme");
         parameter.setParameterValue("SI");
+
+        parameterD1 = new Parameter();
+        parameterD1.setParameterName("p5_fechaPep");
+        parameterD1.setParameterValue("2018-06-07");
+        parameterD1.setParameterClass("Datetime");
+
+        parameterD2 = new Parameter();
+        parameterD2.setParameterName("p5_fechaVencMac");
+        parameterD2.setParameterValue("2019-06-07");
+        parameterD2.setParameterClass("Datetime");
+
         parameterList = new ArrayList<>();
         parameterList.add(parameter);
 
+        parameterAditionalList = new ArrayList<>();
+        parameterAditionalList.add(parameter);
+        parameterAditionalList.add(parameterD1);
+        parameterAditionalList.add(parameterD2);
 
         jsonReponse = new InJson();
         jsonReponse.setRulesetName("POC_1_RulesetList");
@@ -96,6 +111,21 @@ public class EngineHandlerTest {
     @Test
     public void shouldEqualsContainsParameters() {
         assertEquals( parameterList, handler.containsParameters(parameterList,"sf1_pyme",""));
+    }
+
+    @Test
+    public void shouldEqualsContainsParameter() {
+        assertEquals( parameter, handler.containsParameter(parameterList,"sf1_pyme"));
+    }
+
+    @Test
+    public void shouldNoContainsParameter() {
+        assertNull( handler.containsParameter(parameterList,"dummy"));
+    }
+
+    @Test
+    public void addAditionalParameter() {
+        assertTrue(parameterAditionalList.size()>handler.createAditionalParameter(parameterAditionalList,"p5_fechaPep","p5_fechaVencMac","p5_diffMacPep").size());
     }
 
     @Test

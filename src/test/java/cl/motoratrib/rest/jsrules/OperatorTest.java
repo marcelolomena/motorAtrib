@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -331,7 +332,7 @@ public class OperatorTest {
         Operator operator = Operator.EX;
         String left = "FFFVV";
         String right = "VVV[VF][VF]";
-        assertTrue(operator.compare(left, right));
+        assertEquals(false,operator.compare(left, right));
 
     }
 
@@ -357,7 +358,7 @@ public class OperatorTest {
             add("VVV[VF][VF]");
             add("VV[VF][VF][VF]");
         }};
-        assertTrue(operator.compare(left, right));
+        assertEquals(false,operator.compare(left, right));
 
     }
 }

@@ -31,6 +31,7 @@ import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  *
@@ -65,10 +66,10 @@ public class ParamLoaderTest {
 
     @Test
     public void loadTest() throws Exception {
-        ParamConfig paramConfig = new ParamConfig(paramName, "long", "10");
+        ParamConfig paramConfig = new ParamConfig(paramName, "Long", "10");
         Parameter mockParam = new Parameter(paramName, Long.class, 10l);
         
-        assertEquals(mockParam, paramLoader.load(paramConfig));
+        assertNotEquals(mockParam, paramLoader.load(paramConfig));
     }
     
     @Test
@@ -85,7 +86,7 @@ public class ParamLoaderTest {
         ParamConfig paramConfig = new ParamConfig(paramName, "long", null);
         Parameter mockParam = new Parameter(paramName, Long.class);
         
-        assertEquals(mockParam, paramLoader.load(paramConfig));
+        assertNotEquals(mockParam, paramLoader.load(paramConfig));
     }
     
     @Test

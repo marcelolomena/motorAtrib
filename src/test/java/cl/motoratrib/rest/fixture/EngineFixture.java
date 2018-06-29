@@ -1,8 +1,7 @@
 package cl.motoratrib.rest.fixture;
 
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaOUT;
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListVariablesOUT;
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListVariablesPcVariableRS;
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,18 +34,18 @@ public class EngineFixture {
 
     public static SpListVariablesOUT variables(){
         List<SpListVariablesPcVariableRS> datosVariables = new ArrayList<>();
-        SpListVariablesPcVariableRS objVaribles = new SpListVariablesPcVariableRS();
-        objVaribles.setId(1);
-        objVaribles.setNombre("sf1_pyme");
-        objVaribles.setDescripcion("sf1_pyme");
-        objVaribles.setTipo("String");
+        SpListVariablesPcVariableRS objVariables = new SpListVariablesPcVariableRS();
+        objVariables.setId(1);
+        objVariables.setNombre("sf1_pyme");
+        objVariables.setDescripcion("sf1_pyme");
+        objVariables.setTipo("String");
 
-        datosVariables.add(objVaribles);
+        datosVariables.add(objVariables);
 
-        objVaribles.setId(2);
-        objVaribles.setNombre("sf1_rating");
-        objVaribles.setDescripcion("sf1_rating");
-        objVaribles.setTipo("String");
+        objVariables.setId(2);
+        objVariables.setNombre("sf1_rating");
+        objVariables.setDescripcion("sf1_rating");
+        objVariables.setTipo("String");
 
         SpListVariablesOUT variables = new SpListVariablesOUT();
 
@@ -58,12 +57,27 @@ public class EngineFixture {
 
     }
 
-    public static SpGetReglaOUT reglas(){
-        SpGetReglaOUT reglas = new SpGetReglaOUT();
-        reglas.setPJson(null);
-        reglas.setPEstado(1);
-        reglas.setPGlosa("Glosa");
+    public static SpListReglaVariableOUT getruleset(){
 
-        return reglas;
+        List<SpListReglaVariablePcVarRS> datosVariables = new ArrayList<>();
+        SpListReglaVariablePcVarRS objVariables = new SpListReglaVariablePcVarRS();
+        objVariables.setParametername("sf1_pyme");
+        objVariables.setParameterclass("String");
+        datosVariables.add(objVariables);
+
+        SpListReglaVariableOUT out = new SpListReglaVariableOUT();
+        out.setPEstado(1);
+        out.setPGlosa("Glosa");
+        out.setPcVar(datosVariables);
+        return out;
+    }
+
+    public static SpGetReglaOUT getrule(){
+        SpGetReglaOUT out = new SpGetReglaOUT();
+        out.setPJson(null);
+        out.setPEstado(1);
+        out.setPGlosa("Glosa");
+
+        return out;
     }
 }

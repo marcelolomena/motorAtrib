@@ -88,7 +88,7 @@ public class JsRulesTest {
 
         Map<String, Object> parameters = new HashMap<>();
 
-        parameters.put("left", 15l);
+        parameters.put("left", "15L");
 
         jsrules.executeRuleset("MockRuleset", parameters);
     }

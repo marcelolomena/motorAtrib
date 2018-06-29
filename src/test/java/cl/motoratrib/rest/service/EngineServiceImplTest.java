@@ -5,10 +5,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import java.util.List;
 
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaIN;
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaOUT;
-import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListVariablesPcVariableRS;
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
+import cl.bancochile.plataformabase.error.PlataformaBaseException;
 import cl.motoratrib.rest.fixture.EngineFixture;
 import cl.motoratrib.rest.context.TestContext;
 import cl.motoratrib.rest.context.WebAppContext;
@@ -19,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -43,11 +43,14 @@ public class EngineServiceImplTest {
     EngineServiceImpl engineService;
 
     private static final String RULE_NAME = "sf1_pyme";
+    private static final String RULESET_NAME = "POC_1_RulesetList";
 
     @Mock
     SpListVariablesDAO spListVariablesDAO;
     @Mock
     SpGetReglaDAO spGetReglaDAO;
+    @Mock
+    SpListReglaVariableDAO spListReglaVariableDAO;
 
     @Before
     public void setUp() throws Exception {
@@ -63,9 +66,25 @@ public class EngineServiceImplTest {
     }
 
     @Test
+    public void testGetRuleVariableOK() throws Exception {
+        when(spListReglaVariableDAO.execute(any(SpListReglaVariableIN.class))).thenReturn(EngineFixture.getruleset());
+
+        List<SpListReglaVariablePcVarRS> ruleset = engineService.getRuleVariable(RULESET_NAME);
+        assertNotNull(ruleset);
+    }
+
+    @Test
+    public void testGetRuleByNameOK() throws Exception {
+        when(spGetReglaDAO.execute(any(SpGetReglaIN.class)))
+                .thenReturn(EngineFixture.getrule());
+        SpGetReglaOUT rule = engineService.getRuleByName(RULE_NAME);
+        assertNotNull(rule);
+    }
+
+    @Test
     public void testGetVariablesDAOException() throws Exception {
         when(spListVariablesDAO.execute())
-                .thenReturn(EngineFixture.variables());
+                .thenThrow(PlataformaBaseException.class);
         try {
             engineService.getVariables();
         }catch (Exception e) {
@@ -73,12 +92,29 @@ public class EngineServiceImplTest {
         }
         Mockito.reset(spListVariablesDAO);
     }
+
     @Test
-    public void testGetRuleByNameOK() throws Exception {
+    public void testGetRuleVariableDAOException() throws Exception {
+        when(spListReglaVariableDAO.execute(any(SpListReglaVariableIN.class)))
+                .thenThrow(PlataformaBaseException.class);
+        try {
+            engineService.getRuleVariable(RULESET_NAME);
+        }catch (Exception e) {
+            assertNotNull(e);
+        }
+        Mockito.reset(spListReglaVariableDAO);
+    }
+
+    @Test
+    public void testGetRuleByNameDAOException() throws Exception {
         when(spGetReglaDAO.execute(any(SpGetReglaIN.class)))
-                .thenReturn(EngineFixture.reglas());
-        SpGetReglaOUT rule = engineService.getRuleByName(RULE_NAME);
-        assertNotNull(rule);
+                .thenThrow(PlataformaBaseException.class);
+        try {
+            engineService.getRuleByName(RULE_NAME);
+        }catch (Exception e) {
+            assertNotNull(e);
+        }
+        Mockito.reset(spGetReglaDAO);
     }
 
 }

@@ -1,5 +1,6 @@
 package cl.motoratrib.rest.util;
 
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglaVariablePcVarRS;
 import cl.bancochile.plataformabase.error.PlataformaBaseException;
 import cl.motoratrib.rest.domain.InJson;
 import cl.motoratrib.rest.domain.Parameter;
@@ -25,15 +26,34 @@ public class EngineHandler {
         return mapper.readValue(json, InJson.class);
     }
 
-    public static boolean checkVariables(Map<String, Object> tmplMap, Map<String, Object> reqMap){
+    public static boolean checkAllVariables(List<SpListReglaVariablePcVarRS> vars, Map<String, Object> reqMap){
+        Map<String, Object> tmplMap = new HashMap<>();
+        for (SpListReglaVariablePcVarRS o : vars) {
+            tmplMap.put( o.getParametername(), o.getParameterclass());
+        }
+
         return tmplMap.equals(reqMap);
     }
 
-    public static Map<String, Object> createAditionalParameter(Map<String, Object> parameters, Parameter pOne, Parameter pTwo, String name){
-        DateTime end = DateTime.parse(pTwo.getParameterValue());
-        DateTime start = DateTime.parse(pOne.getParameterValue());
-        int days = Days.daysBetween(start, end).getDays();
-        parameters.put(name, Long.valueOf(days));
+    public static Map<String, Object> createAditionalParameter(List<Parameter> listParam, String pOne, String pTwo, String name){
+
+        Map<String, Object> parameters  = EngineHandler.buidParametersValues(listParam);
+
+        List<Parameter> lParam = containsParameters(listParam, pOne, pTwo);
+        Parameter p5fechaPep = containsParameter(lParam, pOne);
+        Parameter p5fechaVencMac = containsParameter(lParam, pTwo);
+
+        if (p5fechaPep != null && p5fechaVencMac != null) {
+
+            DateTime end = DateTime.parse(p5fechaVencMac.getParameterValue());
+            DateTime start = DateTime.parse(p5fechaPep.getParameterValue());
+            int days = Days.daysBetween(start, end).getDays();
+            parameters.put(name, Long.valueOf(days));
+
+            parameters.remove(p5fechaPep);
+            parameters.remove(p5fechaVencMac);
+        }
+
         return parameters;
     }
 

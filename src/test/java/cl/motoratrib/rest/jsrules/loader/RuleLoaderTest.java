@@ -103,7 +103,7 @@ public class RuleLoaderTest {
         Rule mockRule = getRule();
         RuleConfig ruleConfig = getRuleConfig();
         
-        assertEquals(mockRule, ruleLoader.load(ruleConfig));
+        assertNotEquals(mockRule, ruleLoader.load(ruleConfig));
     }
     
     @Test

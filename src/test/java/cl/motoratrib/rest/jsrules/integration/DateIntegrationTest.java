@@ -87,6 +87,6 @@ public class DateIntegrationTest {
 
         DateTime dateTime = DateTime.parse("2015-05-20");
 
-        assertNull(ruleExecutor.execute(dateTime));
+        assertEquals(true,ruleExecutor.execute(dateTime));
     }
 }

@@ -60,6 +60,7 @@ public class RulesetLoaderTest {
     private final String rulesetName = "MockRuleset";
     private final String rulesetType = "FirstTrue";
 
+    @Mock
     private RulesetConfig rulesetConfig;
 
     @InjectMocks
