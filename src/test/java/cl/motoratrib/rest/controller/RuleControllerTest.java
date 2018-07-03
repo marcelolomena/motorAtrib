@@ -1,12 +1,11 @@
 package cl.motoratrib.rest.controller;
 
-import static org.junit.Assert.assertNotNull;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
-import cl.bancochile.plataformabase.error.BusinessException;
 import cl.motoratrib.rest.context.TestContext;
 import cl.motoratrib.rest.context.WebAppContext;
 import cl.motoratrib.rest.fixture.EngineFixture;
@@ -37,9 +36,6 @@ import cl.motoratrib.rest.context.TestUtil;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
-
-import java.util.List;
-import java.util.Map;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -93,6 +89,7 @@ public class RuleControllerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testTestingNOK() throws Exception {
+
         when(engineService.getRuleVariable("POC_1_RulesetList"))
                 .thenReturn(null);
 

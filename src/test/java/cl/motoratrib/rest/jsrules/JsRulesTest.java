@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -110,7 +111,6 @@ public class JsRulesTest {
 
         jsrules.loadRuleByNameFromFile(ruleName);
     }
-
 
     @Test
     public void testLoadRuleByNameIOError() throws Exception {
