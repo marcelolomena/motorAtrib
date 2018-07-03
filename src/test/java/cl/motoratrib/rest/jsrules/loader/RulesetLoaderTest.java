@@ -24,6 +24,7 @@
 package cl.motoratrib.rest.jsrules.loader;
 
 import cl.motoratrib.rest.jsrules.JsRules;
+import cl.motoratrib.rest.jsrules.JsRulesImpl;
 import cl.motoratrib.rest.jsrules.RulesetExecutor;
 import cl.motoratrib.rest.jsrules.config.ResponseConfig;
 import cl.motoratrib.rest.jsrules.config.RulesetConfig;
@@ -66,6 +67,9 @@ public class RulesetLoaderTest {
     @InjectMocks
     private RulesetLoaderImpl rulesetLoader;
 
+    @InjectMocks
+    private JsRulesImpl jsrules;
+
     @Mock
     private JsRules jsRulesMock;
 
@@ -93,7 +97,7 @@ public class RulesetLoaderTest {
 
     @Test
     public void loadFromRulesetConfigTest() throws Exception {
-        RulesetExecutor rulesetExecutor = rulesetLoader.load(rulesetConfig);
+        RulesetExecutor rulesetExecutor = jsrules.getRulesetLoader().load(rulesetConfig);
 
         assertTrue(rulesetExecutor instanceof FirstTrueRulesetExecutorImpl);
     }
@@ -134,16 +138,6 @@ public class RulesetLoaderTest {
         rulesetConfig.getResponseConfig().setResponse("bogus");
 
         rulesetLoader.load(rulesetConfig);
-    }
-
-    @Test
-    public void rulesetListExecutorTypeTest() throws Exception {
-        rulesetConfig = new RulesetConfig(rulesetName, RulesetTypeHandler.FIRSTTRUELIST.name(), getResponseConfig(),
-                getComponents());
-
-        RulesetExecutor rulesetExecutor = rulesetLoader.load(rulesetConfig);
-
-        assertTrue(rulesetExecutor instanceof FirstTrueRulesetListExecutorImpl);
     }
 
     private ResponseConfig getResponseConfig() {

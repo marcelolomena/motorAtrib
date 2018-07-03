@@ -1,6 +1,7 @@
 package cl.motoratrib.rest.util;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglaVariablePcVarRS;
+import cl.bancochile.plataformabase.error.BusinessException;
 import cl.bancochile.plataformabase.error.PlataformaBaseException;
 import cl.motoratrib.rest.domain.InJson;
 import cl.motoratrib.rest.domain.Parameter;
@@ -26,13 +27,17 @@ public class EngineHandler {
         return mapper.readValue(json, InJson.class);
     }
 
-    public static boolean checkAllVariables(List<SpListReglaVariablePcVarRS> vars, Map<String, Object> reqMap){
+    public static void checkAllVariables(List<SpListReglaVariablePcVarRS> vars, Map<String, Object> reqMap) throws BusinessException {
+
         Map<String, Object> tmplMap = new HashMap<>();
         for (SpListReglaVariablePcVarRS o : vars) {
             tmplMap.put( o.getParametername(), o.getParameterclass());
         }
 
-        return tmplMap.equals(reqMap);
+        if (!tmplMap.equals(reqMap)) {
+            throw new BusinessException("\"{\\\"ref\\\":\\\"SF00\\\", \\\"alerta\\\":\\\"Las variables no corresponden al flujo que se esta invocando\\\"}\"");
+        }
+
     }
 
     public static Map<String, Object> createAditionalParameter(List<Parameter> listParam, String pOne, String pTwo, String name){

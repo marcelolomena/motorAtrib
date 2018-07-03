@@ -27,7 +27,6 @@ import cl.motoratrib.rest.jsrules.exception.InvalidParameterException;
 import cl.motoratrib.rest.jsrules.impl.AllTrueRulesetExecutorImpl;
 import cl.motoratrib.rest.jsrules.impl.RuleExecutorImpl;
 import org.junit.*;
-import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

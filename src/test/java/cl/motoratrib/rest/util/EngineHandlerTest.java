@@ -3,6 +3,8 @@ package cl.motoratrib.rest.util;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpListReglaVariablePcVarRS;
+import cl.bancochile.plataformabase.error.BusinessException;
 import cl.bancochile.plataformabase.error.PlataformaBaseException;
 import cl.motoratrib.rest.domain.InJson;
 import cl.motoratrib.rest.domain.Parameter;
@@ -33,6 +35,9 @@ public class EngineHandlerTest {
     Parameter parameter,parameterD1,parameterD2;
 
     List<Parameter> parameterList,parameterAditionalList;
+
+    List<SpListReglaVariablePcVarRS> lstExpected;
+    Map<String, Object> lstReal,lstRealExt;
 
     Map<String, Object> parametersO;
 
@@ -70,6 +75,25 @@ public class EngineHandlerTest {
         jsonReponse = new InJson();
         jsonReponse.setRulesetName("POC_1_RulesetList");
         jsonReponse.setParameterList(parameterList);
+
+
+        lstExpected = new ArrayList<>();
+        SpListReglaVariablePcVarRS objVariables = new SpListReglaVariablePcVarRS();
+        objVariables.setParametername("sf1_pyme");
+        objVariables.setParameterclass("String");
+        lstExpected.add(objVariables);
+
+        objVariables = new SpListReglaVariablePcVarRS();
+        objVariables.setParametername("sf1_rating");
+        objVariables.setParameterclass("String");
+        lstExpected.add(objVariables);
+
+        lstReal = new HashMap<>();
+        lstReal.put("sf1_pyme","String");
+
+        lstRealExt = new HashMap<>();
+        lstRealExt.put("sf1_pyme","String");
+        lstRealExt.put("sf1_rating","String");
 
     }
 
@@ -126,6 +150,26 @@ public class EngineHandlerTest {
     @Test
     public void addAditionalParameter() {
         assertTrue(parameterAditionalList.size()>handler.createAditionalParameter(parameterAditionalList,"p5_fechaPep","p5_fechaVencMac","p5_diffMacPep").size());
+    }
+
+    @Test
+    public void checkAllVariablesException() throws BusinessException {
+
+        try {
+            handler.checkAllVariables(lstExpected,lstReal);
+        } catch (BusinessException e){
+            assertNotNull(e);
+        }
+    }
+
+    @Test
+    public void checkAllVariablesOK() throws BusinessException {
+
+        try {
+            handler.checkAllVariables(lstExpected,lstRealExt);
+        } catch (BusinessException e){
+            assertNull(e);
+        }
     }
 
     @Test

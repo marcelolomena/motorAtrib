@@ -185,5 +185,7 @@ public class JsRulesImpl implements JsRules {
         return this.getClass().getResourceAsStream("/" + fileName);
     }
 
-
+    public RulesetLoader getRulesetLoader(){
+        return this.rulesetLoader;
+    }
 }

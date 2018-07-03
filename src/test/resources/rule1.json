@@ -1,0 +1,17 @@
+{
+  "ruleName": "rule1",
+  "leftParamConfig": {
+    "parameterName": "left",
+    "parameterClass": "Long"
+  },
+  "operator": "GT",
+  "rightParamConfig": {
+    "parameterName": "right",
+    "parameterClass": "Long",
+    "parameterStaticValue": "10"
+  },
+  "responseConfig": {
+    "response": "true",
+    "responseClass": "Boolean"
+  }
+}

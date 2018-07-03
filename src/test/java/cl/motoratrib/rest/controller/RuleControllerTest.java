@@ -1,15 +1,18 @@
 package cl.motoratrib.rest.controller;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import cl.bancochile.centronegocios.controldelimites.persistencia.domain.*;
 import cl.bancochile.centronegocios.controldelimites.persistencia.repository.*;
-import cl.bancochile.plataformabase.error.PlataformaBaseException;
+import cl.bancochile.plataformabase.error.BusinessException;
 import cl.motoratrib.rest.context.TestContext;
 import cl.motoratrib.rest.context.WebAppContext;
 import cl.motoratrib.rest.fixture.EngineFixture;
 import cl.motoratrib.rest.service.EngineServiceImpl;
+import cl.motoratrib.rest.util.EngineHandler;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -34,6 +37,10 @@ import cl.motoratrib.rest.context.TestUtil;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
+
+import java.util.List;
+import java.util.Map;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
@@ -56,6 +63,8 @@ public class RuleControllerTest {
     @Mock
     EngineServiceImpl engineService;
 
+    @InjectMocks
+    EngineHandler handler;
 
     @Before
     public void setUp() throws Exception {
@@ -85,6 +94,11 @@ public class RuleControllerTest {
     @SuppressWarnings("unchecked")
     public void testTestingOK() throws Exception {
 
+        when(handler.buidParametersValues(mock(List.class))).thenReturn(mock(Map.class));
+
+        when(handler.createAditionalParameter(mock(List.class),"p5_fechaPep", "p5_fechaVencMac", "p5_diffMacPep")).thenReturn(mock(Map.class));
+
+
         MockHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.post("/testing")
                         .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY).contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -99,20 +113,19 @@ public class RuleControllerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testTestNOK() throws Exception {
-        Object name = mock(Object.class);
-        when(engineService.getRuleByName(name.toString())).thenThrow(PlataformaBaseException.class);
+    public void testTestingNOK() throws Exception {
+        when(engineService.getRuleVariable("POC_1_RulesetList"))
+                .thenReturn(null);
 
         MockHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.post("/testing")
                         .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                        .content("{}");
+                        .content(EngineFixture.JSON_TEST_1);
 
         this.mockMvc.perform(builder)
                 .andExpect(MockMvcResultMatchers.status()
                         .is5xxServerError())
                 .andDo(MockMvcResultHandlers.print());
-
 
     }
 

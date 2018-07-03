@@ -47,25 +47,21 @@ public class RuleController {
     public String testing(HttpEntity<String> httpEntity) throws PlataformaBaseException {
         String json,eval;
         try {
-            long startTime = System.currentTimeMillis();
 
             json = URLDecoder.decode(httpEntity.getBody(), "UTF-8");
 
             InJson in = EngineHandler.readJsonFullFromString(json);
             List<Parameter> listParam = in.getParameterList();
 
-            List<SpListReglaVariablePcVarRS> vars = engineService.getRuleVariable(in.getRulesetName());
+            List<SpListReglaVariablePcVarRS> varsExpected = engineService.getRuleVariable(in.getRulesetName());
+            Map<String, Object>  varsReal = EngineHandler.buidParametersTypes(listParam);
 
-            if( !EngineHandler.checkAllVariables(vars, EngineHandler.buidParametersTypes(listParam) ) ) {
-                eval = "{\"ref\":\"SF00\", \"alerta\":\"Las variables no corresponden al flujo que se esta invocando\"}";
-            } else {
-                Map<String, Object> parameters = EngineHandler.createAditionalParameter(listParam,"p5_fechaPep", "p5_fechaVencMac", "p5_diffMacPep");
-                Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
-                eval = o.toString();
-            }
+            EngineHandler.checkAllVariables(varsExpected, varsReal );
 
-            long endTime = System.currentTimeMillis();
-            LOGGER.debug("Total Time " + (endTime - startTime) + " milliseconds");
+            Map<String, Object> parameters = EngineHandler.createAditionalParameter(listParam,"p5_fechaPep", "p5_fechaVencMac", "p5_diffMacPep");
+            Object o = jsrules.executeRuleset(in.getRulesetName(), parameters);
+            eval = o.toString();
+
         }catch(Exception e){
             LOGGER.error("Engine fail!!! " + e.getMessage());
             throw new PlataformaBaseException(e.getMessage(),e,HttpStatus.INTERNAL_SERVER_ERROR.toString());
