@@ -32,14 +32,14 @@ public class EngineHandlerTest {
 
     InJson jsonReponse;
 
-    Parameter parameter,parameterD1,parameterD2;
+    Parameter parameter,parameterD1,parameterD2,parameterExtOne,parameterExtTwo,parameterExtThree;
 
-    List<Parameter> parameterList,parameterAditionalList;
+    List<Parameter> parameterList,parameterAditionalList,parameterListExt;
 
     List<SpListReglaVariablePcVarRS> lstExpected;
     Map<String, Object> lstReal,lstRealExt;
 
-    Map<String, Object> parametersO;
+    Map<String, Object> parametersO,parametersMap;
 
     @InjectMocks
     EngineHandler handler;
@@ -76,7 +76,6 @@ public class EngineHandlerTest {
         jsonReponse.setRulesetName("POC_1_RulesetList");
         jsonReponse.setParameterList(parameterList);
 
-
         lstExpected = new ArrayList<>();
         SpListReglaVariablePcVarRS objVariables = new SpListReglaVariablePcVarRS();
         objVariables.setParametername("sf1_pyme");
@@ -94,6 +93,31 @@ public class EngineHandlerTest {
         lstRealExt = new HashMap<>();
         lstRealExt.put("sf1_pyme","String");
         lstRealExt.put("sf1_rating","String");
+
+        parameterListExt = new ArrayList<>();
+
+        parameterExtOne = new Parameter();
+        parameterExtOne.setParameterClass("String");
+        parameterExtOne.setParameterName("sf1_pyme");
+        parameterExtOne.setParameterValue("SI");
+        parameterListExt.add(parameterExtOne);
+
+        parameterExtTwo = new Parameter();
+        parameterExtTwo.setParameterClass("Long");
+        parameterExtTwo.setParameterName("age");
+        parameterExtTwo.setParameterValue("15");
+        parameterListExt.add(parameterExtTwo);
+
+        parameterExtThree = new Parameter();
+        parameterExtThree.setParameterClass("DateTime");
+        parameterExtThree.setParameterName("born");
+        parameterExtThree.setParameterValue("1979-04-04");
+        parameterListExt.add(parameterExtThree);
+
+        parametersMap = new HashMap<>();
+        parametersMap.put("sf1_pyme","SI");
+        parametersMap.put("age","15");
+        parametersMap.put("born","1979-04-04");
 
     }
 
@@ -133,6 +157,11 @@ public class EngineHandlerTest {
     }
 
     @Test
+    public void shouldEqualsBuidCompleteParametersValues() {
+        assertNotEquals( parametersMap, handler.buidParametersValues(parameterListExt));
+    }
+
+    @Test
     public void shouldEqualsContainsParameters() {
         assertEquals( parameterList, handler.containsParameters(parameterList,"sf1_pyme",""));
     }
@@ -140,6 +169,11 @@ public class EngineHandlerTest {
     @Test
     public void shouldEqualsContainsParameter() {
         assertEquals( parameter, handler.containsParameter(parameterList,"sf1_pyme"));
+    }
+
+    @Test
+    public void shouldEqualsContainsCompleteParameter() {
+        assertTrue( handler.containsParameters(parameterListExt,"sf1_pyme","age").size()>1);
     }
 
     @Test
