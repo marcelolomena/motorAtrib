@@ -92,27 +92,6 @@ public class RuleControllerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testTestingOK() throws Exception {
-
-        when(handler.buidParametersValues(mock(List.class))).thenReturn(mock(Map.class));
-
-        when(handler.createAditionalParameter(mock(List.class),"p5_fechaPep", "p5_fechaVencMac", "p5_diffMacPep")).thenReturn(mock(Map.class));
-
-
-        MockHttpServletRequestBuilder builder =
-                MockMvcRequestBuilders.post("/testing")
-                        .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                        .content(EngineFixture.JSON_TEST_1);
-
-        this.mockMvc.perform(builder)
-                .andExpect(MockMvcResultMatchers.status()
-                        .isOk())
-                .andDo(MockMvcResultHandlers.print());
-
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void testTestingNOK() throws Exception {
         when(engineService.getRuleVariable("POC_1_RulesetList"))
                 .thenReturn(null);
