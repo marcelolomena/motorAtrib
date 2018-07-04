@@ -86,11 +86,12 @@ public class CacheMap<K, V> extends LinkedHashMap<K, V>  {
     }
 
     @Override
-    public int hashCode() {
-        return System.identityHashCode(this);
+    public boolean equals(Object that) {
+        return this == that;
     }
+
     @Override
-    public boolean equals(Object object) {
-        return this==object;
+    public int hashCode() {
+        return super.hashCode();
     }
 }

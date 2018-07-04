@@ -58,13 +58,5 @@ public class ResponseConfig extends JsonBean implements Config {
         this.responseClass = responseClass;
     }
 
-    @Override
-    public boolean equals(Object that) {
-        return super.equals(new Object(/* ... */));
-    }
 
-    @Override
-    public int hashCode() {
-        return super.hashCode(/* ... */);
-    }
 }

@@ -23,32 +23,16 @@
  */
 package cl.motoratrib.rest.jsrules.exception;
 
-import cl.motoratrib.rest.jsrules.exception.JsRulesException;
 
 /**
  *
  * @author Marcelo
  */
 public class ClassHandlerException extends JsRulesException {
-
     public ClassHandlerException() {
         super();
     }
-
-    public ClassHandlerException(String message) {
-        super(message);
-    }
-
     public ClassHandlerException(String message, Throwable cause) {
         super(message, cause);
     }
-
-    public ClassHandlerException(Throwable cause) {
-        super(cause);
-    }
-
-    public ClassHandlerException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-    
 }

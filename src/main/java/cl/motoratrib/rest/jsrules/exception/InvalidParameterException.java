@@ -5,7 +5,6 @@
  */
 package cl.motoratrib.rest.jsrules.exception;
 
-import cl.motoratrib.rest.jsrules.exception.JsRulesException;
 
 /**
  *

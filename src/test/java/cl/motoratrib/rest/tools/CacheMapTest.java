@@ -4,9 +4,7 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by Marcelo 9/5/2018.
@@ -48,5 +46,15 @@ public class CacheMapTest {
         cacheMap.put("key2", "value2");
 
         assertNull(cacheMap.get(key));
+    }
+
+    @Test
+    public void equals() throws Exception {
+
+        cacheMap = new CacheMap<>();
+
+        cacheMap.put(key, value);
+
+        assertTrue(cacheMap.equals(cacheMap));
     }
 }
