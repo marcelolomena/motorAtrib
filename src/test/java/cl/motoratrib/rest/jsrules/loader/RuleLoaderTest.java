@@ -52,7 +52,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
  *
  * @author Marcelo
  */
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes","unchecked"})
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class RuleLoaderTest {

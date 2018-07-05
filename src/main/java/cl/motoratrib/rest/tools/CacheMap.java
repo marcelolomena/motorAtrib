@@ -11,6 +11,7 @@ import java.util.Map;
  * <p>
  * Created by Marcelo 9/5/2018.
  */
+@SuppressWarnings("serial")
 public class CacheMap<K, V> extends LinkedHashMap<K, V>  {
     private final int cacheSize;   // the maximum size of the cache
     private final long timeToLive; // the time, in milliseconds that entries can live on the cache

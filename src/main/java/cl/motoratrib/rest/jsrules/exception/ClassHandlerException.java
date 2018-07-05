@@ -28,6 +28,7 @@ package cl.motoratrib.rest.jsrules.exception;
  *
  * @author Marcelo
  */
+@SuppressWarnings("serial")
 public class ClassHandlerException extends JsRulesException {
     public ClassHandlerException() {
         super();

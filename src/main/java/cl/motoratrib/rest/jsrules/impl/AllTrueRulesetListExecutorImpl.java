@@ -39,7 +39,7 @@ import java.util.Map;
  * @param <T>
  * @author Marcelo
  */
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes","unchecked"})
 public class AllTrueRulesetListExecutorImpl<T> extends RulesetListExecutor<T> {
     private final List<RulesetExecutor> rulesetList;
     private final T response;

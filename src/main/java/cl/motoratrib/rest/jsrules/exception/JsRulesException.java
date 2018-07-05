@@ -27,6 +27,7 @@ package cl.motoratrib.rest.jsrules.exception;
  *
  * @author Marcelo
  */
+@SuppressWarnings("serial")
 public class JsRulesException extends Exception {
 
     public JsRulesException() {

@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Marcelo
  * @param <T>
  */
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes","unchecked"})
 public class BooleanArrayExecutorImpl<T> extends RulesetExecutor<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(BooleanArrayExecutorImpl.class);
 

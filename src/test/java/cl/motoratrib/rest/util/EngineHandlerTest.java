@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@SuppressWarnings("deprecation")
 @RunWith(MockitoJUnitRunner.class)
 public class EngineHandlerTest {
 
@@ -40,9 +40,6 @@ public class EngineHandlerTest {
     Map<String, Object> lstReal,lstRealExt;
 
     Map<String, Object> parametersO,parametersMap;
-
-    @InjectMocks
-    EngineHandler handler;
 
     @Before
     public void setup(){
@@ -128,69 +125,69 @@ public class EngineHandlerTest {
 
     @Test
     public void shouldSize() throws IOException {
-        assertEquals(jsonReponse.getParameterList().size(), handler.readJsonFullFromString(json).getParameterList().size());
+        assertEquals(jsonReponse.getParameterList().size(), EngineHandler.readJsonFullFromString(json).getParameterList().size());
     }
 
     @Test
     public void shouldEqualsOne() {
-        assertTrue( handler.isEqual(parameter,"sf1_pyme",""));
+        assertTrue( EngineHandler.isEqual(parameter,"sf1_pyme",""));
     }
 
     @Test
     public void shouldEqualsTwo() {
-        assertTrue( handler.isEqual(parameter,"","sf1_pyme"));
+        assertTrue( EngineHandler.isEqual(parameter,"","sf1_pyme"));
     }
 
     @Test
     public void shouldEqualThree() {
-        assertTrue( handler.isEqual(parameter,"sf1_pyme","sf1_pyme"));
+        assertTrue( EngineHandler.isEqual(parameter,"sf1_pyme","sf1_pyme"));
     }
 
     @Test
     public void shouldEqualFour() {
-        assertFalse( handler.isEqual(parameter,"",""));
+        assertFalse( EngineHandler.isEqual(parameter,"",""));
     }
 
     @Test
     public void shouldEqualsBuidParametersValues() {
-        assertEquals( parametersO, handler.buidParametersValues(parameterList));
+        assertEquals( parametersO, EngineHandler.buidParametersValues(parameterList));
     }
 
     @Test
     public void shouldEqualsBuidCompleteParametersValues() {
-        assertNotEquals( parametersMap, handler.buidParametersValues(parameterListExt));
+        assertNotEquals( parametersMap, EngineHandler.buidParametersValues(parameterListExt));
     }
 
     @Test
     public void shouldEqualsContainsParameters() {
-        assertEquals( parameterList, handler.containsParameters(parameterList,"sf1_pyme",""));
+        assertEquals( parameterList, EngineHandler.containsParameters(parameterList,"sf1_pyme",""));
     }
 
     @Test
     public void shouldEqualsContainsParameter() {
-        assertEquals( parameter, handler.containsParameter(parameterList,"sf1_pyme"));
+        assertEquals( parameter, EngineHandler.containsParameter(parameterList,"sf1_pyme"));
     }
 
     @Test
     public void shouldEqualsContainsCompleteParameter() {
-        assertTrue( handler.containsParameters(parameterListExt,"sf1_pyme","age").size()>1);
+        assertTrue( EngineHandler.containsParameters(parameterListExt,"sf1_pyme","age").size()>1);
     }
 
     @Test
     public void shouldNoContainsParameter() {
-        assertNull( handler.containsParameter(parameterList,"dummy"));
+        assertNull( EngineHandler.containsParameter(parameterList,"dummy"));
     }
 
     @Test
     public void addAditionalParameter() {
-        assertTrue(parameterAditionalList.size()>handler.createAditionalParameter(parameterAditionalList,"p5_fechaPep","p5_fechaVencMac","p5_diffMacPep").size());
+        assertTrue(parameterAditionalList.size()>EngineHandler.createAditionalParameter(parameterAditionalList,"p5_fechaPep","p5_fechaVencMac","p5_diffMacPep").size());
     }
 
     @Test
     public void checkAllVariablesException() throws BusinessException {
 
         try {
-            handler.checkAllVariables(lstExpected,lstReal);
+            EngineHandler.checkAllVariables(lstExpected,lstReal);
         } catch (BusinessException e){
             assertNotNull(e);
         }
@@ -200,7 +197,7 @@ public class EngineHandlerTest {
     public void checkAllVariablesOK() throws BusinessException {
 
         try {
-            handler.checkAllVariables(lstExpected,lstRealExt);
+            EngineHandler.checkAllVariables(lstExpected,lstRealExt);
         } catch (BusinessException e){
             assertNull(e);
         }
@@ -211,6 +208,6 @@ public class EngineHandlerTest {
         CLOB clob = mock(CLOB.class);
         clob.setString(1,"lala");
         exception.expect(PlataformaBaseException.class);
-        assertNull( handler.getStringSromClob(clob));
+        assertNull( EngineHandler.getStringSromClob(clob));
     }
 }

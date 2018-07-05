@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Marcelo
  */
+@SuppressWarnings("serial")
 public class OperatorTest {
     @org.junit.Rule
     public ExpectedException exception = ExpectedException.none();

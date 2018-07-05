@@ -37,7 +37,7 @@ import java.util.Date;
  *
  * @author Marcelo
  */
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes","unchecked"})
 public enum ClassHandler {
     BOOLEAN {
         @Override

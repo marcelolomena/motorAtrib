@@ -44,6 +44,7 @@ import java.util.Map;
  * @param <T>
  * @author Marcelo
  */
+@SuppressWarnings("unchecked")
 public class ChainTrueRulesetListExecutorImpl<T> extends RulesetListExecutor<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChainTrueRulesetListExecutorImpl.class);
     private final List<RulesetExecutor<T>> rulesetList;
