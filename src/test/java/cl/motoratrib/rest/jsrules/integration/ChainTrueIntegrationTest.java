@@ -38,7 +38,8 @@ import static org.junit.Assert.assertNull;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class ChainTrueIntegrationTest {
     private final String success = "[\"{ref:\\\"SF01\\\", alerta:\\\"Invocar FL03 Flujo Rating Agricola\\\"}\"]";
-
+    private final String name = "POC_1_RulesetList";
+    private final String type = "CHAINTRUELIST";
     @InjectMocks
     private JsRulesImpl jsRules;
 
@@ -68,5 +69,7 @@ public class ChainTrueIntegrationTest {
         parameters.put("sf1_privada", "SI");
 
         assertEquals(success, jsRules.executeRuleset("POC_1_RulesetList", parameters));
+        assertEquals(name, jsRules.loadRulesetByName(name).getName());
+        assertEquals(type,jsRules.loadRulesetByName(name).getType());
     }
 }
