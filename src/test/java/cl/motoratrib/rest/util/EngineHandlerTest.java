@@ -8,12 +8,11 @@ import cl.bancochile.plataformabase.error.BusinessException;
 import cl.bancochile.plataformabase.error.PlataformaBaseException;
 import cl.motoratrib.rest.domain.InJson;
 import cl.motoratrib.rest.domain.Parameter;
-import oracle.sql.CLOB;
+import java.sql.Clob;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import java.io.IOException;
@@ -205,9 +204,10 @@ public class EngineHandlerTest {
 
     @Test
     public void shouldEqualsClobToString() throws Exception {
-        CLOB clob = mock(CLOB.class);
+        Clob clob = mock(Clob.class);
         clob.setString(1,"lala");
         exception.expect(PlataformaBaseException.class);
         assertNull( EngineHandler.getStringSromClob(clob));
+
     }
 }

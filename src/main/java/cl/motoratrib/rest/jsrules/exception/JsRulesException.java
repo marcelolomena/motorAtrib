@@ -46,8 +46,4 @@ public class JsRulesException extends Exception {
         super(cause);
     }
 
-    public JsRulesException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-    
 }

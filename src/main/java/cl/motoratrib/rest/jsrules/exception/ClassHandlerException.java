@@ -30,7 +30,7 @@ package cl.motoratrib.rest.jsrules.exception;
  */
 @SuppressWarnings("serial")
 public class ClassHandlerException extends JsRulesException {
-    public ClassHandlerException() {
+    private ClassHandlerException() {
         super();
     }
     public ClassHandlerException(String message, Throwable cause) {
