@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by Marcelo Lomeña 5/13/2018
  */
+@SuppressWarnings("rawtypes")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class JsRulesTest {

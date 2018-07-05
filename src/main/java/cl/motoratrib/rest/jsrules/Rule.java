@@ -13,6 +13,7 @@ import cl.motoratrib.rest.jsrules.util.JsonBean;
  * @param <T>
  * @param <P>
  */
+@SuppressWarnings("rawtypes")
 public class Rule<T, P> extends JsonBean {
     
     private final String ruleName;

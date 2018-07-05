@@ -14,6 +14,7 @@ import cl.motoratrib.rest.jsrules.exception.InvalidParameterException;
  *
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 public abstract class RuleExecutor<T> extends Executor {
     public abstract T execute(Object leftParameter, Object rightParameter) throws InvalidParameterException;
 

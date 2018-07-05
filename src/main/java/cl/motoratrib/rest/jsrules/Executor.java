@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
  * <p/>
  * Created by Marcelo Lomeña 4/30/2018
  */
+@SuppressWarnings("rawtypes")
 public abstract class Executor {
     private static final Logger LOG = LoggerFactory.getLogger(Executor.class);
 

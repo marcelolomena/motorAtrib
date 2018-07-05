@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * Created by Marcelo Lomeña 5/14/2018
  */
+@SuppressWarnings("rawtypes")
 public enum RulesetTypeHandler {
     ALLTRUE {
         @Override

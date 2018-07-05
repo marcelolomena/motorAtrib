@@ -52,6 +52,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 /**
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class RulesetLoaderTest {

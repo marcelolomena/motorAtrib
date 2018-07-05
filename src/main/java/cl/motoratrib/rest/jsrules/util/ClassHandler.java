@@ -37,6 +37,7 @@ import java.util.Date;
  *
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 public enum ClassHandler {
     BOOLEAN {
         @Override

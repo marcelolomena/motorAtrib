@@ -20,6 +20,7 @@ import java.util.List;
 /**
  * Created by Marcelo Lomeña 2018/04/06
  */
+@SuppressWarnings("rawtypes")
 public class RulesetLoaderImpl implements RulesetLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(RulesetLoaderImpl.class);
     private JsRulesImpl jsRulesImpl;

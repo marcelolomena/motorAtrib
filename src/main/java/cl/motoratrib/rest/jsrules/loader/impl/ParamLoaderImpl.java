@@ -34,6 +34,7 @@ import cl.motoratrib.rest.jsrules.util.ClassHandler;
  *
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 public class ParamLoaderImpl implements ParamLoader {
 
     /**

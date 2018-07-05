@@ -44,6 +44,7 @@ import java.util.Map;
  * @param <T>
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 public class FirstTrueRulesetExecutorImpl<T> extends RulesetExecutor<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FirstTrueRulesetListExecutorImpl.class);
     private final List<RuleExecutor<T>> ruleSet;

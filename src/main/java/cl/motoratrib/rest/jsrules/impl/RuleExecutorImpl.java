@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
  * @param <T>
  * @param <P>
  */
+@SuppressWarnings("rawtypes")
 public class RuleExecutorImpl<T, P> extends RuleExecutor<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleExecutorImpl.class);
             

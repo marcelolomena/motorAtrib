@@ -37,6 +37,7 @@ import static org.junit.Assert.assertNotEquals;
  *
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 public class ParamLoaderTest {
     @Rule
     public ExpectedException exception= ExpectedException.none();

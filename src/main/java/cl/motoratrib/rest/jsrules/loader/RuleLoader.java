@@ -31,6 +31,7 @@ import cl.motoratrib.rest.jsrules.loader.Loader;
  *
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 public interface RuleLoader extends Loader<Rule, RuleConfig> {
     
 }

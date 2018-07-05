@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 /**
  * Created by Marcelo Lomeña 5/20/2018
  */
+@SuppressWarnings("rawtypes")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class DateIntegrationTest {

@@ -44,6 +44,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 @RunWith(MockitoJUnitRunner.class)
 public class FirstTrueRulesetListExecutorTest {
     private RulesetExecutor<String> executor;

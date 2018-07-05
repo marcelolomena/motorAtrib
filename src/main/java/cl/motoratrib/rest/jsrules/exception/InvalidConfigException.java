@@ -29,6 +29,7 @@ import cl.motoratrib.rest.jsrules.exception.JsRulesException;
  *
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 public class InvalidConfigException extends JsRulesException {
 
     public InvalidConfigException() {

@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 public class ResponseLoaderTest {
     @Rule
     public ExpectedException exception= ExpectedException.none();

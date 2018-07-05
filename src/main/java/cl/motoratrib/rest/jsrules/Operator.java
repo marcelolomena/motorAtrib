@@ -15,6 +15,7 @@ import java.util.Set;
 /**
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 public enum Operator {
     GT {
         @Override

@@ -25,6 +25,7 @@ import java.util.Map;
 /**
  * Created by Marcelo Lomeña 5/13/2018
  */
+@SuppressWarnings("rawtypes")
 @Component
 public class JsRulesImpl implements JsRules {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsRulesImpl.class);

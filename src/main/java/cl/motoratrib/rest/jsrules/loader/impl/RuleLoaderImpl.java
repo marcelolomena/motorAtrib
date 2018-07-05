@@ -38,6 +38,7 @@ import cl.motoratrib.rest.jsrules.loader.impl.ResponseLoaderImpl;
  *
  * @author Marcelo
  */
+@SuppressWarnings("rawtypes")
 public class RuleLoaderImpl implements RuleLoader {
     
     // these are not final so that they can be injected for unit testing
