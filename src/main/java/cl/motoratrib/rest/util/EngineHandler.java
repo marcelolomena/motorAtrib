@@ -6,13 +6,13 @@ import cl.bancochile.plataformabase.error.PlataformaBaseException;
 import cl.motoratrib.rest.domain.InJson;
 import cl.motoratrib.rest.domain.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.sql.Clob;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class EngineHandler {
@@ -40,29 +40,34 @@ public class EngineHandler {
 
     }
 
-    public static Map<String, Object> createAditionalParameter(List<Parameter> listParam, String pOne, String pTwo, String name){
+    public static Map<String, Object> createAditionalParameter
+            (List<Parameter> listParam, String pOne, String pTwo, String name) throws ParseException {
 
         Map<String, Object> parameters  = EngineHandler.buidParametersValues(listParam);
 
         List<Parameter> lParam = containsParameters(listParam, pOne, pTwo);
         Parameter p5fechaPep = containsParameter(lParam, pOne);
         Parameter p5fechaVencMac = containsParameter(lParam, pTwo);
-
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
         if (p5fechaPep != null && p5fechaVencMac != null) {
 
-            DateTime end = DateTime.parse(p5fechaVencMac.getParameterValue());
-            DateTime start = DateTime.parse(p5fechaPep.getParameterValue());
-            int days = Days.daysBetween(start, end).getDays();
+            Date dateTimeEnd = formatDate.parse(p5fechaVencMac.getParameterValue() );
+            long end = dateTimeEnd.getTime();
+            Date dateTimeStart = formatDate.parse(p5fechaPep.getParameterValue() );
+            long start = dateTimeStart.getTime();
+
+            int days = (int)end - (int)start;
+
             parameters.put(name, Long.valueOf(days));
 
-            parameters.remove(p5fechaPep);
-            parameters.remove(p5fechaVencMac);
+            parameters.remove(p5fechaPep.getParameterName());
+            parameters.remove(p5fechaVencMac.getParameterName());
         }
 
         return parameters;
     }
 
-    public static Map<String, Object> buidParametersValues(List<Parameter> listParam){
+    public static Map<String, Object> buidParametersValues(List<Parameter> listParam) throws ParseException{
 
         Map<String, Object> parameters = new HashMap<>();
 
@@ -72,7 +77,9 @@ public class EngineHandler {
             } else if ("String".equals(p.getParameterClass())) {
                 parameters.put(p.getParameterName(), p.getParameterValue());
             } else if ("DateTime".equals(p.getParameterClass())) {
-                parameters.put(p.getParameterName(), DateTime.parse(p.getParameterValue()));
+                SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+                Date dateTime = formatDate.parse(p.getParameterValue() );
+                parameters.put(p.getParameterName(), dateTime);
             }
         }
 

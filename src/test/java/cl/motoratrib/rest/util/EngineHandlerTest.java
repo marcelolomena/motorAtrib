@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -148,12 +149,12 @@ public class EngineHandlerTest {
     }
 
     @Test
-    public void shouldEqualsBuidParametersValues() {
+    public void shouldEqualsBuidParametersValues() throws ParseException {
         assertEquals( parametersO, EngineHandler.buidParametersValues(parameterList));
     }
 
     @Test
-    public void shouldEqualsBuidCompleteParametersValues() {
+    public void shouldEqualsBuidCompleteParametersValues() throws ParseException {
         assertNotEquals( parametersMap, EngineHandler.buidParametersValues(parameterListExt));
     }
 
@@ -178,7 +179,7 @@ public class EngineHandlerTest {
     }
 
     @Test
-    public void addAditionalParameter() {
+    public void addAditionalParameter() throws ParseException {
         assertTrue(parameterAditionalList.size()>EngineHandler.createAditionalParameter(parameterAditionalList,"p5_fechaPep","p5_fechaVencMac","p5_diffMacPep").size());
     }
 

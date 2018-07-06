@@ -25,9 +25,11 @@ package cl.motoratrib.rest.jsrules.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cl.motoratrib.rest.jsrules.exception.ClassHandlerException;
-import org.joda.time.DateTime;
 import org.apache.commons.lang3.time.DateUtils;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
@@ -131,37 +133,39 @@ public enum ClassHandler {
     DATETIME {
         @Override
         public Class getMyClass() {
-            return DateTime.class;
+            return Date.class;
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public DateTime convertString(String string) throws ClassHandlerException {
-            DateTime dateTime;
-
+        public Date convertString(String string) throws ClassHandlerException {
+            Date dateTime;
+            Timestamp timestamp;
+            SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
             try {
-                dateTime = DateTime.parse(string);
+                dateTime = formatDate.parse( string );
+                timestamp = new Timestamp(dateTime.getTime());
             } catch (IllegalArgumentException ex) {
                 throw new ClassHandlerException("Invalid date string: " + string, ex);
+            } catch(ParseException ex){
+                throw new ClassHandlerException("Invalid date string: " + string, ex);
             }
-
-            return dateTime;
+            return timestamp;
         }
     },
     TODAYADDNUM {
         @Override
         public Class getMyClass() {
-            return DateTime.class;
+            return Date.class;
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public DateTime convertString(String string) throws ClassHandlerException {
-            DateTime dateTime;
+        public Date convertString(String string) throws ClassHandlerException {
+            Date dateTime;
 
             try {
-                Date toDate=DateUtils.addDays(new Date(), Integer.parseInt(string));
-                dateTime = new DateTime(toDate);
+                dateTime=DateUtils.addDays(new Date(), Integer.parseInt(string));
             } catch (IllegalArgumentException ex) {
                 throw new ClassHandlerException("Invalid date string: " + string, ex);
             }
@@ -177,8 +181,8 @@ public enum ClassHandler {
 
         @Override
         @SuppressWarnings("unchecked")
-        public Set<DateTime> convertString(String string) throws ClassHandlerException {
-            Set<DateTime> dateSet;
+        public Set<Date> convertString(String string) throws ClassHandlerException {
+            Set<Date> dateSet;
 
             try {
                 dateSet = MAPPER.readValue(string, Set.class);

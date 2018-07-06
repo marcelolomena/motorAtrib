@@ -6,9 +6,10 @@
 package cl.motoratrib.rest.jsrules;
 
 import cl.motoratrib.rest.jsrules.exception.InvalidParameterException;
-import org.joda.time.DateTime;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -151,9 +152,12 @@ public enum Operator {
         } else {
             // lets see if it's a DateTime instead
             try {
-                DateTime dateTime = DateTime.parse(obj.toString());
-                number = dateTime.getMillis();
+                SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+                Date dateTime = formatDate.parse( obj.toString() );
+                number = dateTime.getTime();
             } catch (IllegalArgumentException ex) {
+                throw new InvalidParameterException(obj.toString() + " is not a number or date. Unable to compare", ex);
+            } catch (ParseException ex){
                 throw new InvalidParameterException(obj.toString() + " is not a number or date. Unable to compare", ex);
             }
         }

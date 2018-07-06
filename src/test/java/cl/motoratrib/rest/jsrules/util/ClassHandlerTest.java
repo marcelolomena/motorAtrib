@@ -24,11 +24,10 @@
 package cl.motoratrib.rest.jsrules.util;
 
 import cl.motoratrib.rest.jsrules.exception.ClassHandlerException;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
+import java.util.Date;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -148,7 +147,7 @@ public class ClassHandlerTest {
     public void DateTimeClassTest() {
         ClassHandler handler = ClassHandler.DATETIME;
 
-        assertEquals(DateTime.class, handler.getMyClass());
+        assertEquals(Date.class, handler.getMyClass());
     }
 /*
     @Test

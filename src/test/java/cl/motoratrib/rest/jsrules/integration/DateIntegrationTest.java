@@ -4,7 +4,6 @@ import cl.motoratrib.rest.jsrules.JsRulesImpl;
 import cl.motoratrib.rest.jsrules.Rule;
 import cl.motoratrib.rest.jsrules.RuleExecutor;
 import cl.motoratrib.rest.jsrules.impl.RuleExecutorImpl;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -14,6 +13,10 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import java.text.SimpleDateFormat;
+import java.sql.Timestamp;
+import java.util.Date;
+
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -49,10 +52,10 @@ public class DateIntegrationTest {
         Rule rule = jsRules.loadRuleByNameFromFile("BetweenDatesRule");
 
         RuleExecutor ruleExecutor = new RuleExecutorImpl(rule);
-
-        DateTime dateTime = DateTime.parse("2018-05-20");
-
-        assertEquals(true, ruleExecutor.execute(dateTime));
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateTime = formatDate.parse("2018-05-20");
+        Timestamp timestamp = new Timestamp(dateTime.getTime());
+        assertEquals(true, ruleExecutor.execute(timestamp));
     }
 
     @Test
@@ -61,10 +64,10 @@ public class DateIntegrationTest {
         Rule rule = jsRules.loadRuleByNameFromFile("BetweenDatesRule");
 
         RuleExecutor ruleExecutor = new RuleExecutorImpl(rule);
-
-        DateTime dateTime = DateTime.parse("2014-05-20");
-
-        assertNull(ruleExecutor.execute(dateTime));
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateTime = formatDate.parse("2014-05-20");
+        Timestamp timestamp = new Timestamp(dateTime.getTime());
+        assertNull(ruleExecutor.execute(timestamp));
     }
 
     @Test
@@ -73,10 +76,10 @@ public class DateIntegrationTest {
         Rule rule = jsRules.loadRuleByNameFromFile("BeforeDateRule");
 
         RuleExecutor ruleExecutor = new RuleExecutorImpl(rule);
-
-        DateTime dateTime = DateTime.parse("2014-05-20");
-
-        assertEquals(true, ruleExecutor.execute(dateTime));
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateTime = formatDate.parse("2014-05-20");
+        Timestamp timestamp = new Timestamp(dateTime.getTime());
+        assertEquals(true, ruleExecutor.execute(timestamp));
     }
 
     @Test
@@ -85,9 +88,9 @@ public class DateIntegrationTest {
         Rule rule = jsRules.loadRuleByNameFromFile("BeforeDateRule");
 
         RuleExecutor ruleExecutor = new RuleExecutorImpl(rule);
-
-        DateTime dateTime = DateTime.parse("2015-05-20");
-
-        assertEquals(true,ruleExecutor.execute(dateTime));
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateTime = formatDate.parse("2015-05-20");
+        Timestamp timestamp = new Timestamp(dateTime.getTime());
+        assertEquals(true,ruleExecutor.execute(timestamp));
     }
 }
