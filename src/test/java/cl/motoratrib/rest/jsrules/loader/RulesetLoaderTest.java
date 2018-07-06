@@ -30,19 +30,14 @@ import cl.motoratrib.rest.jsrules.config.ResponseConfig;
 import cl.motoratrib.rest.jsrules.config.RulesetConfig;
 import cl.motoratrib.rest.jsrules.exception.InvalidConfigException;
 import cl.motoratrib.rest.jsrules.impl.FirstTrueRulesetExecutorImpl;
-import cl.motoratrib.rest.jsrules.impl.FirstTrueRulesetListExecutorImpl;
 import cl.motoratrib.rest.jsrules.loader.impl.RulesetLoaderImpl;
 import cl.motoratrib.rest.jsrules.util.ClassHandler;
-import cl.motoratrib.rest.jsrules.util.RulesetTypeHandler;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-
+import org.mockito.runners.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,8 +48,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
  * @author Marcelo
  */
 @SuppressWarnings("rawtypes")
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@RunWith(MockitoJUnitRunner.class)
 public class RulesetLoaderTest {
     @org.junit.Rule
     public ExpectedException exception = ExpectedException.none();
