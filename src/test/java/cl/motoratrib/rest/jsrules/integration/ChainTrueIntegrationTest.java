@@ -6,13 +6,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.mockito.runners.MockitoJUnitRunner;
 import java.util.HashMap;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 /**
  * This integration test executes a simply ruleset that evaluates whether an inventory item is in stock at a particular
@@ -34,8 +31,7 @@ import static org.junit.Assert.assertNull;
  * <p/>
  * Created by Marcelo Lomeña 5/16/2018
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ChainTrueIntegrationTest {
     private final String success = "[\"{ref:\\\"SF01\\\", alerta:\\\"Invocar FL03 Flujo Rating Agricola\\\"}\"]";
     private final String name = "POC_1_RulesetList";

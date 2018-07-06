@@ -10,9 +10,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.mockito.runners.MockitoJUnitRunner;
 import java.text.SimpleDateFormat;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -25,8 +23,7 @@ import static org.junit.Assert.assertNull;
  * Created by Marcelo Lomeña 5/20/2018
  */
 @SuppressWarnings("rawtypes")
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@RunWith(MockitoJUnitRunner.class)
 public class DateIntegrationTest {
 
     @org.junit.Rule

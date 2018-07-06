@@ -41,10 +41,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-
+import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -53,8 +50,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
  * @author Marcelo
  */
 @SuppressWarnings({"rawtypes","unchecked"})
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@RunWith(MockitoJUnitRunner.class)
 public class RuleLoaderTest {
     @org.junit.Rule
     public ExpectedException exception= ExpectedException.none();

@@ -11,10 +11,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-
+import org.mockito.runners.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +22,7 @@ import static org.junit.Assert.assertNotNull;
  * Created by Marcelo Lomeña 5/13/2018
  */
 @SuppressWarnings("rawtypes")
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@RunWith(MockitoJUnitRunner.class)
 public class JsRulesTest {
     @org.junit.Rule
     public ExpectedException exception = ExpectedException.none();

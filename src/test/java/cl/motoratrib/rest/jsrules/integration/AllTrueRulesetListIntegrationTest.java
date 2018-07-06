@@ -1,17 +1,12 @@
 package cl.motoratrib.rest.jsrules.integration;
 
-import cl.motoratrib.rest.jsrules.JsRules;
 import cl.motoratrib.rest.jsrules.JsRulesImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-
+import org.mockito.runners.MockitoJUnitRunner;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,8 +34,7 @@ import static org.junit.Assert.assertNull;
  * <p/>
  * Created by Marcelo Lomeña 5/16/2018
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@RunWith(MockitoJUnitRunner.class)
 public class AllTrueRulesetListIntegrationTest {
 
     Map<String, Object> parameters;
