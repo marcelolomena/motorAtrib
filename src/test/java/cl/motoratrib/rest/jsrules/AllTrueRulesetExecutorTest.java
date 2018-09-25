@@ -26,6 +26,7 @@ package cl.motoratrib.rest.jsrules;
 import cl.motoratrib.rest.jsrules.exception.InvalidParameterException;
 import cl.motoratrib.rest.jsrules.impl.AllTrueRulesetExecutorImpl;
 import cl.motoratrib.rest.jsrules.impl.RuleExecutorImpl;
+import cl.motoratrib.rest.service.EngineServiceImpl;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
@@ -53,6 +54,9 @@ public class AllTrueRulesetExecutorTest {
     private String responseMock = "mock";
     private String rulesetName = "mockRuleset";
     private String rulesetType = "mockType";
+
+    @Mock
+    EngineServiceImpl engineService;
 
     @org.junit.Rule
     public ExpectedException exception= ExpectedException.none();
@@ -96,7 +100,7 @@ public class AllTrueRulesetExecutorTest {
         when(ruleMock.getRightParameter()).thenReturn(new Parameter<>("right",
                 Long.class));
 
-        RuleExecutor<String> ruleExecutorMock = new RuleExecutorImpl<>(ruleMock);
+        RuleExecutor<String> ruleExecutorMock = new RuleExecutorImpl<>(ruleMock,engineService);
         ruleListMock.add(ruleExecutorMock);
                         
         Map<String, Object> parameters = new HashMap<>();
@@ -115,7 +119,7 @@ public class AllTrueRulesetExecutorTest {
         when(ruleMock.getRightParameter()).thenReturn(new Parameter<>("right",
                 Long.class));
 
-        RuleExecutor<String> ruleExecutorMock = new RuleExecutorImpl<>(ruleMock);
+        RuleExecutor<String> ruleExecutorMock = new RuleExecutorImpl<>(ruleMock,engineService);
         ruleListMock.add(ruleExecutorMock);
                         
         Map<String, Object> parameters = new HashMap<>();
@@ -135,7 +139,7 @@ public class AllTrueRulesetExecutorTest {
                 Long.class));
         when(ruleMock.getResponse()).thenReturn("Left is greater than right");
 
-        RuleExecutor<String> ruleExecutorMock = new RuleExecutorImpl<>(ruleMock);
+        RuleExecutor<String> ruleExecutorMock = new RuleExecutorImpl<>(ruleMock,engineService);
         ruleListMock.add(ruleExecutorMock);
                         
         Map<String, Object> parameters = new HashMap<>();
@@ -161,7 +165,7 @@ public class AllTrueRulesetExecutorTest {
                 Long.class));
         when(ruleMock.getResponse()).thenReturn("Left is greater than right");
 
-        RuleExecutor<String> ruleExecutorMock = new RuleExecutorImpl<>(ruleMock);
+        RuleExecutor<String> ruleExecutorMock = new RuleExecutorImpl<>(ruleMock,engineService);
         ruleListMock.add(ruleExecutorMock);
                         
         Map<String, Object> parameters = new HashMap<>();

@@ -13,9 +13,10 @@ import java.util.Map;
  */
 @SuppressWarnings("serial")
 public class CacheMap<K, V> extends LinkedHashMap<K, V>  {
+    private static final long serialVersionUID = 1905122041950251207L;
     private final int cacheSize;   // the maximum size of the cache
     private final long timeToLive; // the time, in milliseconds that entries can live on the cache
-    private final transient Map<K, StopWatch> stopWatchMap = new HashMap<>();
+    private final transient  Map<K, StopWatch> stopWatchMap = new HashMap<>();
 
     private static final int DEFAULT_CACHE_SIZE = 0;        // cache is unlimited
     private static final long DEFAULT_TIME_TO_LIVE = 0;     // entries last until manually removed
@@ -94,5 +95,13 @@ public class CacheMap<K, V> extends LinkedHashMap<K, V>  {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    private void writeObject(java.io.ObjectOutputStream stream) throws java.io.IOException {
+        throw new java.io.NotSerializableException( getClass().getName() );
+    }
+
+    private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException {
+        throw new java.io.NotSerializableException( getClass().getName() );
     }
 }

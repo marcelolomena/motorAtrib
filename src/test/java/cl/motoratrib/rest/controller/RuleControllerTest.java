@@ -1,5 +1,6 @@
 package cl.motoratrib.rest.controller;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -94,12 +95,12 @@ public class RuleControllerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testTestingNOK() throws Exception {
+    public void testAttributionsNOK() throws Exception {
 
         when(engineService.getRuleVariable(isA(String.class))).thenThrow(PlataformaBaseException.class);
 
         MockHttpServletRequestBuilder builder =
-                post("/testing")
+                post("/getAttributions")
                         .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY)
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(EngineFixture.JSON_TEST_1);
@@ -113,7 +114,7 @@ public class RuleControllerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testTestingOK() throws Exception {
+    public void testAttributionsOK() throws Exception {
 
         SpListReglaVariablePcVarRS obj1 = new SpListReglaVariablePcVarRS();
         obj1.setParametername("sf1_pyme");
@@ -136,7 +137,7 @@ public class RuleControllerTest {
                 .thenReturn(lstExpected);
 
         MockHttpServletRequestBuilder builder =
-                post("/testing")
+                post("/getAttributions")
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(EngineFixture.JSON_TEST_1);
@@ -146,6 +147,14 @@ public class RuleControllerTest {
                 .isOk())
                 .andDo(MockMvcResultHandlers.print());
 
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testVarAvailableOK() throws Exception {
+        String ruleSetName = "m_fl08_POC_1_RulesetList";
+        mockMvc.perform(get("/getVarAvailable/{ruleSetName}", ruleSetName).contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .header("OAM_REMOTE_KEY", TestUtil.OAM_REMOTE_KEY)).andExpect(status().isOk()).andDo(print());
     }
 
 }

@@ -1,6 +1,8 @@
 package cl.motoratrib.rest.jsrules;
 
+import cl.bancochile.centronegocios.controldelimites.persistencia.domain.SpGetReglaOUT;
 import cl.motoratrib.rest.jsrules.exception.JsRulesException;
+import cl.motoratrib.rest.service.EngineServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cl.motoratrib.rest.jsrules.config.ResponseConfig;
 import cl.motoratrib.rest.jsrules.config.RulesetConfig;
@@ -10,6 +12,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import java.util.ArrayList;
@@ -17,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Marcelo Lomeña 5/13/2018
@@ -29,6 +34,9 @@ public class JsRulesTest {
 
     @InjectMocks
     private JsRulesImpl jsrules;
+
+    @Mock
+    EngineServiceImpl engineService;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -174,6 +182,5 @@ public class JsRulesTest {
 
         assertNotNull(jsrules.executeRuleset("MockRuleset", parameters));
     }
-
 
 }

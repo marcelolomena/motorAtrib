@@ -147,10 +147,13 @@ public enum Operator {
 
     protected Number getNumber(Object obj) throws InvalidParameterException {
         Number number;
+        System.out.println("entro getNumber " + obj);
         if (obj instanceof Number) {
+            System.out.println("instanceof Number " + obj);
             number = (Number) obj;
         } else {
             // lets see if it's a DateTime instead
+            System.out.println("not instanceof Number " + obj);
             try {
                 SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
                 Date dateTime = formatDate.parse( obj.toString() );
@@ -166,10 +169,13 @@ public enum Operator {
 
     protected Object getDoubleValue(Object obj) {
         Object tObj = obj;
+        System.out.println("entro getDoubleValue 1 " + obj);
         if (obj instanceof Number) {
+            System.out.println("entro getDoubleValue 2 " + obj);
             Number number = (Number) obj;
             tObj = number.doubleValue();
         }
+        System.out.println("salio getDoubleValue " + obj);
         return tObj;
     }
 

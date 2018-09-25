@@ -211,4 +211,10 @@ public class EngineHandlerTest {
         assertNull( EngineHandler.getStringSromClob(clob));
 
     }
+
+    @Test
+    public void shouldEqualsLogic() throws PlataformaBaseException {
+        String in ="[{\"ref\":\"CE01\",\"descripcion\":\"comite\",\"atribucionLarga\":[{\"nombre\":\"nivel_pot\",\"min\":100,\"max\":200,\"opcional\":0}],\"atribucionCorta\":[]}]";
+        assertNotNull(EngineHandler.businessLogicAtribution(in));
+    }
 }

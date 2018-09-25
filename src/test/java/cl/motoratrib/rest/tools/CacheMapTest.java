@@ -57,4 +57,15 @@ public class CacheMapTest {
 
         assertTrue(cacheMap.equals(cacheMap));
     }
+
+    @Test
+    public void testGetCache() throws Exception {
+
+        cacheMap = new CacheMap<>(1,3,true);
+
+        cacheMap.put(key, value);
+
+        assertNotNull(cacheMap.get(key));
+
+    }
 }

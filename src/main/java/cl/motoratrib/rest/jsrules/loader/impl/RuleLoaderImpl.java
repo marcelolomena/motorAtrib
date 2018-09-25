@@ -31,8 +31,6 @@ import cl.motoratrib.rest.jsrules.exception.InvalidConfigException;
 import cl.motoratrib.rest.jsrules.loader.ParamLoader;
 import cl.motoratrib.rest.jsrules.loader.ResponseLoader;
 import cl.motoratrib.rest.jsrules.loader.RuleLoader;
-import cl.motoratrib.rest.jsrules.loader.impl.ParamLoaderImpl;
-import cl.motoratrib.rest.jsrules.loader.impl.ResponseLoaderImpl;
 
 /**
  *
@@ -40,7 +38,6 @@ import cl.motoratrib.rest.jsrules.loader.impl.ResponseLoaderImpl;
  */
 @SuppressWarnings({"rawtypes","unchecked"})
 public class RuleLoaderImpl implements RuleLoader {
-    
     // these are not final so that they can be injected for unit testing
     private ParamLoader paramLoader = new ParamLoaderImpl();
     private ResponseLoader responseLoader = new ResponseLoaderImpl();
@@ -56,7 +53,7 @@ public class RuleLoaderImpl implements RuleLoader {
         } catch (IllegalArgumentException ex) {
             throw new InvalidConfigException(operatorName+" is an unknown operator", ex);
         }
-        
+
         Parameter rightParam = paramLoader.load(config.getRightParamConfig());
         
         Object response = responseLoader.load(config.getResponseConfig());

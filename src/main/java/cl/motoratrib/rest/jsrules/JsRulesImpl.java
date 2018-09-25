@@ -79,7 +79,7 @@ public class JsRulesImpl implements JsRules {
     @Override
     public Rule loadRuleByName(String ruleName) throws InvalidConfigException {
         Rule rule = ruleMap.get(ruleName);
-        LOGGER.debug("LOAD " + ruleName);
+        System.out.println("LOAD RULE : " + ruleName);
             if (rule == null) {
 
                 try {
@@ -92,13 +92,15 @@ public class JsRulesImpl implements JsRules {
                     if (stream == null) {
                         throw new InvalidConfigException("Unable to find ruleset record : " + ruleName);
                     }
-
+                    //System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+                    //System.out.println( convertStreamToString(stream) );
+                    //System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
                     RuleConfig ruleConfig = objectMapper.readValue(stream, RuleConfig.class);
                     rule = getRule(ruleConfig);
                 } catch (IOException ex) {
-                    throw new InvalidConfigException("Unable to parse rule record : " + ruleName, ex);
+                    throw new InvalidConfigException("Unable to parse rule record rule : " + ruleName, ex);
                 } catch (Exception ex) {
-                    throw new InvalidConfigException("Unable to parse rule record : " + ruleName, ex);
+                    throw new InvalidConfigException("Unable to parse rule record rule : " + ruleName, ex);
                 }
             }
 
@@ -117,7 +119,7 @@ public class JsRulesImpl implements JsRules {
     @Override
     public RulesetExecutor loadRulesetByName(String rulesetName) throws InvalidConfigException {
         RulesetExecutor ruleset = rulesetExecutorMap.get(rulesetName);
-
+        System.out.println("LOAD RULESET : " + rulesetName);
             if (ruleset == null) {
 
                 try {
@@ -129,7 +131,9 @@ public class JsRulesImpl implements JsRules {
                     if (stream == null) {
                         throw new InvalidConfigException("Unable to find ruleset record : " + rulesetName);
                     }
-
+                    //System.out.println("################################");
+                    //System.out.println( convertStreamToString(stream) );
+                    //System.out.println("################################");
                     RulesetConfig rulesetConfig = objectMapper.readValue(stream, RulesetConfig.class);
                     ruleset = getRulesetExecutor(rulesetConfig);
                 } catch (IOException ex) {
@@ -186,7 +190,16 @@ public class JsRulesImpl implements JsRules {
         return this.getClass().getResourceAsStream("/" + fileName);
     }
 
+    public EngineService getServiceEngine(){
+        return this.engineService;
+    }
+
     public RulesetLoader getRulesetLoader(){
         return this.rulesetLoader;
+    }
+
+    static String convertStreamToString(java.io.InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
     }
 }

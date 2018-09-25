@@ -12,7 +12,9 @@ import cl.motoratrib.rest.fixture.EngineFixture;
 import cl.motoratrib.rest.context.TestContext;
 import cl.motoratrib.rest.context.WebAppContext;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -53,6 +55,9 @@ public class EngineServiceImplTest {
     @Mock
     SpListReglaVariableDAO spListReglaVariableDAO;
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -84,14 +89,12 @@ public class EngineServiceImplTest {
 
     @Test
     public void testGetVariablesDAOException() throws Exception {
+        thrown.expect(PlataformaBaseException.class);
         when(spListVariablesDAO.execute())
                 .thenThrow(PlataformaBaseException.class);
-        try {
-            engineService.getVariables();
-        }catch (Exception e) {
-            assertNotNull(e);
-        }
-        Mockito.reset(spListVariablesDAO);
+
+        engineService.getVariables();
+
     }
 
     @Test

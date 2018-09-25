@@ -11,7 +11,7 @@
     "parameterStaticValue": "VF[VF][VF][VF]"
   },
   "responseConfig": {
-    "response": "{ref:\"SF01\", alerta:\"Invocar FL04 Flujo Pyme No Rating\"}",
+    "response": "{\"ref\":\"CE01\",\"descripcion\":\"Comité de crédito superior mínimo nivel 4 de riesgo, Comité de directores\",\"atribucionLarga\":[{\"nombre\":\"nivel_pot\",\"min\":100,\"max\":200,\"opcional\":0}],\"atribucionCorta\":[]}",
     "responseClass": "String"
   }
 }

@@ -178,7 +178,7 @@ $(document).ready(function(){
 
 <h2><span class="description">A Test Rule.</span> <span class="version">version 1.0</span></h2>
 <hr class="short">
-<form action="/miplataforma/Motor/testing" class="disabled" id="form" method="post">
+<form action="/miplataforma/Motor/engine" class="disabled" id="form" method="post">
  <p id="help"><a class="trigger_popup_fricc">Help</a></p>
  <p><label class="paste">Paste:</label><br>
   <textarea id="input" name="input" rows="10" cols="80" disabled></textarea></p>

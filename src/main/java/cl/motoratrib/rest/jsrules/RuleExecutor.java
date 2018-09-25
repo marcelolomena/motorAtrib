@@ -5,10 +5,8 @@
  */
 package cl.motoratrib.rest.jsrules;
 
-import cl.motoratrib.rest.jsrules.Executor;
-import cl.motoratrib.rest.jsrules.Parameter;
-import cl.motoratrib.rest.jsrules.Rule;
 import cl.motoratrib.rest.jsrules.exception.InvalidParameterException;
+
 
 /**
  *

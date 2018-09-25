@@ -1,0 +1,17 @@
+{
+  "ruleName": "m_pre02_Rating15",
+  "leftParamConfig": {
+    "parameterName": "m_pre02_v_fechaRating",
+    "parameterClass": "DateTime"
+  },
+  "operator": "LTE",
+  "rightParamConfig": {
+    "parameterName": "rightDate",
+    "parameterClass": "TodayAddNum",
+    "parameterStaticValue": "-15"
+  },
+  "responseConfig": {
+    "response": "true",
+    "responseClass": "Boolean"
+  }
+}

@@ -7,6 +7,7 @@ package cl.motoratrib.rest.jsrules;
 
 import cl.motoratrib.rest.jsrules.exception.InvalidParameterException;
 import cl.motoratrib.rest.jsrules.impl.RuleExecutorImpl;
+import cl.motoratrib.rest.service.EngineServiceImpl;
 import org.junit.*;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -31,6 +32,9 @@ public class RuleExecutorTest {
     
     @Mock
     cl.motoratrib.rest.jsrules.Rule<String, Long> ruleMock;
+
+    @Mock
+    EngineServiceImpl engineService;
     
     @BeforeClass
     public static void setUpClass() {
@@ -42,7 +46,7 @@ public class RuleExecutorTest {
     
     @Before
     public void setUp() {
-        executor = new RuleExecutorImpl<>(ruleMock);
+        executor = new RuleExecutorImpl<>(ruleMock,engineService);
 
         Parameter<Long> leftParameterMock = new Parameter<>("left", Long.class);
         when(ruleMock.getLeftParameter()).thenReturn(leftParameterMock);

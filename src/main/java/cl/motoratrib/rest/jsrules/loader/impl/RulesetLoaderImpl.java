@@ -1,6 +1,5 @@
 package cl.motoratrib.rest.jsrules.loader.impl;
 
-
 import cl.motoratrib.rest.jsrules.*;
 import cl.motoratrib.rest.jsrules.JsRulesImpl;
 import cl.motoratrib.rest.jsrules.config.ResponseConfig;
@@ -13,7 +12,6 @@ import cl.motoratrib.rest.jsrules.util.ClassHandler;
 import cl.motoratrib.rest.jsrules.util.RulesetTypeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +64,7 @@ public class RulesetLoaderImpl implements RulesetLoader {
                 ruleSet.add(rulesetExecutor);
             } else {
                 Rule rule = jsRulesImpl.loadRuleByName(component);
-                RuleExecutor ruleExecutor = new RuleExecutorImpl(rule);
+                RuleExecutor ruleExecutor = new RuleExecutorImpl(rule,jsRulesImpl.getServiceEngine());
                 ruleSet.add(ruleExecutor);
             }
         }

@@ -9,4 +9,5 @@ public interface EngineService {
    List<SpListVariablesPcVariableRS> getVariables() throws PlataformaBaseException;
    List<SpListReglaVariablePcVarRS> getRuleVariable(String nombre) throws PlataformaBaseException;
    SpGetReglaOUT getRuleByName(String name) throws PlataformaBaseException;
+   SpGetValorAtribOUT getValorAtrib(String ruleName, String json) throws PlataformaBaseException;
 }

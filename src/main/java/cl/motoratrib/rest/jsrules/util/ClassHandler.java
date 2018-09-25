@@ -23,6 +23,8 @@
  */
 package cl.motoratrib.rest.jsrules.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cl.motoratrib.rest.jsrules.exception.ClassHandlerException;
 import org.apache.commons.lang3.time.DateUtils;
@@ -163,14 +165,22 @@ public enum ClassHandler {
         @SuppressWarnings("unchecked")
         public Date convertString(String string) throws ClassHandlerException {
             Date dateTime;
-
+            Timestamp timestamp;
+            SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
             try {
+                System.out.println("############################################### " + string);
                 dateTime=DateUtils.addDays(new Date(), Integer.parseInt(string));
+                String newDate=formatDate.format(dateTime);
+                dateTime = formatDate.parse( newDate );
+                timestamp = new Timestamp(dateTime.getTime());
+                System.out.println("############################################### " + dateTime);
             } catch (IllegalArgumentException ex) {
+                throw new ClassHandlerException("Invalid date string: " + string, ex);
+            } catch(ParseException ex){
                 throw new ClassHandlerException("Invalid date string: " + string, ex);
             }
 
-            return dateTime;
+            return timestamp;
         }
     },
     DATESET {
@@ -191,6 +201,29 @@ public enum ClassHandler {
             }
 
             return dateSet;
+        }
+    },
+    JSONNODE {
+        @Override
+        public Class getMyClass() {
+            return JsonNode.class;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public JsonNode convertString(String string) throws ClassHandlerException {
+            JsonNode json;
+            try {
+                System.out.println("EL JSON IZQ : " + string);
+                ObjectMapper objectMapper = new ObjectMapper();
+                json=objectMapper.readTree(string);
+            } catch (JsonProcessingException ex) {
+                throw new ClassHandlerException("Invalid Json string: " + string, ex);
+            } catch(IOException ex) {
+                throw new ClassHandlerException("Invalid Json string: " + string, ex);
+            }
+
+            return json;
         }
     };
     private static final ObjectMapper MAPPER = new ObjectMapper();

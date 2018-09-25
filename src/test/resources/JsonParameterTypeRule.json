@@ -1,0 +1,17 @@
+{
+  "ruleName": "JsonParameterTypeRule",
+  "leftParamConfig": {
+    "parameterName": "leftJson",
+    "parameterClass": "JsonNode"
+  },
+  "operator": "EQ",
+  "rightParamConfig": {
+    "parameterName": "rightDate",
+    "parameterClass": "DateTime",
+    "parameterStaticValue": "2018-01-01"
+  },
+  "responseConfig": {
+    "response": "true",
+    "responseClass": "Boolean"
+  }
+}

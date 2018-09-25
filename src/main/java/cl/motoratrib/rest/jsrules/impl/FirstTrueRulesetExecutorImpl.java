@@ -77,11 +77,12 @@ public class FirstTrueRulesetExecutorImpl<T> extends RulesetExecutor<T> {
                 String rightName = right.getName();
                 Object rightParameter = parameters.get(rightName);
                 validateParameter(rightName, rightParameter, right.getKlasse());
-
+                System.out.println("-----------------------> JAMAS ENTRA ACA <-----------------------");
                 ruleResponse = rule.execute(leftParameter, rightParameter);
 
             } else {
                 //send left parameter only
+                System.out.println("-----------------------> SIEMPRE ENTRA ACA <-----------------------");
                 ruleResponse = rule.execute(leftParameter);
             }
 

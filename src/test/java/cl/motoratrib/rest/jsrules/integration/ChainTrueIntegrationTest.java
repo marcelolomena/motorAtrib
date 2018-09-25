@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ChainTrueIntegrationTest {
-    private final String success = "[\"{ref:\\\"SF01\\\", alerta:\\\"Invocar FL03 Flujo Rating Agricola\\\"}\"]";
+    private final String success = "{\"ref\":\"CE01\",\"descripcion\":\"Comité de crédito superior mínimo nivel 4 de riesgo, Comité de directores\",\"atribucionLarga\":[{\"nombre\":\"nivel_pot\",\"min\":100,\"max\":200,\"opcional\":0}],\"atribucionCorta\":[]}";
     private final String name = "POC_1_RulesetList";
     private final String type = "CHAINTRUELIST";
     @InjectMocks

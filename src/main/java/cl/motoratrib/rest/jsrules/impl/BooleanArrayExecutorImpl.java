@@ -38,9 +38,10 @@ public class BooleanArrayExecutorImpl<T> extends RulesetExecutor<T> {
         T result = response;
         String accum = "";
         for(RuleExecutor rule:ruleSet) {
-            LOGGER.debug("RULE NAME --------> " + rule.getRule().getRuleName());
+
             Parameter ruleParamRight = rule.getRightParameter();
             Object leftParameter = parameters.get(rule.getLeftParameter().getName());
+            System.out.println("NOMBRE SUPER --------> " + ruleParamRight.getName());//Nombre variable lado derecho
             Object rightParameter = parameters.get(ruleParamRight.getName());
             String booleanValue = "";
             if (ruleParamRight.getStaticValue() == null) {

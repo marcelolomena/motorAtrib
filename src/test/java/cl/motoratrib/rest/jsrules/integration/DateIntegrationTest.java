@@ -4,11 +4,15 @@ import cl.motoratrib.rest.jsrules.JsRulesImpl;
 import cl.motoratrib.rest.jsrules.Rule;
 import cl.motoratrib.rest.jsrules.RuleExecutor;
 import cl.motoratrib.rest.jsrules.impl.RuleExecutorImpl;
+import cl.motoratrib.rest.service.EngineServiceImpl;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import java.text.SimpleDateFormat;
@@ -29,6 +33,9 @@ public class DateIntegrationTest {
     @org.junit.Rule
     public ExpectedException exception = ExpectedException.none();
 
+    @Mock
+    EngineServiceImpl engineService;
+
     @InjectMocks
     private JsRulesImpl jsRules;
 
@@ -42,15 +49,26 @@ public class DateIntegrationTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void jsonRuleTest() throws Exception {
+        Rule rule = jsRules.loadRuleByNameFromFile("JsonParameterTypeRule");
+
+        RuleExecutor ruleExecutor = new RuleExecutorImpl(rule,engineService);
+        String newString = "{\"comitentes\": [{\"rut\": \"1-9\"},{\"rut\": \"3-7\"}],\"limites\":[]}";
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode newNode = mapper.readTree(newString);
+        assertEquals(true, ruleExecutor.execute(newNode));
+    }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void betweenDatesTest() throws Exception {
-        Rule rule = jsRules.loadRuleByNameFromFile("BetweenDatesRule");
+    public void operatorDatesTest() throws Exception {
+        Rule rule = jsRules.loadRuleByNameFromFile("OperatorDate");
 
-        RuleExecutor ruleExecutor = new RuleExecutorImpl(rule);
+        RuleExecutor ruleExecutor = new RuleExecutorImpl(rule,engineService);
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
-        Date dateTime = formatDate.parse("2018-05-20");
+        Date dateTime = formatDate.parse("2017-04-22");
         Timestamp timestamp = new Timestamp(dateTime.getTime());
         assertEquals(true, ruleExecutor.execute(timestamp));
     }
@@ -60,7 +78,7 @@ public class DateIntegrationTest {
     public void betweenDatesFalseTest() throws Exception {
         Rule rule = jsRules.loadRuleByNameFromFile("BetweenDatesRule");
 
-        RuleExecutor ruleExecutor = new RuleExecutorImpl(rule);
+        RuleExecutor ruleExecutor = new RuleExecutorImpl(rule,engineService);
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
         Date dateTime = formatDate.parse("2014-05-20");
         Timestamp timestamp = new Timestamp(dateTime.getTime());
@@ -72,7 +90,7 @@ public class DateIntegrationTest {
     public void beforeDateTest() throws Exception {
         Rule rule = jsRules.loadRuleByNameFromFile("BeforeDateRule");
 
-        RuleExecutor ruleExecutor = new RuleExecutorImpl(rule);
+        RuleExecutor ruleExecutor = new RuleExecutorImpl(rule,engineService);
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
         Date dateTime = formatDate.parse("2014-05-20");
         Timestamp timestamp = new Timestamp(dateTime.getTime());
@@ -84,7 +102,7 @@ public class DateIntegrationTest {
     public void beforeDateFalseTest() throws Exception {
         Rule rule = jsRules.loadRuleByNameFromFile("BeforeDateRule");
 
-        RuleExecutor ruleExecutor = new RuleExecutorImpl(rule);
+        RuleExecutor ruleExecutor = new RuleExecutorImpl(rule,engineService);
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
         Date dateTime = formatDate.parse("2015-05-20");
         Timestamp timestamp = new Timestamp(dateTime.getTime());

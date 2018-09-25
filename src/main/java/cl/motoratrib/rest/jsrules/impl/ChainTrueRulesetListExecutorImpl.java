@@ -69,18 +69,17 @@ public class ChainTrueRulesetListExecutorImpl<T> extends RulesetListExecutor<T> 
         ObjectMapper mapper = new ObjectMapper();
         for (RulesetExecutor<T> ruleSet : rulesetList) {
 
-            LOGGER.debug("CONDICION --------> " + ruleSet.getName());
             T ruleResponse = ruleSet.execute(parameters);
 
             if(ruleResponse!=null)
-                LOGGER.debug("VECTOR OF TRUTH --------> " + ruleResponse.toString());
+                System.out.println("VECTOR OF TRUTH --------> " + ruleResponse.toString());
 
             if("BOOLEANARRAY".equals(ruleSet.getType())) {
-                LOGGER.debug("SETUP VAR FILA --------> " + ruleResponse.toString());
+                System.out.println("SETUP VAR FILA --------> " + ruleResponse.toString());
                 parameters.put("fila", ruleResponse.toString());
             } else {
                 if (ruleResponse != null) {
-                    LOGGER.debug("ADD RESPONSE --------> " + ruleResponse.toString());
+                    System.out.println("ADD RESPONSE --------> " + ruleResponse.toString());
                     textMessages.add(ruleResponse);
                 }
             }
@@ -91,6 +90,10 @@ public class ChainTrueRulesetListExecutorImpl<T> extends RulesetListExecutor<T> 
         }catch(JsonProcessingException e){
             throw new InvalidParameterException(e);
         }
+
+        System.out.println("####-------INI------####");
+        System.out.println(listResponse);
+        System.out.println("####-------FIN------####");
 
         result = (T)listResponse;
 
